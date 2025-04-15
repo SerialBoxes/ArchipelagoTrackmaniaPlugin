@@ -1,0 +1,115 @@
+bool isQueryingForMap = false;
+bool isNextMapLoading = false;
+MX::MapInfo@ nextMap;
+
+void LoadNextMap(){
+    // try {
+        isNextMapLoading = true;
+        if (nextMap is null && !isQueryingForMap) QueryForRandomMap();
+        while (isQueryingForMap) yield();
+        gameState.SetMap(nextMap);
+        @nextMap = null;
+
+        Log::LoadingMapNotification(gameState.GetMap());
+
+        CTrackMania@ app = cast<CTrackMania>(GetApp());
+
+#if TMNEXT
+        if (app.ManiaPlanetScriptAPI.ActiveContext_InGameMenuDisplayed){//if pause menu open
+            CSmArenaClient@ playground = cast<CSmArenaClient>(app.CurrentPlayground);//close it!
+            if(playground !is null) {
+                playground.Interface.ManialinkScriptHandler.CloseInGameMenu(CGameScriptHandlerPlaygroundInterface::EInGameMenuResult::Resume);
+            }
+        }
+#endif
+        app.BackToMainMenu(); // If we're on a map, go back to the main menu else we'll get stuck on the current map
+        while(!app.ManiaTitleControlScriptAPI.IsReady) {
+            yield(); // Wait until the ManiaTitleControlScriptAPI is ready for loading the next map
+        }
+
+        app.ManiaTitleControlScriptAPI.PlayMap("https://"+ MX_URL+"/mapgbx/"+gameState.GetMap().MapId, "", "");
+
+        isNextMapLoading = false;
+
+        startnew(QueryForRandomMap);
+    // }
+    // catch
+    // {
+    //     Log::Warn("Error while loading map ");
+    //     Log::Error("TMX API is not responding, it might be down.", true);
+    //     //APIDown = true;
+    //     isNextMapLoading = false;
+    // }
+}
+
+void QueryForRandomMap(){
+    isQueryingForMap = true;
+    string URL = BuildRandomMapQueryURL();
+    print(URL);
+    Json::Value res;
+    try {
+        res = API::GetAsync(URL)["Results"][0];
+    } catch {
+        Log::Error("ManiaExchange API returned an error, retrying...");
+        sleep(3000);
+        QueryForRandomMap();
+        return;
+    }
+    Log::Trace("Next Map: "+Json::Write(res));
+    MX::MapInfo@ map = MX::MapInfo(res);
+    if (map is null){
+        Log::Warn("Map is null, retrying...");
+        sleep(1000);
+        QueryForRandomMap();
+        return;
+    }
+
+    isQueryingForMap = false;
+    @nextMap = map;
+}
+
+string BuildRandomMapQueryURL(){
+    dictionary params;
+    params.Set("fields", MAP_FIELDS); //fields that the API will return in the json object
+    params.Set("random", "1");
+    params.Set("count", "1");
+    params.Set("etag", ETAGS); //excluded tmx tags. These are Kacky, Royal, and Arena.
+    params.Set("authortimemax", tostring(MAX_AUTHOR_TIME)); //5 minute author time max
+    //params.Set("vehicle", "1,2,3,4");//this locks out character pilot and black market maps
+    params.Set("maptype", SUPPORTED_MAP_TYPE);
+
+#if MP4
+    params.Set("titlepack", CurrentTitlePack());
+#endif
+
+    string urlParams = DictToApiParams(params);
+    return "https://" + MX_URL + "/api/maps" + urlParams;
+}
+
+string DictToApiParams(dictionary params) {
+    string urlParams = "";
+    if (!params.IsEmpty()) {
+        auto keys = params.GetKeys();
+        for (uint i = 0; i < keys.Length; i++) {
+            string key = keys[i];
+            string value;
+            params.Get(key, value);
+
+            urlParams += (i == 0 ? "?" : "&");
+            urlParams += key + "=" + Net::UrlEncode(value.Trim());
+        }
+    }
+
+    return urlParams;
+}
+
+string CurrentTitlePack(){
+    CTrackMania@ app = cast<CTrackMania>(GetApp());
+    if (app.LoadedManiaTitle is null) return "";
+    string titleId = app.LoadedManiaTitle.TitleId;
+#if MP4
+    return titleId.SubStr(0, titleId.IndexOf("@"));
+#else
+    return titleId;
+#endif
+}
