@@ -54,7 +54,7 @@ class BetterSocket {
                 startnew(CoroutineFunc(StartConnect));
             }else{
                 print ("Connected to " + addr + ":" + port);
-                OnConnected();
+                //OnConnected();
             }
         }
         IsConnecting = false;

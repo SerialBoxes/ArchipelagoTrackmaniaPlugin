@@ -5,7 +5,6 @@ void Main() {
 bool isOpen = true;
 bool clientConnected = false;
 
-Net::Socket@ socket = Net::Socket();
 WorldState@ gameState = null;
 
 void RenderMenu(){
@@ -26,28 +25,6 @@ void CreateOrResumeGame(int id){
     startnew(LoadNextMap);
 }
 
-void OpenSocket(){
-    print("prayge");
-    startnew(CoroutineFunc(TryConnect));
-
-}
-
-void TryConnect(){
-    bool result = socket.Connect("localhost",22422);
-    while (!socket.IsReady()){
-        yield();
-    }
-    if (result){
-        ConfigureSocket2();
-    }
-}
-
-void OnConnected(){
-    print("Starting Read Loop");
-    SendClientHandshake();
-    startnew(ReadLoop);
-}
-
 int lastRaceTime = -1;
 void Update(float dt){
     if (clientConnected && !isNextMapLoading && gameState !is null && gameState.GetMap() !is null){
@@ -61,16 +38,4 @@ void Update(float dt){
         }
         lastRaceTime = raceTime;
     }
-}
-
-void ReadLoop() {
-    RawMessage@ msg;
-    // while ((@msg = socket.ReadMsg()) !is null) {
-    //     HandleRawMsg(msg);
-    // }
-    // we disconnected
-}
-
-void HandleRawMsg(RawMessage@ msg) {
-    print(msg.msgJson);
 }
