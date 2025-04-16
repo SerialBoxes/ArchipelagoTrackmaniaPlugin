@@ -50,3 +50,26 @@ int GetCurrentMapTime()
         return -1;
     }
 }
+
+string CurrentTitlePack(){
+    CTrackMania@ app = cast<CTrackMania>(GetApp());
+    if (app.LoadedManiaTitle is null) return "";
+    string titleId = app.LoadedManiaTitle.TitleId;
+#if MP4
+    return titleId.SubStr(0, titleId.IndexOf("@"));
+#else
+    return titleId;
+#endif
+}
+
+void ClosePauseMenu(){
+#if TMNEXT
+    CTrackMania@ app = cast<CTrackMania>(GetApp());
+    if (app.ManiaPlanetScriptAPI.ActiveContext_InGameMenuDisplayed){//if pause menu open
+        CSmArenaClient@ playground = cast<CSmArenaClient>(app.CurrentPlayground);//close it!
+        if(playground !is null) {
+            playground.Interface.ManialinkScriptHandler.CloseInGameMenu(CGameScriptHandlerPlaygroundInterface::EInGameMenuResult::Resume);
+        }
+    }
+#endif
+}

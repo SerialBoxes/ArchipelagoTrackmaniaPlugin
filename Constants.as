@@ -48,16 +48,3 @@ const array<string> MAP_FIELDS_ARRAY = {
 };
 const string MAP_FIELDS = string::Join(MAP_FIELDS_ARRAY, ",");
 
-/**
- * TCP opcodes.
- * These will be used in the TCPLink client to denote message types to the server
- *
- */
- enum TCPMessageTypes{
-	CODE_TEXT_FIN = 129,           // (10000001) - Text frame with FIN bit set (use this for single-fragment text messages)
-	CODE_CONTINUATION = 0,         // (00000000) - Continuation frame
-	CODE_PING = 137,               // (10001001) - Ping
-	CODE_PONG = 138,               // (10001010) - Pong
-	CODE_TEXT = 1,                 // (00000001) - Text frame (use CODE_CONTINUATION to continue a text message)
-    CODE_CONTINUATION_FIN = 128    // (10000000) - Continuation frame with FIN bit set (ends a multi-fragment message)
- }
