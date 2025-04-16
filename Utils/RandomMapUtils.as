@@ -2,36 +2,29 @@ bool isQueryingForMap = false;
 bool isNextMapLoading = false;
 MX::MapInfo@ nextMap;
 
-void LoadNextMap(){
+void LoadMap(MapInfo@ map){
     // try {
         isNextMapLoading = true;
-        if (nextMap is null && !isQueryingForMap) QueryForRandomMap();
-        while (isQueryingForMap) yield();
-        gameState.SetMap(nextMap);
-        @nextMap = null;
+        if (nextMap is null ){
+            warn ("Error, tried to load null map");
+            isNextMapLoading = false;
+            return;
+        }
 
-        Log::LoadingMapNotification(gameState.GetMap());
+        Log::LoadingMapNotification(map);
+
+        ClosePauseMenu();
 
         CTrackMania@ app = cast<CTrackMania>(GetApp());
 
-#if TMNEXT
-        if (app.ManiaPlanetScriptAPI.ActiveContext_InGameMenuDisplayed){//if pause menu open
-            CSmArenaClient@ playground = cast<CSmArenaClient>(app.CurrentPlayground);//close it!
-            if(playground !is null) {
-                playground.Interface.ManialinkScriptHandler.CloseInGameMenu(CGameScriptHandlerPlaygroundInterface::EInGameMenuResult::Resume);
-            }
-        }
-#endif
         app.BackToMainMenu(); // If we're on a map, go back to the main menu else we'll get stuck on the current map
         while(!app.ManiaTitleControlScriptAPI.IsReady) {
             yield(); // Wait until the ManiaTitleControlScriptAPI is ready for loading the next map
         }
 
-        app.ManiaTitleControlScriptAPI.PlayMap("https://"+ MX_URL+"/mapgbx/"+gameState.GetMap().MapId, "", "");
+        app.ManiaTitleControlScriptAPI.PlayMap("https://"+ MX_URL+"/mapgbx/"+map.MapId, "", "");
 
         isNextMapLoading = false;
-
-        startnew(QueryForRandomMap);
     // }
     // catch
     // {
@@ -42,9 +35,9 @@ void LoadNextMap(){
     // }
 }
 
-void QueryForRandomMap(){
+MapInfo@ QueryForRandomMap(string URL){
     isQueryingForMap = true;
-    string URL = BuildRandomMapQueryURL();
+    //string URL = BuildRandomMapQueryURL();
     print(URL);
     Json::Value res;
     try {
@@ -52,20 +45,18 @@ void QueryForRandomMap(){
     } catch {
         Log::Error("ManiaExchange API returned an error, retrying...");
         sleep(3000);
-        QueryForRandomMap();
-        return;
+        return QueryForRandomMap();
     }
     Log::Trace("Next Map: "+Json::Write(res));
     MX::MapInfo@ map = MX::MapInfo(res);
     if (map is null){
         Log::Warn("Map is null, retrying...");
         sleep(1000);
-        QueryForRandomMap();
-        return;
+        return QueryForRandomMap();
     }
 
     isQueryingForMap = false;
-    @nextMap = map;
+    return map;
 }
 
 string BuildRandomMapQueryURL(){
@@ -101,15 +92,4 @@ string DictToApiParams(dictionary params) {
     }
 
     return urlParams;
-}
-
-string CurrentTitlePack(){
-    CTrackMania@ app = cast<CTrackMania>(GetApp());
-    if (app.LoadedManiaTitle is null) return "";
-    string titleId = app.LoadedManiaTitle.TitleId;
-#if MP4
-    return titleId.SubStr(0, titleId.IndexOf("@"));
-#else
-    return titleId;
-#endif
 }
