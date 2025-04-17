@@ -9,9 +9,13 @@ void RenderInterface(){
         int flags = UI::WindowFlags::NoCollapse | UI::WindowFlags::NoDocking | UI::WindowFlags::NoResize | UI::WindowFlags::AlwaysAutoResize;
         if (UI::Begin("Archipelago", isOpen, flags)){
             if (!socket.IsConnected()){
-                RenderMainMenu();
+                RenderConnectMenu();
             }else{
-                UI::Text("Connected! ^-^");
+                if (GetIsOnMap()){
+                    RenderMapHUD();
+                }else{
+                    RenderMainMenu();
+                }
             }
         }
         UI::End();
@@ -19,8 +23,43 @@ void RenderInterface(){
     }
 }
 
+void RenderConnectMenu(){
+    if (!socket.NotDisconnected()){
+        if (UI::ButtonColored(Icons::Circle + "Connect to Client!", 0.33)){
+            StartConnection();
+        }
+    }else{
+        UI::Text("Connecting...");
+    }
+}
+
 void RenderMainMenu(){
-    if (UI::ButtonColored(Icons::Circle + "Connect to Client!", 0.33)){
-        startnew(CoroutineFunc(socket.OpenSocket));
+    for(int i = 0; i < data.world.length; i++){
+        if (IsSeriesUnlocked(i)){
+            if (data.world[i].initialized){
+                for (int j = 0; j < data.world[i].maps.length; j++){
+                    if (UI::ButtonColored("Load Series "+i+" Map "+j, 0.8)){
+                        LoadMap(i,j);
+                    }
+                }
+            }else{
+                UI::Text("Series " + i + " Loading...");
+            }
+        }
+    }
+}
+
+void RenderMapHUD(){
+    string loadedMapUid = GetLoadedMapUid();
+    UI::Text("BWoah ur in a map!!!");
+    if (loadedMap != null && loadedMap.mapInfo.MapUid == loadedMapUid){
+
+    }else{
+        //they went and loaded another map :O 
+    }
+
+    if (UI::ButtonColored(Icons::Circle + "Back to Map Selection!", 0.66)){
+        ClosePauseMenu();
+        BackToMainMenu();
     }
 }

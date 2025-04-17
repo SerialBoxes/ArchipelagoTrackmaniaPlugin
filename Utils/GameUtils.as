@@ -51,6 +51,22 @@ int GetCurrentMapTime()
     }
 }
 
+bool GetIsOnMap(){
+    auto app = cast<CTrackMania>(GetApp());
+    auto map = app.RootMap;
+    return map !is null;
+}
+
+string GetLoadedMapUid(){
+    auto app = cast<CTrackMania>(GetApp());
+    auto map = app.RootMap;
+    if (map !is null){
+        map.MapInfo.MapUid;
+    }else{
+        return "";
+    }
+}
+
 string CurrentTitlePack(){
     CTrackMania@ app = cast<CTrackMania>(GetApp());
     if (app.LoadedManiaTitle is null) return "";
@@ -72,4 +88,9 @@ void ClosePauseMenu(){
         }
     }
 #endif
+}
+
+void BackToMainMenu(){
+    CTrackMania@ app = cast<CTrackMania>(GetApp());
+    app.BackToMainMenu();
 }

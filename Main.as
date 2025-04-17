@@ -6,6 +6,7 @@ bool isOpen = true;
 
 SaveData@ data = null;
 WebSocket socket = WebSocket("localhost",22422);
+MapState@ loadedMap = null;
 
 void RenderMenu(){
     if (UI::MenuItem(Icons::Cloud + " \\$z" + "Archipelago","", isOpen)) {
@@ -13,7 +14,7 @@ void RenderMenu(){
     }
 }
 
-int lastRaceTime = -1;
+//int lastRaceTime = -1;
 void Update(float dt){
     // if (clientConnected && !isNextMapLoading && gameState !is null && gameState.GetMap() !is null){
     //     int raceTime = GetCurrentMapTime();
@@ -26,8 +27,35 @@ void Update(float dt){
     //     }
     //     lastRaceTime = raceTime;
     // }
-    string msg;
-    while ((msg = socket.PopMessage()) != ""){
-        ProcessMessage(msg);
+}
+
+void StartConnection(){
+    startnew(CoroutineFunc(socket.OpenSocket));
+    startnew(CoroutineFunc(ConnectedLoop));
+}
+
+int lastRaceTime = -1;
+void ConnectedLoop(){
+    while (socket.NotDisconnected()){
+        //read in any messages in the socket
+        string msg;
+        while ((msg = socket.PopMessage()) != ""){
+            ProcessMessage(msg);
+        }
+
+        //check for personal best times
+        if (loadedMap != null && loadedMap.mapInfo.MapUid == loadedMapUid){
+            //were on *da map*
+            int raceTime = GetCurrentMapTime();
+            if (raceTime > 0 && raceTime != lastRaceTime){
+                UpdatePBOnLoadedMap(raceTime);
+            }
+            lastRaceTime = raceTime;
+        }
+
+        yield();
     }
+    //we disconnected, reset state
+    //write data to disk if not null
+    @data = null;
 }

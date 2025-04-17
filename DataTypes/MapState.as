@@ -3,7 +3,11 @@ class MapState{
     int personalBestTime;
     MapInfo@ mapInfo;
 
-    MapState(MapInfo@ mapInfo, float targetTimeSetting){
+    //derived data
+    int seriesIndex;
+    int mapIndex;
+
+    MapState(MapInfo@ mapInfo, float targetTimeSetting, int seriesIndex, int mapIndex){
         @this.mapInfo = mapInfo;
         this.targetTime = CalculateTargetTime(targetTimeSetting);
     }

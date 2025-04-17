@@ -18,17 +18,16 @@ class WebSocket{
     void OpenSocket(){
         print("Opening Socket");
         startnew(CoroutineFunc(Connect));
-
     }
 
     private void Connect(){
+        state = WebsocketConnectionState::Handshaking;
         bool result = socket.Connect(ip,port);
         if (result){
             while (!socket.IsReady()){
                 yield();
             }
             print ("Sending Handshake");
-            state = WebsocketConnectionState::Handshaking;
             SocketHandshake();
             startnew(CoroutineFunc(ReadLoop));
         }else{

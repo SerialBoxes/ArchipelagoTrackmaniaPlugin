@@ -9,25 +9,24 @@ void ProcessMessage(const string &in message){
 
             //angelscript switch statements only work with numbers ;-;
             if (cmd == "RoomInfo"){
+                ProcessRoomInfo(cmdJson);
                 SendConnectionPacket();
             }else if (cmd == "Connected"){
-
+                ProcessConnected(cmdJson);
             }else if (cmd == "PrintJSON"){
-                //idk if we do anything with this in game
+                ProcessPrintJson(cmdJson);
             }else if (cmd == "ConnectionRefused"){
-                //this shouldn't ever really happen
-                Log::Error("Server Refused Connection, closing...",true);
-                socket.Close();
+                ProcessConnectionRefused(cmdJson);
             }else if (cmd == "RecievedItems"){
-
+                ProcessRecievedItems(cmdJson);
             }else if (cmd == "LocationInfo"){
-
+                ProcessLocationInfo(cmdJson);
             }else if (cmd == "Bounced"){
-            
+                ProcessBounced(cmdJson);
             }else if (cmd == "Retrieved"){
-            
+                ProcessRetrieved(cmdJson);
             }else if (cmd == "RoomUpdate"){
-            
+                ProcessRoomUpdate(cmdJson);
             }
         }
     }catch{
@@ -35,16 +34,70 @@ void ProcessMessage(const string &in message){
     }
 }
 
+string seedNameCache = "";
+void ProcessRoomInfo (Json::Value@ json){
+    seedNameCache = json["seed_name"];
+}
+
+void ProcessConnected (Json::Value@ json){
+    int teamI = json["team"];
+    int playerI = json["slot"];
+
+    bool existingSaveGame = false;// LookForExistingSave(seedNameCache, teamI, playerI);
+
+    if (existingSaveGame){
+        //load and use existing save
+    } else{
+        YamlSettings@ settings = YamlSettings();
+        settings.targetTimeSetting = json["slot_data"]["TargetTimeSetting"];
+        settings.seriesCount = json["slot_data"]["SeriesNumber"];
+        settings.mapsInSeries = json["slot_data"]["SeriesMapNumber"];
+        settings.medalRequirement = json["slot_data"]["MedalRequirement"];
+        settings.tags = json["slot_data"]["MapTags"];
+        settings.tagsInclusive = json["slot_data"]["MapTagsInclusive"];
+        settings.etags = json["slot_data"]["MapETags"];
+
+        @data = SaveData(seedNameCache, teamI, playerI, settings);
+
+        seedNameCache = "";
+    }
+    
+}
+
+void ProcessPrintJson (Json::Value@ json){
+    //¯\_(ツ)_/¯
+}
+
+void ProcessConnectionRefused (Json::Value@ json){
+    seedNameCache = "";
+    Log::Error("Server Refused Connection, closing...",true);
+    socket.Close();
+}
+
+void ProcessRecievedItems (Json::Value@ json){
+    
+}
+
+void ProcessLocationInfo (Json::Value@ json){
+    
+}
+
+void ProcessBounced (Json::Value@ json){
+    
+}
+
+void ProcessRetrieved (Json::Value@ json){
+    
+}
+
+void ProcessRoomUpdate (Json::Value@ json){
+    
+}
 
 void SendConnectionPacket(){
-    
-    // if (FullyConnected)
-    // 	return;
-    
-    // ConnectingToAP = true;
-    // CurrentMessage.Length = 0;
-    
+
     // This Connect packet isn't actually sent to the server itself, but is used by the AP client
+    // We only need the first two fields, but if we don't have the rest the packet gets rejected as invalid 
     Json::Value@ json = Json::Object();
     json["cmd"] = "Connect";
     json["game"] = "Trackmania";
