@@ -1,11 +1,10 @@
 bool isQueryingForMap = false;
 bool isNextMapLoading = false;
-MX::MapInfo@ nextMap;
 
 void LoadMap(MapInfo@ map){
     // try {
         isNextMapLoading = true;
-        if (nextMap is null ){
+        if (map is null ){
             warn ("Error, tried to load null map");
             isNextMapLoading = false;
             return;
@@ -35,7 +34,7 @@ void LoadMap(MapInfo@ map){
     // }
 }
 
-MapInfo@ QueryForRandomMap(string URL){
+MapInfo@ QueryForRandomMap(const string &in URL){
     isQueryingForMap = true;
     //string URL = BuildRandomMapQueryURL();
     print(URL);
@@ -45,14 +44,14 @@ MapInfo@ QueryForRandomMap(string URL){
     } catch {
         Log::Error("ManiaExchange API returned an error, retrying...");
         sleep(3000);
-        return QueryForRandomMap();
+        return QueryForRandomMap(URL);
     }
     Log::Trace("Next Map: "+Json::Write(res));
-    MX::MapInfo@ map = MX::MapInfo(res);
+    MapInfo@ map = MapInfo(res);
     if (map is null){
         Log::Warn("Map is null, retrying...");
         sleep(1000);
-        return QueryForRandomMap();
+        return QueryForRandomMap(URL);
     }
 
     isQueryingForMap = false;

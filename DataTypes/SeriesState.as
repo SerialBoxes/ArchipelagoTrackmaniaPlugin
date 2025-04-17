@@ -13,7 +13,7 @@ class SeriesState{
 
     void Initialize(float targetTimeSetting){
         for(int i = 0; i < mapCount; i++){
-            string URL = BuildRandomMapQueryURL()
+            string URL = BuildRandomMapQueryURL();
             MapInfo@ mapRoll = QueryForRandomMap(URL);
             maps[i] = MapState(mapRoll, targetTimeSetting);
         }

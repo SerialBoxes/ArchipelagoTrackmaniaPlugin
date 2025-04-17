@@ -1,6 +1,7 @@
 class SaveData{
     string seedName;//unique id for the generation
-    string playerName;//slot name for player
+    int playerIndex;
+    int playerTeamIndex;
 
     //yaml settings
     int seriesCount;

@@ -1,3 +1,41 @@
+void ProcessMessage(const string &in message){
+    print("Recieved Message: "+message);
+    try {
+        Json::Value@ json = Json::Parse(message);
+        for (int i = 0; i < json.Length; i++){
+            Json::Value@ cmdJson = json[0];
+            string cmd = cmdJson["cmd"];
+            print("CMD: " + cmd);
+
+            //angelscript switch statements only work with numbers ;-;
+            if (cmd == "RoomInfo"){
+                SendConnectionPacket();
+            }else if (cmd == "Connected"){
+
+            }else if (cmd == "PrintJSON"){
+                //idk if we do anything with this in game
+            }else if (cmd == "ConnectionRefused"){
+                //this shouldn't ever really happen
+                Log::Error("Server Refused Connection, closing...",true);
+                socket.Close();
+            }else if (cmd == "RecievedItems"){
+
+            }else if (cmd == "LocationInfo"){
+
+            }else if (cmd == "Bounced"){
+            
+            }else if (cmd == "Retrieved"){
+            
+            }else if (cmd == "RoomUpdate"){
+            
+            }
+        }
+    }catch{
+        error("Message not valid JSON, dropping...");
+    }
+}
+
+
 void SendConnectionPacket(){
     
     // if (FullyConnected)
@@ -29,11 +67,10 @@ void SendConnectionPacket(){
     tags.Add("AP");
     json["tags"] = tags;
 
-    Json::Value@ parent = Json::Array();//commands expected as an array for some reason
+    Json::Value@ parent = Json::Array();//commands expected as an array
     parent.Add(json);
     
     string message  = Json::Write(parent);
-    print(message);
 
-    SendWebsocketPacket(message);
+    socket.SendWebsocketPacket(message);
 }
