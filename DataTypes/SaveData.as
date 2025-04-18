@@ -26,7 +26,11 @@ class SaveData{
             world[i] = new SeriesState(settings.medalRequirement * i, settings.mapCount, settings.targetTimeSetting,i);
         }
 
+        //initialize the first two series
         world[0].Initialize(settings);
+        if (world.length > 1){
+            world[1].Initialize(settings);
+        }
 
     }
 

@@ -2,6 +2,7 @@ class MapState{
     int targetTime;
     int personalBestTime;
     MapInfo@ mapInfo;
+    array<ItemTypes> itemTypes;//type of item in each of the 5 slots for a map. might not all be populated.
 
     //derived data
     int seriesIndex;
@@ -10,6 +11,7 @@ class MapState{
     MapState(MapInfo@ mapInfo, float targetTimeSetting, int seriesIndex, int mapIndex){
         @this.mapInfo = mapInfo;
         this.targetTime = CalculateTargetTime(targetTimeSetting);
+        itemTypes = new array<ItemTypes>(5);
     }
 
     private int CalculateTargetTime(float targetTimeSetting){
@@ -20,4 +22,10 @@ class MapState{
         float interpolatedTime = Math::Lerp(medalTimes[medalI],medalTimes[nextMedalI], factor);
         return int(Math::Round(interpolatedTime));
     }
+
+    void SetItemType(ItemTypes itemType, CheckTypes checkLocation){
+        itemTypes[int(checkLocation)] = itemType;
+    }
+
+    
 }

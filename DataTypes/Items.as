@@ -1,12 +1,23 @@
 class Items{
-    int bronzeMedals;
-    int silverMedals;
-    int goldMedals;
-    int authorMedals;
-    int skips;
-    int filler;
+    int bronzeMedals; //24000
+    int silverMedals; //24001
+    int goldMedals;   //24002
+    int authorMedals; //24003
+    int skips;        //24004
+    int filler;       //24005
 
-    int lastProcessedIndex;
+    int itemsRecieved;
+
+    Items(){
+        bronzeMedals = 0;
+        silverMedals = 0;
+        goldMedals = 0;
+        authorMedals = 0;
+        skips = 0;
+        filler = 0;
+
+        itemsRecieved = 0;
+    }
 
     int GetProgressionMedalCount(float targetTimeSetting){
         if (targetTimeSetting < 1f){

@@ -48,3 +48,20 @@ const array<string> MAP_FIELDS_ARRAY = {
 };
 const string MAP_FIELDS = string::Join(MAP_FIELDS_ARRAY, ",");
 
+enum CheckTypes{
+	Bronze = 0,
+	Silver = 1,
+	Gold = 2,
+	Author = 3,
+	Target = 4
+}
+
+enum ItemTypes{
+	BronzeMedal = 24000,
+	SilverMedal = 24001,
+	GoldMedal = 24002,
+	Author = 24003,
+	Skip = 24004,
+	Filler = 24005,
+	Archipelago = 99999
+}
