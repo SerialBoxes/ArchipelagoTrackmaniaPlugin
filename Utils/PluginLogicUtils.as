@@ -12,9 +12,9 @@ bool IsSeriesUnlocked(int seriesIndex){
 
 int GetLatestUnlockedSeries(){
     int index = 0;
-    int medalCount = GetProgressionMedalCount();
-    for (int i = 0; i < world.length; i++){
-        if (world[0].medalRequirement <= medalCount){
+    int medalCount = data.items.GetProgressionMedalCount(data.settings.targetTimeSetting);
+    for (uint i = 0; i < data.world.Length; i++){
+        if (data.world[i].medalRequirement <= medalCount){
             index = i;
         }else{
             break;
@@ -30,7 +30,7 @@ void UpdatePBOnLoadedMap(int raceTime){
 
 void DetermineLocationChecks(MapState@ map){
     //resending old checks doesn't cause any issues and makes this easier, so lets do it!
-    if (oldPb == 0) oldPb = 30000000;
+
     array<int> checks = array<int>(5);
     int index = 0;
     if (map.personalBestTime < map.mapInfo.BronzeTime){
@@ -53,6 +53,7 @@ void DetermineLocationChecks(MapState@ map){
         checks[index] = GetLocationID(map.seriesIndex, map.mapIndex, CheckTypes::Target);
         index++;
     }
+    SendLocationChecks(checks, index);
 }
 
 int GetLocationID(int seriesI, int mapI, CheckTypes checkType){
@@ -69,40 +70,48 @@ vec3 GetMapIndicesFromId(int id){
     return vec3(series, map, check);
 }
 
-void AddItem(int itemID, itemCount = 1){
+void AddItem (int itemID, int itemCount = 1) {
     switch (itemID){
-        case 24000:
+        case ItemTypes::BronzeMedal:
             data.items.bronzeMedals += itemCount;
             break;
-        case 24001:
+        case ItemTypes::SilverMedal:
             data.items.silverMedals += itemCount;
             break;
-        case 24002:
+        case ItemTypes::GoldMedal:
             data.items.goldMedals += itemCount;
             break;
-        case 24003:
+        case ItemTypes::AuthorMedal:
             data.items.authorMedals += itemCount;
             break;
-        case 24004:
+        case ItemTypes::Skip:
             data.items.skips += itemCount;
             break;
-        case 24005:
+        case ItemTypes::Filler:
             data.items.filler += itemCount;
             break;
-
-        data.items.itemsRecieved += itemCount;
-        
-        InitializeUpcomingSeries();
+        default:
+            return;
     }
+    data.items.itemsRecieved += itemCount;
+
+    if (!data.hasGoal && data.items.GetProgressionMedalCount(data.settings.targetTimeSetting) >= data.settings.medalRequirement * data.settings.seriesCount){
+        SendStatusUpdate(ClientStatus::CLIENT_GOAL);
+        data.hasGoal = true;
+    }
+    
+    if (data.world[0].initialized)
+        InitializeUpcomingSeries();
 }
 
 void InitializeUpcomingSeries(){
-    int currentSeries = GetLatestUnlockedSeries();
-    if (!world[currentSeries].initialized){
+    uint currentSeries = GetLatestUnlockedSeries();
+    print ("Last Unlocked Series: " + currentSeries);
+    if (!data.world[currentSeries].initialized && !data.world[currentSeries].initializing){
         //this should never happen monkaS!!!!
-        world[currentSeries].Initialize();
+        startnew(CoroutineFunc(data.world[currentSeries].Initialize));
     }
-    if (currentSeries+1 < world.Length && !world[currentSeries+1].initialized){
-        world[currentSeries+1].Initialize();
+    if (currentSeries+1 < data.world.Length && !data.world[currentSeries+1].initialized && !data.world[currentSeries+1].initializing){
+        startnew(CoroutineFunc(data.world[currentSeries+1].Initialize));
     }
 }

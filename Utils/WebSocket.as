@@ -17,11 +17,11 @@ class WebSocket{
 
     void OpenSocket(){
         print("Opening Socket");
+        state = WebsocketConnectionState::Handshaking;
         startnew(CoroutineFunc(Connect));
     }
 
     private void Connect(){
-        state = WebsocketConnectionState::Handshaking;
         bool result = socket.Connect(ip,port);
         if (result){
             while (!socket.IsReady()){
@@ -112,7 +112,8 @@ class WebSocket{
             //tada problem gone
         }else{
             string msg = socket.ReadRaw(length);
-            PushMessage(msg);
+            //PushMessage(msg);
+            ProcessMessage(msg);
         }
 
     }
@@ -193,7 +194,8 @@ class WebSocket{
             buffer.Write(uint8(128+message.Length));
         }else if (message.Length <= 65535){
             buffer.Write(uint8(128+126));
-            buffer.Write(uint16(message.Length));
+            buffer.Write(uint8((message.Length >> 8) & 255));
+            buffer.Write(uint8(message.Length & 255));
             length += 2;
         }else{//larsing
             buffer.Write(uint8(128+127));
@@ -209,6 +211,7 @@ class WebSocket{
             buffer.Write(masked);
         }
         buffer.Seek(0);
+        print("Sending Message: " + message);
         socket.Write(buffer, length);
     }
 }

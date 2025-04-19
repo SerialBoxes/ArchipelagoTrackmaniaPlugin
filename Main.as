@@ -30,7 +30,7 @@ void Update(float dt){
 }
 
 void StartConnection(){
-    startnew(CoroutineFunc(socket.OpenSocket));
+    socket.OpenSocket();
     startnew(CoroutineFunc(ConnectedLoop));
 }
 
@@ -38,17 +38,20 @@ int lastRaceTime = -1;
 void ConnectedLoop(){
     while (socket.NotDisconnected()){
         //read in any messages in the socket
-        string msg;
-        while ((msg = socket.PopMessage()) != ""){
-            ProcessMessage(msg);
-        }
+        // string msg;
+        // while ((msg = socket.PopMessage()) != ""){
+        //     ProcessMessage(msg);
+        // }
 
         //check for personal best times
-        if (loadedMap != null && loadedMap.mapInfo.MapUid == loadedMapUid){
+        if (loadedMap !is null && loadedMap.mapInfo.MapUid == GetLoadedMapUid()){
             //were on *da map*
             int raceTime = GetCurrentMapTime();
             if (raceTime > 0 && raceTime != lastRaceTime){
-                UpdatePBOnLoadedMap(raceTime);
+                if (raceTime < loadedMap.personalBestTime){
+                    print("pb!!!");
+                    UpdatePBOnLoadedMap(raceTime);
+                }
             }
             lastRaceTime = raceTime;
         }

@@ -60,8 +60,16 @@ enum ItemTypes{
 	BronzeMedal = 24000,
 	SilverMedal = 24001,
 	GoldMedal = 24002,
-	Author = 24003,
+	AuthorMedal = 24003,
 	Skip = 24004,
 	Filler = 24005,
 	Archipelago = 99999
+}
+
+enum ClientStatus{
+    CLIENT_UNKNOWN = 0,
+    CLIENT_CONNECTED = 5,
+    CLIENT_READY = 10,
+    CLIENT_PLAYING = 20,
+    CLIENT_GOAL = 30,
 }

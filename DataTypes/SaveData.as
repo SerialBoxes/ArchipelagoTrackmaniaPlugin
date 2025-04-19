@@ -12,6 +12,8 @@ class SaveData{
     //world
     array<SeriesState@> world;
 
+    bool hasGoal;
+
     //create new save data from scratch
     SaveData(const string &in seedName, int teamIndex, int playerTeamIndex, YamlSettings@ settings){
         this.seedName = seedName;
@@ -21,17 +23,12 @@ class SaveData{
 
         @this.items = Items();
 
+        hasGoal = false;
+
         world = array<SeriesState@>(settings.seriesCount);
-        for (int i = 0; i < world.length; i++){
-            world[i] = new SeriesState(settings.medalRequirement * i, settings.mapCount, settings.targetTimeSetting,i);
+        for (uint i = 0; i < world.Length; i++){
+            @world[i] = SeriesState(settings.medalRequirement * i, settings.mapsInSeries, settings.targetTimeSetting,i);
         }
-
-        //initialize the first two series
-        world[0].Initialize(settings);
-        if (world.length > 1){
-            world[1].Initialize(settings);
-        }
-
     }
 
     MapState@ GetMap(int seriesIndex, int mapIndex){

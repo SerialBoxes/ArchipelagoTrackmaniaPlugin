@@ -61,7 +61,7 @@ string GetLoadedMapUid(){
     auto app = cast<CTrackMania>(GetApp());
     auto map = app.RootMap;
     if (map !is null){
-        map.MapInfo.MapUid;
+        return map.MapInfo.MapUid;
     }else{
         return "";
     }

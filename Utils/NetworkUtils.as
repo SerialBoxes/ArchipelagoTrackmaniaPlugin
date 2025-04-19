@@ -1,9 +1,14 @@
 void ProcessMessage(const string &in message){
     print("Recieved Message: "+message);
-    try {
+    //try {
         Json::Value@ json = Json::Parse(message);
-        for (int i = 0; i < json.Length; i++){
-            Json::Value@ cmdJson = json[0];
+        for (uint i = 0; i < json.Length; i++){
+            Json::Value@ cmdJson;
+            if (json.GetType() == Json::Type::Array){
+                @cmdJson = json[0];
+            }else{
+                @cmdJson = json;
+            }
             string cmd = cmdJson["cmd"];
             print("CMD: " + cmd);
 
@@ -17,8 +22,8 @@ void ProcessMessage(const string &in message){
                 ProcessPrintJson(cmdJson);
             }else if (cmd == "ConnectionRefused"){
                 ProcessConnectionRefused(cmdJson);
-            }else if (cmd == "RecievedItems"){
-                ProcessRecievedItems(cmdJson);
+            }else if (cmd == "ReceivedItems"){
+                ProcessReceivedItems(cmdJson);
             }else if (cmd == "LocationInfo"){
                 ProcessLocationInfo(cmdJson);
             }else if (cmd == "Bounced"){
@@ -29,9 +34,9 @@ void ProcessMessage(const string &in message){
                 ProcessRoomUpdate(cmdJson);
             }
         }
-    }catch{
-        error("Message not valid JSON, dropping...");
-    }
+    // }catch{
+    //     error("Message not valid JSON, dropping...");
+    // }
 }
 
 string seedNameCache = "";
@@ -53,14 +58,17 @@ void ProcessConnected (Json::Value@ json){
         settings.seriesCount = json["slot_data"]["SeriesNumber"];
         settings.mapsInSeries = json["slot_data"]["SeriesMapNumber"];
         settings.medalRequirement = json["slot_data"]["MedalRequirement"];
-        settings.tags = json["slot_data"]["MapTags"];
-        settings.tagsInclusive = json["slot_data"]["MapTagsInclusive"];
-        settings.etags = json["slot_data"]["MapETags"];
+        settings.tags = {string(json["slot_data"]["MapTags"])};
+        settings.tagsInclusive = json["slot_data"]["MapTagsInclusive"] == 0 ? false : true;
+        settings.etags = {string(json["slot_data"]["MapETags"])};
 
         @data = SaveData(seedNameCache, teamI, playerI, settings);
 
         seedNameCache = "";
+
+        startnew(CoroutineFunc(data.world[0].Initialize));
     }
+    SendStatusUpdate(ClientStatus::CLIENT_PLAYING);
     
 }
 
@@ -74,27 +82,27 @@ void ProcessConnectionRefused (Json::Value@ json){
     socket.Close();
 }
 
-void ProcessRecievedItems (Json::Value@ json){
+void ProcessReceivedItems (Json::Value@ json){
     int serverIndex = json["index"];
     Json::Value@ items = json["items"];
     if (serverIndex == 0 && data.items.itemsRecieved > 0){
         //resync!!
         @data.items = Items();
     }
-    for (int i = 0; i < items.Length; i++){
+    for (uint i = 0; i < items.Length; i++){
         AddItem(items[i]["item"]);
     }
 }
 
 void ProcessLocationInfo (Json::Value@ json){
-    for (int i = 0; i < json["locations"].Length; i++){
+    for (uint i = 0; i < json["locations"].Length; i++){
         Json::Value@ netItem = json["locations"][i];
         vec3 location = GetMapIndicesFromId(netItem["location"]);
         ItemTypes itemType = ItemTypes::Archipelago;
         if (netItem["player"] == data.playerTeamIndex) {//not totally sure this works
             itemType = ItemTypes(int(netItem["item"]));
         }
-        world[location.x].maps[location.y].SetItemType(itemType, CheckTypes(int(location.z)));
+        data.world[int(location.x)].maps[int(location.y)].SetItemType(itemType, CheckTypes(int(location.z)));
     }
 }
 
@@ -141,10 +149,11 @@ void SendConnectionPacket(){
     parent.Add(json);
     
     string message  = Json::Write(parent);
+    print(message);
     socket.SendWebsocketPacket(message);
 }
 
-SendLocationChecks(array<int> locationIds, int count){
+void SendLocationChecks(array<int> locationIds, int count){
     Json::Value@ json = Json::Object();
     json["cmd"] = "LocationChecks";
     Json::Value@ locationList = Json::Array();
@@ -160,7 +169,7 @@ SendLocationChecks(array<int> locationIds, int count){
     socket.SendWebsocketPacket(message);
 }
 
-SendLocationScouts(array<int> locationIds, int count){
+void SendLocationScouts(array<int> locationIds, int count){
     Json::Value@ json = Json::Object();
     json["cmd"] = "LocationScouts";
     Json::Value@ locationList = Json::Array();
@@ -173,6 +182,16 @@ SendLocationScouts(array<int> locationIds, int count){
     Json::Value@ parent = Json::Array();
     parent.Add(json);
 
+    string message  = Json::Write(parent);
+    socket.SendWebsocketPacket(message);
+}
+
+void SendStatusUpdate(ClientStatus status){
+    Json::Value@ json = Json::Object();
+    json["cmd"] = "StatusUpdate";
+    json["status"] = int(status);
+    Json::Value@ parent = Json::Array();
+    parent.Add(json);
     string message  = Json::Write(parent);
     socket.SendWebsocketPacket(message);
 }

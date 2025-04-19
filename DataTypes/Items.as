@@ -20,11 +20,11 @@ class Items{
     }
 
     int GetProgressionMedalCount(float targetTimeSetting){
-        if (targetTimeSetting < 1f){
+        if (targetTimeSetting < 1.0){
             return bronzeMedals;
-        }else if (targetTimeSetting < 2f){
+        }else if (targetTimeSetting < 2.0){
             return silverMedals;
-        }else if (targetTimeSetting < 3f){
+        }else if (targetTimeSetting < 3.0){
             return goldMedals;
         }else {
             return authorMedals;

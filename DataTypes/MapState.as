@@ -11,7 +11,11 @@ class MapState{
     MapState(MapInfo@ mapInfo, float targetTimeSetting, int seriesIndex, int mapIndex){
         @this.mapInfo = mapInfo;
         this.targetTime = CalculateTargetTime(targetTimeSetting);
-        itemTypes = new array<ItemTypes>(5);
+        personalBestTime = 30000000;
+        itemTypes = array<ItemTypes>(5);
+
+        this.seriesIndex = seriesIndex;
+        this.mapIndex = mapIndex;
     }
 
     private int CalculateTargetTime(float targetTimeSetting){
