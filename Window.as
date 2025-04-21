@@ -47,7 +47,11 @@ void RenderMainMenu(){
                         UI::TableNextColumn();
 
                         UI::BeginGroup();
-                        if (UI::ButtonColored("Map "+(j+1), 0.8)){
+                        float color = 0.8;
+                        MapState@ map = data.world[i].maps[j];
+                        if (map.personalBestTime < map.targetTime) color = 0.33;
+                        if (map.skipped) color = 0.5;
+                        if (UI::ButtonColored("Map "+(j+1), color)){
                             LoadMap(i,j);
                         }
                         UI::EndGroup();
@@ -81,6 +85,14 @@ void RenderMapHUD(){
 
     RenderInventory();
 
+    if (loadedMap.skipped){
+        UI::Text("Map Skipped!");
+    }else if (data.items.skips > data.items.skipsUsed){
+        if(UI::ButtonColored("Skip Map", 0.05)){
+            SkipMap(loadedMap);
+        }
+    }
+
     if (UI::ButtonColored(Icons::Circle + "Back to Map Selection!", 0.66)){
         ClosePauseMenu();
         BackToMainMenu();
@@ -88,7 +100,7 @@ void RenderMapHUD(){
 }
 
 void RenderInventory(){
-    UI::Text("Progression Medals: " + data.items.GetProgressionMedalCount(data.settings.targetTimeSetting));
+    UI::Text("Progression Medals: " + data.items.GetProgressionMedalCount(data.settings.targetTimeSetting) + "/"+(data.settings.medalRequirement*data.settings.seriesCount));
     UI::Text("Inventory: ");
     UI::BeginTable("Inventory", 5);
     UI::TableNextColumn();
@@ -100,7 +112,7 @@ void RenderInventory(){
     UI::TableNextColumn();
     UI::Text("Authors: " + data.items.authorMedals);
     UI::TableNextColumn();
-    UI::Text("Skips: " + data.items.skips);
+    UI::Text("Skips: " + (data.items.skips-data.items.skipsUsed)+"/"+data.items.skips);
     UI::EndTable();
     
 }

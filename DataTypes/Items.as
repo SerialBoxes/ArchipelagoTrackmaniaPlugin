@@ -6,6 +6,8 @@ class Items{
     int skips;        //24004
     int filler;       //24005
 
+    int skipsUsed;
+
     int itemsRecieved;
 
     Items(){
@@ -15,6 +17,8 @@ class Items{
         authorMedals = 0;
         skips = 0;
         filler = 0;
+
+        skipsUsed = 0;
 
         itemsRecieved = 0;
     }

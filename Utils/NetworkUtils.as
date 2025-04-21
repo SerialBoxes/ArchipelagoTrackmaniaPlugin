@@ -32,6 +32,8 @@ void ProcessMessage(const string &in message){
                 ProcessRetrieved(cmdJson);
             }else if (cmd == "RoomUpdate"){
                 ProcessRoomUpdate(cmdJson);
+            }else if (cmd == "Reroll"){
+                ProcessReroll(cmdJson);
             }
         }
     // }catch{
@@ -58,9 +60,9 @@ void ProcessConnected (Json::Value@ json){
         settings.seriesCount = json["slot_data"]["SeriesNumber"];
         settings.mapsInSeries = json["slot_data"]["SeriesMapNumber"];
         settings.medalRequirement = json["slot_data"]["MedalRequirement"];
-        settings.tags = {string(json["slot_data"]["MapTags"])};
+        settings.tags = GetMapTags(json["slot_data"]["MapTags"]);
         settings.tagsInclusive = json["slot_data"]["MapTagsInclusive"] == 0 ? false : true;
-        settings.etags = {string(json["slot_data"]["MapETags"])};
+        settings.etags = GetMapTags(json["slot_data"]["MapETags"]);;
 
         @data = SaveData(seedNameCache, teamI, playerI, settings);
 
@@ -117,6 +119,12 @@ void ProcessRetrieved (Json::Value@ json){
 void ProcessRoomUpdate (Json::Value@ json){
     //update checked locations
     //we dont actually keep track of whats checked tho so :P
+}
+
+void ProcessReroll (Json::Value@ json){
+    if (loadedMap !is null && loadedMap.mapInfo.MapUid == GetLoadedMapUid()){
+        RerollMap(loadedMap.seriesIndex, loadedMap.mapIndex);   
+    }
 }
 
 void SendConnectionPacket(){

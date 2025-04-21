@@ -3,6 +3,7 @@ class MapState{
     int personalBestTime;
     MapInfo@ mapInfo;
     array<ItemTypes> itemTypes;//type of item in each of the 5 slots for a map. might not all be populated.
+    bool skipped;//all our checks sent even if the pb isnt less than targetTime
 
     //derived data
     int seriesIndex;
@@ -13,6 +14,7 @@ class MapState{
         this.targetTime = CalculateTargetTime(targetTimeSetting);
         personalBestTime = 30000000;
         itemTypes = array<ItemTypes>(5);
+        bool skipped = false;
 
         this.seriesIndex = seriesIndex;
         this.mapIndex = mapIndex;
@@ -29,6 +31,12 @@ class MapState{
 
     void SetItemType(ItemTypes itemType, CheckTypes checkLocation){
         itemTypes[int(checkLocation)] = itemType;
+    }
+
+    void ReplaceMap(MapInfo@ mapInfo, float targetTimeSetting){
+        this.mapInfo = mapInfo;
+        this.targetTime = CalculateTargetTime(targetTimeSetting);
+        personalBestTime = 30000000;
     }
 
     

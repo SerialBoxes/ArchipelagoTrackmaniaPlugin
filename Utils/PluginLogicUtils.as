@@ -115,3 +115,47 @@ void InitializeUpcomingSeries(){
         startnew(CoroutineFunc(data.world[currentSeries+1].Initialize));
     }
 }
+
+void RerollMap(int seriesI, int mapI){
+    MapState@ mapState = data.world[seriesI].maps[mapI];
+    string URL = BuildRandomMapQueryURL();
+    MapInfo@ mapRoll = QueryForRandomMap(URL);
+    mapState.ReplaceMap(mapRoll, data.settings.targetTimeSetting);
+    if (loadedMap.seriesIndex == seriesI && loadedMap.mapIndex == mapI){
+        LoadMap(mapRoll);
+    }
+}
+
+void SkipMap(MapState@ map){
+    map.skipped = true;
+    data.items.skipsUsed += 1;
+
+    array<int> checks = array<int>(5);
+    int index = 0;
+    checks[index] = GetLocationID(map.seriesIndex, map.mapIndex, CheckTypes::Bronze);
+    index++;
+    if (data.settings.targetTimeSetting >= 1.0){
+        checks[index] = GetLocationID(map.seriesIndex, map.mapIndex, CheckTypes::Silver);
+        index++;
+    }
+    if (data.settings.targetTimeSetting >= 2.0){
+        checks[index] = GetLocationID(map.seriesIndex, map.mapIndex, CheckTypes::Gold);
+        index++;
+    }
+    if (data.settings.targetTimeSetting >= 3.0){
+        checks[index] = GetLocationID(map.seriesIndex, map.mapIndex, CheckTypes::Author);
+        index++;
+    }
+    checks[index] = GetLocationID(map.seriesIndex, map.mapIndex, CheckTypes::Target);
+    index++;
+    SendLocationChecks(checks, index);
+}
+
+array<string> GetMapTags(const string &in bla){
+    Json::Value@ json = Json::Parse(bla);
+    array<string> tags = array<string>(json.Length);
+    for (uint i = 0; i < json.Length; i++){
+        tags[i] = json[i];
+    }
+    return tags;
+}
