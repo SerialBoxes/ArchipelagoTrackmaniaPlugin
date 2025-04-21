@@ -1,6 +1,24 @@
 bool isQueryingForMap = false;
 bool isNextMapLoading = false;
 
+void LoadMap(int seriesIndex, int mapIndex){
+    @loadedMap = data.GetMap(seriesIndex, mapIndex);
+    if (loadedMap !is null){
+        LoadMap(loadedMap.mapInfo);
+    }
+}
+
+void RerollMap(int seriesI, int mapI){
+    Log::Log("Rerolling Series " + seriesI + " Map " + mapI + ", one second please!", true);
+    MapState@ mapState = data.world[seriesI].maps[mapI];
+    string URL = BuildRandomMapQueryURL();
+    MapInfo@ mapRoll = QueryForRandomMap(URL);
+    mapState.ReplaceMap(mapRoll);
+    if (loadedMap.seriesIndex == seriesI && loadedMap.mapIndex == mapI){
+        LoadMap(mapRoll);
+    }
+}
+
 void LoadMap(MapInfo@ map){
     // try {
         isNextMapLoading = true;
@@ -63,7 +81,18 @@ string BuildRandomMapQueryURL(){
     params.Set("fields", MAP_FIELDS); //fields that the API will return in the json object
     params.Set("random", "1");
     params.Set("count", "1");
-    params.Set("etag", ETAGS); //excluded tmx tags. These are Kacky, Royal, and Arena.
+    
+    string tags = BuildTagIdString(data.settings.tags);
+    if (tags.Length > 0){
+        params.Set("tag", tags);
+        params.Set("taginclusive", data.settings.tagsInclusive?"true":"false");
+    }
+
+    string etags = BuildTagIdString(data.settings.etags);
+    if (etags.Length > 0){
+        params.Set("etag", etags);
+    }
+
     params.Set("authortimemax", tostring(MAX_AUTHOR_TIME)); //5 minute author time max
     //params.Set("vehicle", "1,2,3,4");//this locks out character pilot and black market maps
     params.Set("maptype", SUPPORTED_MAP_TYPE);
@@ -91,4 +120,25 @@ string DictToApiParams(dictionary params) {
     }
 
     return urlParams;
+}
+
+string BuildTagIdString(array<string> tagList){
+    string result = "";
+#if TMNEXT
+    dict tags = TMX_TAGS;
+#elif MP4
+    dict tags = TM2_TAGS;
+#endif
+
+    for (int i = 0; i < tags.Length; i++){
+        if (tags.exists(tagList[i])){
+            result += "" + tagList[i] + ",";
+        }
+    }
+
+    if (result.get_Length() > 0){
+        result = result.SubStr(0, result.get_Length() - 1);
+    }
+
+    return result;
 }

@@ -39,7 +39,7 @@ void RenderMainMenu(){
     }else{
         UI::BeginChild("Serieses", vec2(450,200));
         for (uint i = 0; i < data.world.Length; i++){
-            if (IsSeriesUnlocked(i)){
+            if (data.world[i].IsUnlocked()){
                 if (data.world[i].initialized){
                     UI::Text ("Series " + (i+1));
                     UI::BeginTable("Series_Table_"+i, 5);
@@ -89,7 +89,7 @@ void RenderMapHUD(){
         UI::Text("Map Skipped!");
     }else if (data.items.skips > data.items.skipsUsed){
         if(UI::ButtonColored("Skip Map", 0.05)){
-            SkipMap(loadedMap);
+            loadedMap.Skip();
         }
     }
 
@@ -100,7 +100,7 @@ void RenderMapHUD(){
 }
 
 void RenderInventory(){
-    UI::Text("Progression Medals: " + data.items.GetProgressionMedalCount(data.settings.targetTimeSetting) + "/"+(data.settings.medalRequirement*data.settings.seriesCount));
+    UI::Text("Progression Medals: " + data.items.GetProgressionMedalCount() + "/"+(data.settings.medalRequirement*data.settings.seriesCount));
     UI::Text("Inventory: ");
     UI::BeginTable("Inventory", 5);
     UI::TableNextColumn();

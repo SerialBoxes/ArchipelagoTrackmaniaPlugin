@@ -1,32 +1,15 @@
-void Main() {
-    
-}
 
 bool isOpen = true;
 
 SaveData@ data = null;
 WebSocket socket = WebSocket("localhost",22422);
 MapState@ loadedMap = null;
+SaveFile@ saveFile = null;
 
 void RenderMenu(){
     if (UI::MenuItem(Icons::Cloud + " \\$z" + "Archipelago","", isOpen)) {
         isOpen = !isOpen;
     }
-}
-
-//int lastRaceTime = -1;
-void Update(float dt){
-    // if (clientConnected && !isNextMapLoading && gameState !is null && gameState.GetMap() !is null){
-    //     int raceTime = GetCurrentMapTime();
-    //     if (raceTime > 0 && raceTime != lastRaceTime){
-    //         gameState.UpdateChecksForNewTime(raceTime);
-    //         if (raceTime < gameState.targetTime){
-    //             gameState.completedTracks += 1;
-    //             startnew(LoadNextMap);
-    //         }
-    //     }
-    //     lastRaceTime = raceTime;
-    // }
 }
 
 void StartConnection(){
@@ -49,8 +32,9 @@ void ConnectedLoop(){
             int raceTime = GetCurrentMapTime();
             if (raceTime > 0 && raceTime != lastRaceTime){
                 if (raceTime < loadedMap.personalBestTime){
-                    print("pb!!!");
-                    UpdatePBOnLoadedMap(raceTime);
+                    loadedMap.UpdatePB(raceTime);
+                    //autosave as well!
+                    saveFile.Save(data);
                 }
             }
             lastRaceTime = raceTime;
@@ -58,7 +42,11 @@ void ConnectedLoop(){
 
         yield();
     }
-    //we disconnected, reset state
-    //write data to disk if not null
+
+    if (saveFile !is null && data !is null){
+        saveFile.Save(data);
+    }
     @data = null;
+    @loadedMap = null;
+    @saveFile = null;
 }
