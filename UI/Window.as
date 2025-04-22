@@ -73,6 +73,10 @@ void RenderMainMenu(){
         UI::EndChild();
 
         RenderInventory();
+
+        if (UI::ButtonColored("Disconnect", 0.0)){
+            socket.Close();
+        }
     }
         
 }

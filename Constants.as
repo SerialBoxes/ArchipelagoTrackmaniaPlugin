@@ -81,6 +81,15 @@ enum ClientStatus{
 //RegisterScriptDictionary(asIScriptEngine*)
 //https://www.angelcode.com/angelscript/sdk/docs/manual/doc_datatypes_dictionary.html
 
+dictionary TMX_DIFFICULTIES = {	
+  {"Beginner",0},	
+  {"Intermediate",1},	
+  {"Advanced",2},	
+  {"Expert",3},	
+  {"Lunatic",4},
+  {"Impossible",5}
+}
+
 
 //this is hard coded on the website anyways so may as well hard code it here and save loading time
 //TMX:

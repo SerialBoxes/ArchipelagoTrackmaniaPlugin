@@ -13,6 +13,7 @@ class SaveData{
     array<SeriesState@> world;
 
     bool hasGoal;
+    bool tagsOverride;
 
     //create new save data from scratch
     SaveData(const string &in seedName, int teamIndex, int playerTeamIndex, YamlSettings@ settings){
@@ -24,6 +25,7 @@ class SaveData{
         @this.items = Items(this);
 
         hasGoal = false;
+        tagsOverride = false;
 
         world = array<SeriesState@>(settings.seriesCount);
         for (uint i = 0; i < world.Length; i++){
@@ -41,6 +43,7 @@ class SaveData{
             @this.settings = YamlSettings(json["settings"]);
             @this.items = Items(this, json["items"]);
             hasGoal = json["hasGoal"] == "true" ? true : false;
+            tagsOverride = json["tagsOverride"] == "true" ? true : false;
 
             const Json::Value@ worldObjects = json["world"];
             world = array<SeriesState@>(worldObjects.Length); //check me toooooo
@@ -100,6 +103,7 @@ class SaveData{
         Json::Value json = Json::Object();
         try {
             json["hasGoal"] = hasGoal? "true" : "false";
+            json["tagsOverride"] = tagsOverride? "true" : "false";
             json["settings"] = settings.ToJson();
             json["items"] = items.ToJson();
             Json::Value seriesArray = Json::Array();

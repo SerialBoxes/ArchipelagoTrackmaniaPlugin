@@ -54,6 +54,10 @@ class SeriesState{
             if (maps[i] !is null) continue;
             string URL = BuildRandomMapQueryURL();
             MapInfo@ mapRoll = QueryForRandomMap(URL);
+            if (mapRoll is null){
+                Log::Error("Unable to roll Series "+seriesIndex+" Map "+i, true);
+                break;
+            }
             @maps[i] = MapState(saveData, mapRoll, seriesIndex, i);
 
             int bronzeId = MapIndicesToId(seriesIndex, i, CheckTypes::Bronze);

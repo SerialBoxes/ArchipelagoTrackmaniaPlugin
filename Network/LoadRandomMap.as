@@ -4,7 +4,7 @@ bool isNextMapLoading = false;
 void LoadMap(int seriesIndex, int mapIndex){
     @loadedMap = data.GetMap(seriesIndex, mapIndex);
     if (loadedMap !is null){
-        LoadMap(loadedMap.mapInfo);
+        startnew(LoadMap,loadedMap.mapInfo);
     }
 }
 
@@ -13,14 +13,18 @@ void RerollMap(int seriesI, int mapI){
     MapState@ mapState = data.world[seriesI].maps[mapI];
     string URL = BuildRandomMapQueryURL();
     MapInfo@ mapRoll = QueryForRandomMap(URL);
-    mapState.ReplaceMap(mapRoll);
-    if (loadedMap.seriesIndex == seriesI && loadedMap.mapIndex == mapI){
-        LoadMap(mapRoll);
+    if (mapRoll !is null){
+        mapState.ReplaceMap(mapRoll);
+        if (loadedMap.seriesIndex == seriesI && loadedMap.mapIndex == mapI){
+            startnew(LoadMap,mapRoll);
+        }
+    }else{
+        Log::Error("Unable to reroll map", true);
     }
 }
 
 void LoadMap(MapInfo@ map){
-    // try {
+    try {
         isNextMapLoading = true;
         if (map is null ){
             warn ("Error, tried to load null map");
@@ -42,30 +46,43 @@ void LoadMap(MapInfo@ map){
         app.ManiaTitleControlScriptAPI.PlayMap("https://"+ MX_URL+"/mapgbx/"+map.MapId, "", "");
 
         isNextMapLoading = false;
-    // }
-    // catch
-    // {
-    //     Log::Warn("Error while loading map ");
-    //     Log::Error("TMX API is not responding, it might be down.", true);
-    //     //APIDown = true;
-    //     isNextMapLoading = false;
-    // }
+    }
+    catch
+    {
+        Log::Warn("Error while loading map ");
+        Log::Error("TMX API is not responding, it might be down...", true);
+        isNextMapLoading = false;
+    }
 }
 
 MapInfo@ QueryForRandomMap(const string &in URL){
+    if (!socket.NotDisconnected()) return null;
     isQueryingForMap = true;
-    //string URL = BuildRandomMapQueryURL();
     print(URL);
-    Json::Value res;
+    Json::Value@ res;
+    Json::Value@ mapJson;
     try {
-        res = API::GetAsync(URL)["Results"][0];
+        res = API::GetAsync(URL)["Results"];
     } catch {
-        Log::Error("ManiaExchange API returned an error, retrying...");
-        sleep(3000);
+        Log::Error("TMX API returned an error, it might be down...", true);
+        //sleep(3000);
+        //return QueryForRandomMap(URL);
+        return null;
+    }
+    if (res.GetType() != Json::Type::Array || res.Length == 0){
+        Log::Error("Tag Settings match no maps, disabling inclusive and using default etags", true);
+        data.settings.tagsOverride = true;
+        sleep(1000);
+        return QueryForRandomMap(BuildRandomMapQueryURL());
+    }
+    @mapJson = res[0];
+    Log::Trace("Next Map: "+Json::Write(mapJson));
+    if (!IsMapValid(mapJson)){
+        Log::Warn("Map violates rules, retrying...");
+        sleep(1000);
         return QueryForRandomMap(URL);
     }
-    Log::Trace("Next Map: "+Json::Write(res));
-    MapInfo@ map = MapInfo(res);
+    MapInfo@ map = MapInfo(mapJson);
     if (map is null){
         Log::Warn("Map is null, retrying...");
         sleep(1000);
@@ -74,6 +91,13 @@ MapInfo@ QueryForRandomMap(const string &in URL){
 
     isQueryingForMap = false;
     return map;
+}
+
+bool IsMapValid(Json::Value@ mapJson){
+    //automatically throw out pre-patch ice and bob
+    //sorry, I want this to be accessible to new players and I don't want to make them deal with pre-patch
+    //nando plz add physics versioning
+    return true;
 }
 
 string BuildRandomMapQueryURL(){
@@ -85,12 +109,21 @@ string BuildRandomMapQueryURL(){
     string tags = BuildTagIdString(data.settings.tags);
     if (tags.Length > 0){
         params.Set("tag", tags);
-        params.Set("taginclusive", data.settings.tagsInclusive?"true":"false");
+        params.Set("taginclusive", (data.settings.tagsInclusive && !data.settings.tagsOverride)?"true":"false");
     }
 
     string etags = BuildTagIdString(data.settings.etags);
     if (etags.Length > 0){
-        params.Set("etag", etags);
+        if (!data.settings.tagsOverride){
+            params.Set("etag", etags);
+        }else{
+            params.Set("etag", ETAGS);
+        }
+    }
+
+    string difficulties = BuildDifficultyString(data.settings.difficulties);
+    if (difficulties.Length > 0 && !data.settings.tagsOverride){
+        params.Set("difficulty", difficulties);
     }
 
     params.Set("authortimemax", tostring(MAX_AUTHOR_TIME)); //5 minute author time max
@@ -132,7 +165,23 @@ string BuildTagIdString(array<string> tagList){
 
     for (uint i = 0; i < tagList.Length; i++){
         if (tags.Exists(tagList[i])){
-            result += "" + tagList[i] + ",";
+            result += "" + tags[tagList[i]] + ",";
+        }
+    }
+
+    if (result.Length > 0){
+        result = result.SubStr(0, result.Length - 1);
+    }
+
+    return result;
+}
+
+string BuildDifficultyString(array<string> difficultyList){
+    string result = "";
+
+    for (uint i = 0; i < difficultyList.Length; i++){
+        if (TMX_DIFFICULTIES.Exists(difficultyList[i])){
+            result += "" + TMX_DIFFICULTIES[difficultyList[i]] + ",";
         }
     }
 

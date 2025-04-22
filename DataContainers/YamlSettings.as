@@ -6,6 +6,7 @@ class YamlSettings{
     array<string> tags;
     bool tagsInclusive;
     array<string> etags;
+    array<string> difficulties;
 
     YamlSettings(){
         targetTimeSetting = 0.0;
@@ -15,6 +16,7 @@ class YamlSettings{
         tags = array<string>(0);
         tagsInclusive = false;
         etags = array<string>(0);
+        difficulties = array<string>(0);
     }
 
     YamlSettings(const Json::Value &in json){
@@ -35,6 +37,12 @@ class YamlSettings{
             etags = array<string>(etagObjects.Length); //check me toooooo
             for (uint i = 0; i < etagObjects.Length; i++) {
                 etags[i] = etagObjects[i];
+            }
+
+            const Json::Value@ difficultyObjects = json["difficulties"];
+            difficulties = array<string>(difficultyObjects.Length); //check me toooooo
+            for (uint i = 0; i < difficultyObjects.Length; i++) {
+                difficulties[i] = difficultyObjects[i];
             }
         } catch {
             Log::Warn("Error parsing YamlSettings"+ "\nReason: " + getExceptionInfo(), true);
@@ -59,6 +67,11 @@ class YamlSettings{
                 etagsArray.Add(etags[i]);
             }
             json["etags"] = etagsArray;
+            Json::Value@ difficultiesArray = Json::Array();
+            for (uint i = 0; i < difficulties.Length; i++) {
+                difficultiesArray.Add(difficulties[i]);
+            }
+            json["difficulties"] = difficultiesArray;
         } catch {
             Log::Error("Error converting Yaml Settings to JSON", true);
         }

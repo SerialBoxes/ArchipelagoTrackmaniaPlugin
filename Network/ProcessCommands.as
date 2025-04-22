@@ -65,9 +65,10 @@ void ProcessConnected (Json::Value@ json){
         settings.seriesCount = json["slot_data"]["SeriesNumber"];
         settings.mapsInSeries = json["slot_data"]["SeriesMapNumber"];
         settings.medalRequirement = json["slot_data"]["MedalRequirement"];
-        settings.tags = FormatMapTags(json["slot_data"]["MapTags"]);
+        settings.tags = FormatStringList(json["slot_data"]["MapTags"]);
         settings.tagsInclusive = json["slot_data"]["MapTagsInclusive"] == 0 ? false : true;
-        settings.etags = FormatMapTags(json["slot_data"]["MapETags"]);;
+        settings.etags = FormatStringList(json["slot_data"]["MapETags"]);;
+        settings.difficulties = FormatStringList(json["slot_data"]["Difficulties"]);;
 
         @data = SaveData(seedNameCache, teamI, playerI, settings);
 
@@ -93,7 +94,7 @@ void ProcessReceivedItems (Json::Value@ json){
     Json::Value@ items = json["items"];
     if (serverIndex == 0 && data.items.itemsRecieved > 0){
         //resync!!
-        @data.items = Items(data);
+        data.items.Reset();
     }
     for (uint i = 0; i < items.Length; i++){
         data.items.AddItem(items[i]["item"]);
@@ -139,11 +140,11 @@ void ProcessReroll (Json::Value@ json){
     }
 }
 
-array<string> FormatMapTags(const string &in bla){
+array<string> FormatStringList(const string &in bla){
     Json::Value@ json = Json::Parse(bla);
-    array<string> tags = array<string>(json.Length);
+    array<string> arr = array<string>(json.Length);
     for (uint i = 0; i < json.Length; i++){
-        tags[i] = json[i];
+        arr[i] = json[i];
     }
-    return tags;
+    return arr;
 }

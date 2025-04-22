@@ -82,6 +82,16 @@ class Items{
         itemsRecieved += itemCount;
     }
 
+    void Reset(){
+        bronzeMedals = 0;
+        silverMedals = 0;
+        goldMedals = 0;
+        authorMedals = 0;
+        skips = 0;
+        filler = 0;
+        itemsRecieved = 0;
+    }
+
     Json::Value ToJson(){
         Json::Value json = Json::Object();
         try {
