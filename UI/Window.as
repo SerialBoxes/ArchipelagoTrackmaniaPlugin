@@ -8,15 +8,23 @@ void RenderInterface(){
         UI::SetNextWindowSize(600, 400, UI::Cond::FirstUseEver);
         int flags = UI::WindowFlags::NoCollapse | UI::WindowFlags::NoDocking | UI::WindowFlags::NoResize | UI::WindowFlags::AlwaysAutoResize;
         if (UI::Begin("Archipelago", isOpen, flags)){
-            if (!socket.IsConnected()){
-                RenderConnectMenu();
-            }else{
-                if (GetIsOnMap()){
-                    RenderMapHUD();
+#if TMNEXT
+            if (Permissions::PlayLocalMap()){
+#endif
+                if (!socket.IsConnected()){
+                    RenderConnectMenu();
                 }else{
-                    RenderMainMenu();
+                    if (GetIsOnMap()){
+                        RenderMapHUD();
+                    }else{
+                        RenderMainMenu();
+                    }
                 }
+#if TMNEXT
+            }else{
+                UI::Text("Club Access is required to use this plugin, sorry!");
             }
+#endif
         }
         UI::End();
         UI::PopStyleVar(4);

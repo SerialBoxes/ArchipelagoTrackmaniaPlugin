@@ -125,19 +125,19 @@ string DictToApiParams(dictionary params) {
 string BuildTagIdString(array<string> tagList){
     string result = "";
 #if TMNEXT
-    dict tags = TMX_TAGS;
+    dictionary tags = TMX_TAGS;
 #elif MP4
-    dict tags = TM2_TAGS;
+    dictionary tags = TM2_TAGS;
 #endif
 
-    for (int i = 0; i < tags.Length; i++){
-        if (tags.exists(tagList[i])){
+    for (uint i = 0; i < tagList.Length; i++){
+        if (tags.Exists(tagList[i])){
             result += "" + tagList[i] + ",";
         }
     }
 
-    if (result.get_Length() > 0){
-        result = result.SubStr(0, result.get_Length() - 1);
+    if (result.Length > 0){
+        result = result.SubStr(0, result.Length - 1);
     }
 
     return result;

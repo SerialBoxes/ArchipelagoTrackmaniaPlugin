@@ -38,7 +38,7 @@ namespace Log
         }
     }
 
-    void LoadingMapNotification(MX::MapInfo@ map)
+    void LoadingMapNotification(MapInfo@ map)
     {
         Log("Loading map: " + map.Name + " (" + map.MapId + ")");
         vec4 color = UI::HSV(0.25, 1, 0.7);

@@ -35,12 +35,12 @@ class SeriesState{
             maps = array<MapState@>(mapCount);
             const Json::Value@ mapObjects = json["maps"];
             for (uint i = 0; i < mapObjects.Length; i++) {//check the length on this plz thx
-                maps[i] = MapState(saveData, mapObjects[i],i);
+                @maps[i] = MapState(saveData, mapObjects[i],seriesIndex,i);
             }
-            initialized = mapObjects.Length == mapCount;//here too
+            initialized = int(mapObjects.Length) == mapCount;//here too
             initializing = false;
         } catch {
-            Log::Warn("Error parsing SeriesState for Series "+seriesI+"\nReason: " + getExceptionInfo(), true);
+            Log::Warn("Error parsing SeriesState for Series "+seriesIndex+"\nReason: " + getExceptionInfo(), true);
         }
     }
 
@@ -66,7 +66,7 @@ class SeriesState{
             ids[index] = MapIndicesToId(seriesIndex, i, CheckTypes::Target);
             index++;
         }
-        SendLocationScouts(ids, index);
+        //SendLocationScouts(ids, index);
         initialized = true;
         initializing = false;
     }
@@ -80,13 +80,15 @@ class SeriesState{
         try {
             json["medalRequirement"] = medalRequirement;
             json["mapCount"] = mapCount;
-            Json::Value mapArray = Json::Array();
+            Json::Value@ mapArray = Json::Array();
             for (uint i = 0; i < maps.Length; i++) {
-                mapArray.Add(maps[i].ToJson());
+                if (maps[i] !is null){
+                    mapArray.Add(maps[i].ToJson());
+                }
             }
             json["maps"] = mapArray;
         } catch {
-            Log::Error("Error converting SeriesState to JSON for Series "+seriesI, true);
+            Log::Error("Error converting SeriesState to JSON for Series "+seriesIndex, true);
         }
         return json;
     }

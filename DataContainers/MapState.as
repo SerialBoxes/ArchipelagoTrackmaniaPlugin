@@ -31,16 +31,16 @@ class MapState{
 
             targetTime = json["targetTime"];
             personalBestTime = json["personalBestTime"];
-            mapInfo = MapInfo(json["mapInfo"]);
+            @mapInfo = MapInfo(json["mapInfo"]);
             skipped = json["skipped"] == "true" ? true : false;
 
             itemTypes = array<ItemTypes>(5);
             const Json::Value@ itemObjects = json["itemTypes"];
             for (uint i = 0; i < itemTypes.Length; i++) {
-                itemTypes[i] = itemObjects[i];
+                itemTypes[i] = ItemTypes(int(itemObjects[i]));
             }
         } catch {
-            Log::Warn("Error parsing MapState for Series "+seriesI+" Map "+mapI+ "\nReason: " + getExceptionInfo(), true);
+            Log::Warn("Error parsing MapState for Series "+seriesIndex+" Map "+mapIndex+ "\nReason: " + getExceptionInfo(), true);
         }
     }
 
@@ -113,13 +113,13 @@ class MapState{
             json["personalBestTime"] = personalBestTime;
             json["mapInfo"] = mapInfo.ToJson();
             json["skipped"] = skipped? "true" : "false";
-            Json::Value itemArray = Json::Array();
+            Json::Value@ itemArray = Json::Array();
             for (uint i = 0; i < itemTypes.Length; i++) {
                 itemArray.Add(int(itemTypes[i]));
             }
             json["itemTypes"] = itemArray;
         } catch {
-            Log::Error("Error converting MapState to JSON for Series "+seriesI+" Map "+mapI, true);
+            Log::Error("Error converting MapState to JSON for Series "+seriesIndex+" Map "+mapIndex, true);
         }
         return json;
     }

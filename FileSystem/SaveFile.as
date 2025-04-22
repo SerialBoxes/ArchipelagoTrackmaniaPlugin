@@ -3,14 +3,14 @@ class SaveFile{
     private string folder_location = IO::FromStorageFolder("saves");
     protected string file_location = folder_location;
 
-    Files(const string &in seed, int teamI, int playerI) {
+    SaveFile(const string &in seed, int teamI, int playerI) {
         if (!IO::FolderExists(folder_location))
             IO::CreateFolder(folder_location);
 
         file_location = folder_location + "/" + seed + "_" + teamI + "_" + playerI + ".json";
     }
 
-    void Exists(){
+    bool Exists(){
         return IO::FileExists(file_location);
     }
 

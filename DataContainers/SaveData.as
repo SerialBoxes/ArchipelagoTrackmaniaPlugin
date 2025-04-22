@@ -21,7 +21,7 @@ class SaveData{
         this.playerTeamIndex = playerTeamIndex;
         @this.settings = settings;
 
-        @this.items = Items();
+        @this.items = Items(this);
 
         hasGoal = false;
 
@@ -45,20 +45,10 @@ class SaveData{
             const Json::Value@ worldObjects = json["world"];
             world = array<SeriesState@>(worldObjects.Length); //check me toooooo
             for (uint i = 0; i < worldObjects.Length; i++) {
-                world[i] = SeriesState(this, worldObjects[i], i);
+                @world[i] = SeriesState(this, worldObjects[i], i);
             }
         } catch {
             Log::Warn("Error parsing save data" "\nReason: " + getExceptionInfo(), true);
-        }
-        @this.settings = settings;
-
-        @this.items = Items();
-
-        hasGoal = false;
-
-        world = array<SeriesState@>(settings.seriesCount);
-        for (uint i = 0; i < world.Length; i++){
-            @world[i] = SeriesState(this, settings.medalRequirement * i, settings.mapsInSeries,i);
         }
     }
 
@@ -94,11 +84,16 @@ class SaveData{
         }
 
         //initialize everything up to and including the next series
-        for (int i = 0; (i <= currentSeries && i < world.length); i++){
+        for (uint i = 0; (i <= currentSeries && i < world.Length); i++){
             if (!world[i].initialized && !world[i].initializing){
                 startnew(CoroutineFunc(world[i].Initialize));
             }
         }
+
+        //this feels so wrong to put here
+        //i dont want to put it here
+        //but i cant figure out the syntax to make a callback in angelscript to save me bones so ;-;
+        saveFile.Save();
     }
 
     Json::Value ToJson(){
@@ -113,7 +108,7 @@ class SaveData{
             }
             json["world"] = seriesArray;
         } catch {
-            Log::Error("Error converting MapState to JSON", true);
+            Log::Error("Error converting Save Data to JSON", true);
         }
         return json;
     }

@@ -54,11 +54,11 @@ class YamlSettings{
                 tagsArray.Add(tags[i]);
             }
             json["tags"] = tagsArray;
-            Json::Value etagsArray = Json::Array();
+            Json::Value@ etagsArray = Json::Array();
             for (uint i = 0; i < etags.Length; i++) {
                 etagsArray.Add(etags[i]);
             }
-            json["tags"] = etagsArray;
+            json["etags"] = etagsArray;
         } catch {
             Log::Error("Error converting Yaml Settings to JSON", true);
         }

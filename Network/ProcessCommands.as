@@ -1,21 +1,23 @@
 void ProcessMessage(const string &in message){
     print("Recieved Message: "+message);
     Json::Value@ cmdJson;
+    string cmd = "";
     try {
         Json::Value@ json = Json::Parse(message);
-        Json::Value@ cmdJson;
         if (json.GetType() == Json::Type::Array){
             @cmdJson = json[0];
         }else{
             @cmdJson = json;
         }
+
+        cmd = cmdJson["cmd"];
     }catch{
         //if we get a mesage with invalid json, its probably a disconnect request from the server
-        error("Message not valid JSON. Disconnecting...");
+        print("Message not valid JSON. Disconnecting...");
         socket.Close();
+        return;
     }
 
-    string cmd = cmdJson["cmd"];
     print("CMD: " + cmd);
 
     //angelscript switch statements only work with numbers ;-;
@@ -55,8 +57,8 @@ void ProcessConnected (Json::Value@ json){
     @saveFile = SaveFile(seedNameCache, teamI, playerI);
 
     if (saveFile.Exists()){
-        Json::Value@ json = saveFile.Load();
-        @data = SaveData(seedNameCache, teamI, playerI, json);
+        Json::Value@ saveJson = saveFile.Load();
+        @data = SaveData(seedNameCache, teamI, playerI, saveJson);
     } else{
         YamlSettings@ settings = YamlSettings();
         settings.targetTimeSetting = json["slot_data"]["TargetTimeSetting"];
