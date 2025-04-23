@@ -82,7 +82,7 @@ MapInfo@ QueryForRandomMap(const string &in URL){
     @mapJson = res[0];
     Log::Trace("Next Map: "+Json::Write(mapJson));
     if (!IsMapValid(mapJson)){
-        Log::Warn("Map violates rules, retrying...");
+        Log::Warn("Map contains pre-patch physics, retrying...");
         sleep(1000);
         return QueryForRandomMap(URL);
     }
@@ -98,17 +98,27 @@ MapInfo@ QueryForRandomMap(const string &in URL){
 }
 
 bool IsMapValid(Json::Value@ mapJson){
-    //automatically throw out pre-patch ice and bob
+    //automatically throw out pre-patch ice and bob and water
     //sorry, I want this to be accessible to new players and I don't want to make them deal with pre-patch
     //nando plz add physics versioning
 
-    //Major Physics Patches:
-    //source : https://github.com/st-AR-gazer/tm_Patch-Warner/blob/main/src/Main.as
-    //Water  : 2022-09-30_10_13
-    //Wood   : 2023-11-15_11_56 //this patch did get an ad-hoc in-game fix. just for this one tho -_-
-    //Bumper : 2020-12-22_13_18
-    //Ice1   : 2022-05-19_15_03
-    //Ice2   : 2023-04-28_17_34 //Ice generally got faster with this update, and the changes were somewhat minor, so I'm using the first patch as the cutoff
+    string exebuild = mapJson["Exebuild"];
+    for(uint i = 0; i < PHYSICS_PATCHES.Length; i++){
+        if (exebuild <= PHYSICS_PATCHES[i].exebuild){
+            for (uint j = 0; j < PHYSICS_PATCHES[i].tags.Length; j++){
+                for (uint k = 0; k < mapJson["Tags"].Length; k++){
+                    int physicsTagId = TAGS_MAP[PHYSICS_PATCHES[i].tags[j]];
+                    int mapTagId = int(mapJson["Tags"][k]["TagId"]);
+                    if (physicsTagId == mapTagId){
+                        //is pre-patch!!
+                        return false;
+                    }
+                }
+            }
+        }
+    }
+
+
     return true;
 }
 
@@ -169,15 +179,10 @@ string DictToApiParams(dictionary params) {
 
 string BuildTagIdString(array<string> tagList){
     string result = "";
-#if TMNEXT
-    dictionary tags = TMX_TAGS;
-#elif MP4
-    dictionary tags = TM2_TAGS;
-#endif
 
     for (uint i = 0; i < tagList.Length; i++){
-        if (tags.Exists(tagList[i])){
-            result += "" + int(tags[tagList[i]]) + ",";
+        if (TAGS_MAP.Exists(tagList[i])){
+            result += "" + int(TAGS_MAP[tagList[i]]) + ",";
         }
     }
 
