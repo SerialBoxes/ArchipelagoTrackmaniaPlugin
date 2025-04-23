@@ -50,12 +50,14 @@ class SeriesState{
         int checksPerMap = int(Math::Round(saveData.settings.targetTimeSetting - Math::Floor(saveData.settings.targetTimeSetting))) + 2;
         array<int> ids = array<int>(checksPerMap * mapCount);
         int index = 0;
+        bool loadError = false;
         for(int i = 0; i < mapCount; i++){
             if (maps[i] !is null) continue;
             string URL = BuildRandomMapQueryURL();
             MapInfo@ mapRoll = QueryForRandomMap(URL);
             if (mapRoll is null){
                 Log::Error("Unable to roll Series "+seriesIndex+" Map "+i, true);
+                loadError = true;
                 break;
             }
             @maps[i] = MapState(saveData, mapRoll, seriesIndex, i);
@@ -71,7 +73,7 @@ class SeriesState{
             index++;
         }
         //SendLocationScouts(ids, index);
-        initialized = true;
+        initialized = !loadError;
         initializing = false;
     }
 

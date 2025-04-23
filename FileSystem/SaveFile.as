@@ -24,6 +24,8 @@ class SaveFile{
     }
 
     void Save(SaveData@ saveData){
+        Json::Value@ json = saveData.ToJson();
+        json["version"] = 1.0;//just in case I break stuff later and need to convert saves
         Json::ToFile(file_location, saveData.ToJson());
     }
 }

@@ -59,6 +59,17 @@ void ProcessConnected (Json::Value@ json){
     if (saveFile.Exists()){
         Json::Value@ saveJson = saveFile.Load();
         @data = SaveData(seedNameCache, teamI, playerI, saveJson);
+        //resend all map checks we have, just in case some got missed!
+        array<int> allChecks = array<int>(data.settings.seriesCount*data.settings.mapsInSeries*MAX_MAP_LOCATIONS);
+        int total = 0;
+        for (uint i = 0; i < data.world.Length; i++){
+            for (uint j = 0; j < data.world[i].maps.Length; j++){
+                if (data.world[i].maps[j] !is null){
+                    total += data.world[i].maps[j].AddLocationChecks(allChecks);
+                }
+            }
+        }
+        SendLocationChecks(allChecks, total);
     } else{
         YamlSettings@ settings = YamlSettings();
         settings.targetTimeSetting = json["slot_data"]["TargetTimeSetting"];

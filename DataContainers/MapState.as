@@ -82,6 +82,11 @@ class MapState{
         //resending old checks doesn't cause any issues and makes this easier, so lets do it!
 
         array<int> checks = array<int>(5);
+        int index = AddLocationChecks(checks);
+        SendLocationChecks(checks, index);
+    }
+
+    int AddLocationChecks(array<int> &checks){
         int index = 0;
         if (personalBestTime < mapInfo.BronzeTime || skipped){
             checks[index] = MapIndicesToId(seriesIndex, mapIndex, CheckTypes::Bronze);
@@ -103,7 +108,7 @@ class MapState{
             checks[index] = MapIndicesToId(seriesIndex, mapIndex, CheckTypes::Target);
             index++;
         }
-        SendLocationChecks(checks, index);
+        return index;
     }
 
     Json::Value ToJson(){

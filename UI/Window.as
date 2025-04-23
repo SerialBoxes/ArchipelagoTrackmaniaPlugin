@@ -60,13 +60,20 @@ void RenderMainMenu(){
                         if (map.personalBestTime < map.targetTime) color = 0.33;
                         if (map.skipped) color = 0.5;
                         if (UI::ButtonColored("Map "+(j+1), color)){
-                            LoadMap(i,j);
+                            LoadMapByIndex(i,j);
                         }
                         UI::EndGroup();
                     }
                     UI::EndTable();
                 }else{
-                    UI::Text("Series " + (i+1) + " Loading...");
+                    if (data.world[i].initializing){
+                        UI::Text("Series " + (i+1) + " Loading...");
+                    }else{
+                        UI::Text("Series " + (i+1) + " maps have not been rolled.");
+                        if (UI::ButtonColored("Force Load Series "+(i+1), 0)){
+                            startnew(CoroutineFunc(data.world[i].Initialize));
+                        }
+                    }
                 }
             }
         }
@@ -99,7 +106,7 @@ void RenderMapHUD(){
 
     if (loadedMap.skipped){
         UI::Text("Map Skipped!");
-    }else if (data.items.skips > data.items.skipsUsed){
+    }else if (data.items.skips > data.items.skipsUsed && loadedMap.personalBestTime > loadedMap.targetTime){
         if(UI::ButtonColored("Skip Map", 0.05)){
             loadedMap.Skip();
         }

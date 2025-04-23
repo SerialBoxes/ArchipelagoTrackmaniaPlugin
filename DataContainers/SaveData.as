@@ -96,7 +96,7 @@ class SaveData{
         //this feels so wrong to put here
         //i dont want to put it here
         //but i cant figure out the syntax to make a callback in angelscript to save me bones so ;-;
-        saveFile.Save();
+        saveFile.Save(this);
     }
 
     Json::Value ToJson(){

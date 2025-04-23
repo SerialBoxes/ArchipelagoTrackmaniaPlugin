@@ -88,7 +88,7 @@ dictionary TMX_DIFFICULTIES = {
   {"Expert",3},	
   {"Lunatic",4},
   {"Impossible",5}
-}
+};
 
 
 //this is hard coded on the website anyways so may as well hard code it here and save loading time

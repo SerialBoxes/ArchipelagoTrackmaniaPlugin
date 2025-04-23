@@ -1,10 +1,11 @@
 bool isQueryingForMap = false;
 bool isNextMapLoading = false;
 
-void LoadMap(int seriesIndex, int mapIndex){
+void LoadMapByIndex(int seriesIndex, int mapIndex){
     @loadedMap = data.GetMap(seriesIndex, mapIndex);
     if (loadedMap !is null){
-        startnew(LoadMap,loadedMap.mapInfo);
+        MapInfo@ info = loadedMap.mapInfo;
+        startnew(LoadMap,info);
     }
 }
 
@@ -23,9 +24,12 @@ void RerollMap(int seriesI, int mapI){
     }
 }
 
-void LoadMap(MapInfo@ map){
+void LoadMap(ref@ mapData){
     try {
         isNextMapLoading = true;
+
+        MapInfo@ map = cast<MapInfo@>(mapData);
+
         if (map is null ){
             warn ("Error, tried to load null map");
             isNextMapLoading = false;
@@ -62,7 +66,7 @@ MapInfo@ QueryForRandomMap(const string &in URL){
     Json::Value@ res;
     Json::Value@ mapJson;
     try {
-        res = API::GetAsync(URL)["Results"];
+        @res = API::GetAsync(URL)["Results"];
     } catch {
         Log::Error("TMX API returned an error, it might be down...", true);
         //sleep(3000);
@@ -71,7 +75,7 @@ MapInfo@ QueryForRandomMap(const string &in URL){
     }
     if (res.GetType() != Json::Type::Array || res.Length == 0){
         Log::Error("Tag Settings match no maps, disabling inclusive and using default etags", true);
-        data.settings.tagsOverride = true;
+        data.tagsOverride = true;
         sleep(1000);
         return QueryForRandomMap(BuildRandomMapQueryURL());
     }
@@ -97,6 +101,14 @@ bool IsMapValid(Json::Value@ mapJson){
     //automatically throw out pre-patch ice and bob
     //sorry, I want this to be accessible to new players and I don't want to make them deal with pre-patch
     //nando plz add physics versioning
+
+    //Major Physics Patches:
+    //source : https://github.com/st-AR-gazer/tm_Patch-Warner/blob/main/src/Main.as
+    //Water  : 2022-09-30_10_13
+    //Wood   : 2023-11-15_11_56 //this patch did get an ad-hoc in-game fix. just for this one tho -_-
+    //Bumper : 2020-12-22_13_18
+    //Ice1   : 2022-05-19_15_03
+    //Ice2   : 2023-04-28_17_34 //Ice generally got faster with this update, and the changes were somewhat minor, so I'm using the first patch as the cutoff
     return true;
 }
 
@@ -109,12 +121,12 @@ string BuildRandomMapQueryURL(){
     string tags = BuildTagIdString(data.settings.tags);
     if (tags.Length > 0){
         params.Set("tag", tags);
-        params.Set("taginclusive", (data.settings.tagsInclusive && !data.settings.tagsOverride)?"true":"false");
+        params.Set("taginclusive", (data.settings.tagsInclusive && !data.tagsOverride)?"true":"false");
     }
 
     string etags = BuildTagIdString(data.settings.etags);
     if (etags.Length > 0){
-        if (!data.settings.tagsOverride){
+        if (!data.tagsOverride){
             params.Set("etag", etags);
         }else{
             params.Set("etag", ETAGS);
@@ -122,7 +134,7 @@ string BuildRandomMapQueryURL(){
     }
 
     string difficulties = BuildDifficultyString(data.settings.difficulties);
-    if (difficulties.Length > 0 && !data.settings.tagsOverride){
+    if (difficulties.Length > 0 && !data.tagsOverride){
         params.Set("difficulty", difficulties);
     }
 
@@ -165,7 +177,7 @@ string BuildTagIdString(array<string> tagList){
 
     for (uint i = 0; i < tagList.Length; i++){
         if (tags.Exists(tagList[i])){
-            result += "" + tags[tagList[i]] + ",";
+            result += "" + int(tags[tagList[i]]) + ",";
         }
     }
 
@@ -181,7 +193,7 @@ string BuildDifficultyString(array<string> difficultyList){
 
     for (uint i = 0; i < difficultyList.Length; i++){
         if (TMX_DIFFICULTIES.Exists(difficultyList[i])){
-            result += "" + TMX_DIFFICULTIES[difficultyList[i]] + ",";
+            result += "" + int(TMX_DIFFICULTIES[difficultyList[i]]) + ",";
         }
     }
 
