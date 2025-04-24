@@ -73,11 +73,12 @@ class Items{
             case ItemTypes::Skip:
                 skips += itemCount;
                 break;
-            case ItemTypes::Filler:
+            // case ItemTypes::Filler:
+            //     filler += itemCount;
+            //     break;
+            default:
                 filler += itemCount;
                 break;
-            default:
-                return;
         }
         itemsRecieved += itemCount;
     }

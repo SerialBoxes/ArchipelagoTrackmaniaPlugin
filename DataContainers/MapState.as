@@ -37,7 +37,12 @@ class MapState{
             itemTypes = array<ItemTypes>(5);
             const Json::Value@ itemObjects = json["itemTypes"];
             for (uint i = 0; i < itemTypes.Length; i++) {
-                itemTypes[i] = ItemTypes(int(itemObjects[i]));
+                int itemId = int(itemObjects[i]);
+                if (itemId >= BASE_FILLER_ID && itemId != int(ItemTypes::Archipelago)){
+                    itemTypes[i] = ItemTypes::Filler;
+                }else{
+                    itemTypes[i] = ItemTypes(int(itemObjects[i]));
+                }
             }
         } catch {
             Log::Warn("Error parsing MapState for Series "+seriesIndex+" Map "+mapIndex+ "\nReason: " + getExceptionInfo(), true);
@@ -88,23 +93,23 @@ class MapState{
 
     int AddLocationChecks(array<int> &checks){
         int index = 0;
-        if (personalBestTime < mapInfo.BronzeTime || skipped){
+        if (personalBestTime <= mapInfo.BronzeTime || skipped){
             checks[index] = MapIndicesToId(seriesIndex, mapIndex, CheckTypes::Bronze);
             index++;
         }
-        if ((personalBestTime < mapInfo.SilverTime || skipped) && saveData.settings.targetTimeSetting >= 1.0){
+        if ((personalBestTime <= mapInfo.SilverTime || skipped) && saveData.settings.targetTimeSetting >= 1.0){
             checks[index] = MapIndicesToId(seriesIndex, mapIndex, CheckTypes::Silver);
             index++;
         }
-        if ((personalBestTime < mapInfo.GoldTime || skipped) && saveData.settings.targetTimeSetting >= 2.0){
+        if ((personalBestTime <= mapInfo.GoldTime || skipped) && saveData.settings.targetTimeSetting >= 2.0){
             checks[index] = MapIndicesToId(seriesIndex, mapIndex, CheckTypes::Gold);
             index++;
         }
-        if ((personalBestTime < mapInfo.AuthorTime || skipped) && saveData.settings.targetTimeSetting >= 3.0){
+        if ((personalBestTime <= mapInfo.AuthorTime || skipped) && saveData.settings.targetTimeSetting >= 3.0){
             checks[index] = MapIndicesToId(seriesIndex, mapIndex, CheckTypes::Author);
             index++;
         }
-        if ((personalBestTime < targetTime || skipped)){
+        if ((personalBestTime <= targetTime || skipped)){
             checks[index] = MapIndicesToId(seriesIndex, mapIndex, CheckTypes::Target);
             index++;
         }

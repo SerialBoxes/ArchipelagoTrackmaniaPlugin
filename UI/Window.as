@@ -57,7 +57,7 @@ void RenderMainMenu(){
                         UI::BeginGroup();
                         float color = 0.8;
                         MapState@ map = data.world[i].maps[j];
-                        if (map.personalBestTime < map.targetTime) color = 0.33;
+                        if (map.personalBestTime <= map.targetTime) color = 0.33;
                         if (map.skipped) color = 0.5;
                         if (UI::ButtonColored("Map "+(j+1), color)){
                             LoadMapByIndex(i,j);

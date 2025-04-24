@@ -27,6 +27,7 @@ const int MAX_MAPS_IN_SERIES            = 20;
 const int MAX_SERIES_COUNT              = 20;
 const int MAX_MAP_LOCATIONS             = 5;
 const int BASE_ID                       = 24000;
+const int BASE_FILLER_ID                = 24500;
 
 const array<string> MAP_FIELDS_ARRAY = {
     "MapId",
@@ -66,7 +67,7 @@ enum ItemTypes{
     GoldMedal = 24002,
     AuthorMedal = 24003,
     Skip = 24004,
-    Filler = 24005,
+    Filler = 24500,
     Archipelago = 99999
 }
 
@@ -88,11 +89,11 @@ class PhysicsPatch{
 }
 
 //source : https://github.com/st-AR-gazer/tm_Patch-Warner/blob/main/src/Main.as
-array<PhysicsPatch> PHYSICS_PATCHES = {
+array<PhysicsPatch@> PHYSICS_PATCHES = {
     PhysicsPatch("2022-09-30_10_13",{"Water"}), //AK4
     //PhysicsPatch("2023-11-15_11_56",{"Wood"}), //This one got an in-game fix
     PhysicsPatch("2020-12-22_13_18",{"Bumper"}),//This is according to AR I had no idea
-    PhysicsPatch("2022-05-19_15_03",{"Ice","Bobsleigh"}),//AK34
+    PhysicsPatch("2022-05-19_15_03",{"Ice","Bobsleigh"})//AK34
     //PhysicsPatch("2023-04-28_17_34",{"Ice","Bobsleigh"}) //Ice generally got faster with this update, and the changes were somewhat minor, so I'm using the first patch as the cutoff
 };
 

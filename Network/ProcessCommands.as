@@ -126,7 +126,12 @@ void ProcessLocationInfo (Json::Value@ json){
         vec3 location = MapIdToIndices(netItem["location"]);
         ItemTypes itemType = ItemTypes::Archipelago;
         if (netItem["player"] == data.playerTeamIndex) {//not totally sure this works
-            itemType = ItemTypes(int(netItem["item"]));
+            int itemId = int(netItem["item"]);
+            if (itemId >= BASE_FILLER_ID && itemId != int(ItemTypes::Archipelago)){
+                itemType = ItemTypes::Filler;
+            }else{
+                itemType = ItemTypes(int(netItem["item"]));
+            }
         }
         data.world[int(location.x)].maps[int(location.y)].SetItemType(itemType, CheckTypes(int(location.z)));
     }
