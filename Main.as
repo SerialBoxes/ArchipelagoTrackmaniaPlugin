@@ -6,6 +6,10 @@ WebSocket socket = WebSocket("localhost",22422);
 MapState@ loadedMap = null;
 SaveFile@ saveFile = null;
 
+void Main(){
+    initTags();
+}
+
 void RenderMenu(){
     if (UI::MenuItem(Icons::Cloud + " \\$z" + "Archipelago","", isOpen)) {
         isOpen = !isOpen;

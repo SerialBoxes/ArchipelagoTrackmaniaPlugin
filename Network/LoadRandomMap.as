@@ -101,13 +101,13 @@ bool IsMapValid(Json::Value@ mapJson){
     //automatically throw out pre-patch ice and bob and water
     //sorry, I want this to be accessible to new players and I don't want to make them deal with pre-patch
     //nando plz add physics versioning
-
+#if TMNEXT
     string exebuild = mapJson["Exebuild"];
     for(uint i = 0; i < PHYSICS_PATCHES.Length; i++){
         if (exebuild <= PHYSICS_PATCHES[i].exebuild){
             for (uint j = 0; j < PHYSICS_PATCHES[i].tags.Length; j++){
                 for (uint k = 0; k < mapJson["Tags"].Length; k++){
-                    int physicsTagId = int(TAGS_MAP[PHYSICS_PATCHES[i].tags[j]]);
+                    int physicsTagId = int(GetTags()[PHYSICS_PATCHES[i].tags[j]]);
                     int mapTagId = int(mapJson["Tags"][k]["TagId"]);
                     if (physicsTagId == mapTagId){
                         //is pre-patch!!
@@ -117,7 +117,7 @@ bool IsMapValid(Json::Value@ mapJson){
             }
         }
     }
-
+#endif
 
     return true;
 }
@@ -181,8 +181,8 @@ string BuildTagIdString(array<string> tagList){
     string result = "";
 
     for (uint i = 0; i < tagList.Length; i++){
-        if (TAGS_MAP.Exists(tagList[i])){
-            result += "" + int(TAGS_MAP[tagList[i]]) + ",";
+        if (GetTags().Exists(tagList[i])){
+            result += "" + int(GetTags()[tagList[i]]) + ",";
         }
     }
 
