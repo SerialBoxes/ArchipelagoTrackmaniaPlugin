@@ -75,6 +75,7 @@ class SeriesState{
         //SendLocationScouts(ids, index);
         initialized = !loadError;
         initializing = false;
+        saveFile.Save(saveData);
     }
 
     bool IsUnlocked(){

@@ -10,6 +10,7 @@ class MapState{
     //derived data
     int seriesIndex;
     int mapIndex;
+    UI::Texture@ thumbnail;
 
     MapState(SaveData@ saveData, MapInfo@ mapInfo, int seriesIndex, int mapIndex){
         @this.saveData = saveData;
@@ -21,6 +22,7 @@ class MapState{
 
         this.seriesIndex = seriesIndex;
         this.mapIndex = mapIndex;
+        RequestThumbnail();
     }
 
     MapState(SaveData@ saveData, const Json::Value &in json, int seriesIndex, int mapIndex){
@@ -44,6 +46,7 @@ class MapState{
                     itemTypes[i] = ItemTypes(int(itemObjects[i]));
                 }
             }
+            RequestThumbnail(true);
         } catch {
             Log::Warn("Error parsing MapState for Series "+seriesIndex+" Map "+mapIndex+ "\nReason: " + getExceptionInfo(), true);
         }
@@ -69,6 +72,19 @@ class MapState{
         personalBestTime = 30000000;
     }
 
+    void RequestThumbnail(bool delay = false){
+        API::NetworkCallback@ cb = API::NetworkCallback(ThumbnailRecieved);
+        API::NetRequest@ request = API::NetRequest("https://trackmania.exchange/mapthumb/" + mapInfo.MapId, cb);
+        if (delay) request.delayMS = 1000 * seriesIndex; //this is just a hacky way to not ddos tmx without adding a ton to this project i rly just wanna be doneaaaaaaaaa
+        startnew(API::GetAsyncImg, request);
+    }
+
+    void ThumbnailRecieved(Net::HttpRequest@ request){
+        if (request.ResponseCode() == 200){
+            @thumbnail = UI::LoadTexture(request.Buffer());
+        }
+    }
+
     void UpdatePB(int raceTime){
         if (raceTime < personalBestTime && raceTime >= 0){
             personalBestTime = raceTime;
@@ -81,6 +97,7 @@ class MapState{
         saveData.items.skipsUsed += 1;
 
         FireLocationChecks();
+        saveFile.Save(saveData);
     }
 
     void FireLocationChecks(){
@@ -114,6 +131,27 @@ class MapState{
             index++;
         }
         return index;
+    }
+
+    int GetChecksRemaining(){
+        if (skipped) return 0;
+        int checks = 0;
+        if (personalBestTime > mapInfo.BronzeTime){
+            checks ++;
+        }
+        if (personalBestTime > mapInfo.SilverTime && saveData.settings.targetTimeSetting >= 1.0){
+            checks++;
+        }
+        if (personalBestTime > mapInfo.GoldTime && saveData.settings.targetTimeSetting >= 2.0){
+            checks++;
+        }
+        if (personalBestTime > mapInfo.AuthorTime && saveData.settings.targetTimeSetting >= 3.0){
+            checks++;
+        }
+        if (personalBestTime > targetTime){
+            checks++;
+        }
+        return checks;
     }
 
     Json::Value ToJson(){

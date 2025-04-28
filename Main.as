@@ -1,5 +1,6 @@
 
 bool isOpen = true;
+bool shownBefore = false;
 
 SaveData@ data = null;
 WebSocket socket = WebSocket("localhost",22422);
@@ -8,11 +9,31 @@ SaveFile@ saveFile = null;
 
 void Main(){
     initTags();
+
+    LoadUIAssets();
 }
 
 void RenderMenu(){
     if (UI::MenuItem(Icons::Cloud + " \\$z" + "Archipelago","", isOpen)) {
         isOpen = !isOpen;
+    }
+}
+
+void Render(){
+    if (isOpen){
+        if (!socket.IsConnected()){
+            RenderConnectUI();
+        }else{
+            if (GetIsOnMap()){
+                RenderMapUI();
+            }else{
+                RenderMainMenu();
+            }
+        }
+    }else{
+        if (socket.IsConnected()){
+            socket.Close();
+        }
     }
 }
 
@@ -24,12 +45,6 @@ void StartConnection(){
 int lastRaceTime = -1;
 void ConnectedLoop(){
     while (socket.NotDisconnected()){
-        //read in any messages in the socket
-        // string msg;
-        // while ((msg = socket.PopMessage()) != ""){
-        //     ProcessMessage(msg);
-        // }
-
         //check for personal best times
         if (loadedMap !is null && loadedMap.mapInfo.MapUid == GetLoadedMapUid()){
             //were on *da map*
@@ -43,13 +58,13 @@ void ConnectedLoop(){
             }
             lastRaceTime = raceTime;
         }
-
         yield();
     }
 
     if (saveFile !is null && data !is null){
         saveFile.Save(data);
     }
+    shownBefore = false;
     @data = null;
     @loadedMap = null;
     @saveFile = null;
