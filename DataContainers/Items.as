@@ -39,7 +39,7 @@ class Items{
             skipsUsed = json["skipsUsed"];
             itemsRecieved = json["itemsRecieved"];
         } catch {
-            Log::Warn("Error parsing Items"+ "\nReason: " + getExceptionInfo(), true);
+            Log::Error("Error parsing Items"+ "\nReason: " + getExceptionInfo());
         }
     }
 
@@ -105,7 +105,7 @@ class Items{
             json["skipsUsed"] = skipsUsed;
             json["itemsRecieved"] = itemsRecieved;
         } catch {
-            Log::Error("Error converting Items to JSON", true);
+            Log::Error("Error converting Items to JSON");
         }
         return json;
     }

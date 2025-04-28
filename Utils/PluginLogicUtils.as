@@ -11,3 +11,24 @@ vec3 MapIdToIndices(int id){
     int check = id % MAX_MAP_LOCATIONS;
     return vec3(series, map, check);
 }
+
+string StripArchipelagoColorCodes(const string &in message){
+    bool inCode;
+    string result = "";
+    for (int i = 0; i < message.Length; i++){
+        string char = message.SubStr(i,1);
+        if (char == ""){
+            if (i+1 < message.Length && message.SubStr(i+1,1) =="["){
+                inCode = true;
+            }
+        }
+        if (!inCode){
+            result += char;
+        }else{
+            if (char == "m"){
+                inCode = false;
+            }
+        }
+    }
+    return result;
+}

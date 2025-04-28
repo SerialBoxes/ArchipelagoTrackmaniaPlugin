@@ -48,7 +48,7 @@ class MapState{
             }
             RequestThumbnail(true);
         } catch {
-            Log::Warn("Error parsing MapState for Series "+seriesIndex+" Map "+mapIndex+ "\nReason: " + getExceptionInfo(), true);
+            Log::Error("Error parsing MapState for Series "+seriesIndex+" Map "+mapIndex+ "\nReason: " + getExceptionInfo());
         }
     }
 
@@ -167,10 +167,8 @@ class MapState{
             }
             json["itemTypes"] = itemArray;
         } catch {
-            Log::Error("Error converting MapState to JSON for Series "+seriesIndex+" Map "+mapIndex, true);
+            Log::Error("Error converting MapState to JSON for Series "+seriesIndex+" Map "+mapIndex);
         }
         return json;
     }
-
-    
 }

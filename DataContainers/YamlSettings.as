@@ -45,7 +45,7 @@ class YamlSettings{
                 difficulties[i] = difficultyObjects[i];
             }
         } catch {
-            Log::Warn("Error parsing YamlSettings"+ "\nReason: " + getExceptionInfo(), true);
+            Log::Warn("Error parsing YamlSettings"+ "\nReason: " + getExceptionInfo());
         }
     }
 
@@ -73,7 +73,7 @@ class YamlSettings{
             }
             json["difficulties"] = difficultiesArray;
         } catch {
-            Log::Error("Error converting Yaml Settings to JSON", true);
+            Log::Error("Error converting Yaml Settings to JSON");
         }
         return json;
     }

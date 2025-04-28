@@ -1,5 +1,5 @@
 void ProcessMessage(const string &in message){
-    print("Recieved Message: "+message);
+    if (IS_DEV_MODE) print("Recieved Message: "+message);
     Json::Value@ cmdJson;
     string cmd = "";
     try {
@@ -17,8 +17,6 @@ void ProcessMessage(const string &in message){
         socket.Close();
         return;
     }
-
-    print("CMD: " + cmd);
 
     //angelscript switch statements only work with numbers ;-;
     if (cmd == "RoomInfo"){
@@ -92,6 +90,14 @@ void ProcessConnected (Json::Value@ json){
 
 void ProcessPrintJson (Json::Value@ json){
     //¯\_(ツ)_/¯
+    Json::Value@ data = json["data"];
+    if (data !is null && data.GetType() == Json::Type::Array){
+        for (uint i = 0; i < data.Length; i++){
+            string rawText = json["data"][i]["text"];
+            string displayText = StripArchipelagoColorCodes(rawText);
+            Log::ArchipelagoNotification(displayText);
+        }
+    }
 }
 
 void ProcessConnectionRefused (Json::Value@ json){
@@ -121,6 +127,7 @@ void ProcessReceivedItems (Json::Value@ json){
 }
 
 void ProcessLocationInfo (Json::Value@ json){
+    if (json["locations"] is null) return;
     for (uint i = 0; i < json["locations"].Length; i++){
         Json::Value@ netItem = json["locations"][i];
         vec3 location = MapIdToIndices(netItem["location"]);
@@ -146,8 +153,18 @@ void ProcessRetrieved (Json::Value@ json){
 }
 
 void ProcessRoomUpdate (Json::Value@ json){
+    // Json::Value@ locations = json["checked_locations"];
+    // if (locations !is null && locations.GetType() == Json::Type::Array){
+    //     for (int i = 0; i < locations.Length; i++){
+    //         int loc = locations[i];
+    //         vec3 indices = MapIdToIndices(loc);
+    //     }
+    // }
     //update checked locations
-    //we dont actually keep track of whats checked tho so :P
+    //im not sure what expected behaviour here should be
+    //I think players will still want to be able to grind tracks and know their times even if the game ends
+    //but also not doing anything here makes co-op very confusing.
+    //idk ill get feedback first and go from there.
 }
 
 void ProcessReroll (Json::Value@ json){

@@ -53,8 +53,7 @@ void LoadMap(ref@ mapData){
     }
     catch
     {
-        Log::Warn("Error while loading map ");
-        Log::Error("TMX API is not responding, it might be down...", true);
+        Log::Error("Could not load map. TMX API is not responding, it might be down...", true);
         isNextMapLoading = false;
     }
 }
@@ -62,13 +61,12 @@ void LoadMap(ref@ mapData){
 MapInfo@ QueryForRandomMap(const string &in URL){
     if (!socket.NotDisconnected()) return null;
     isQueryingForMap = true;
-    print(URL);
     Json::Value@ res;
     Json::Value@ mapJson;
     try {
         @res = API::GetAsync(URL)["Results"];
     } catch {
-        Log::Error("TMX API returned an error, it might be down...", true);
+        Log::Error("Could not reach TMX, it might be down...", true);
         //sleep(3000);
         //return QueryForRandomMap(URL);
         return null;

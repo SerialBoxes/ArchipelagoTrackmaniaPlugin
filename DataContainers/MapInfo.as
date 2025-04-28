@@ -80,7 +80,7 @@ class MapInfo
             // }
         } catch {
             Name = json["Name"];
-            Log::Warn("Error parsing infos for the map: "+ Name + "\nReason: " + getExceptionInfo(), true);
+            Log::Error("Error parsing infos for the map: "+ Name + "\nReason: " + getExceptionInfo());
         }
     }
 
@@ -124,7 +124,7 @@ class MapInfo
 
             // json["Tags"] = tagArray;
         } catch {
-            Log::Error("Error converting map info to JSON for map "+Name, true);
+            Log::Error("Error converting map info to JSON for map "+Name);
         }
         return json;
     }

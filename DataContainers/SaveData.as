@@ -51,7 +51,7 @@ class SaveData{
                 @world[i] = SeriesState(this, worldObjects[i], i);
             }
         } catch {
-            Log::Warn("Error parsing save data" "\nReason: " + getExceptionInfo(), true);
+            Log::Error("Error parsing save data" "\nReason: " + getExceptionInfo(), true);
         }
     }
 
@@ -79,7 +79,6 @@ class SaveData{
 
     private void InitializeUpcomingSeriesAsync(){
         uint currentSeries = data.LatestUnlockedSeriesI();
-        print ("Last Unlocked Series: " + currentSeries);
 
         //wait for first series to finish so the game starts faster
         while (world[0].initializing){

@@ -16,7 +16,7 @@ class WebSocket{
 
 
     void OpenSocket(){
-        print("Opening Socket");
+        if (IS_DEV_MODE)print("Opening Socket");
         state = WebsocketConnectionState::Handshaking;
         startnew(CoroutineFunc(Connect));
     }
@@ -27,11 +27,11 @@ class WebSocket{
             while (!socket.IsReady()){
                 yield();
             }
-            print ("Sending Handshake");
+            if (IS_DEV_MODE) print ("Sending Handshake");
             SocketHandshake();
             startnew(CoroutineFunc(ReadLoop));
         }else{
-            print("Error Opening Socket, Closing");
+            error("Error Opening Socket, Closing");
             Close();
         }
     }
@@ -136,7 +136,7 @@ class WebSocket{
 
     private void ProcessHTTPMessage(const string &in msg){
         if (msg.Contains("Upgrade: websocket")){
-            print("Hanshake Sucessful, Socket Fully Connected!");
+            if (IS_DEV_MODE) print("Hanshake Sucessful, Socket Fully Connected!");
             state = WebsocketConnectionState::Connected;
         }
     }
@@ -211,7 +211,7 @@ class WebSocket{
             buffer.Write(masked);
         }
         buffer.Seek(0);
-        print("Sending Message: " + message);
+        if (IS_DEV_MODE) print("Sending Message: " + message);
         socket.Write(buffer, length);
     }
 }

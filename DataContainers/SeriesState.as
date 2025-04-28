@@ -40,7 +40,7 @@ class SeriesState{
             initialized = int(mapObjects.Length) == mapCount;//here too
             initializing = false;
         } catch {
-            Log::Warn("Error parsing SeriesState for Series "+seriesIndex+"\nReason: " + getExceptionInfo(), true);
+            Log::Error("Error parsing SeriesState for Series "+seriesIndex+"\nReason: " + getExceptionInfo());
         }
     }
 
@@ -56,7 +56,7 @@ class SeriesState{
             string URL = BuildRandomMapQueryURL();
             MapInfo@ mapRoll = QueryForRandomMap(URL);
             if (mapRoll is null){
-                Log::Error("Unable to roll Series "+seriesIndex+" Map "+i, true);
+                Log::Error("Unable to roll Series "+seriesIndex+" Map "+i);
                 loadError = true;
                 break;
             }
@@ -95,7 +95,7 @@ class SeriesState{
             }
             json["maps"] = mapArray;
         } catch {
-            Log::Error("Error converting SeriesState to JSON for Series "+seriesIndex, true);
+            Log::Error("Error converting SeriesState to JSON for Series "+seriesIndex);
         }
         return json;
     }

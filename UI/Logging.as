@@ -44,4 +44,10 @@ namespace Log
         vec4 color = UI::HSV(0.25, 1, 0.7);
         UI::ShowNotification(Icons::Kenney::ReloadInverse + " Loading map", map.Name + "\nby: "+map.Username, color, 5000);
     }
+
+    void ArchipelagoNotification(const string &in message){
+        print (message);
+        vec4 color = UI::HSV(0.8, 0.65, 1.0);
+        UI::ShowNotification("Archipelago Multiworld", message, color, 8000);
+    }
 }

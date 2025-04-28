@@ -181,7 +181,6 @@ void RenderTooltip(MapState@ map){
 }
 
 void RenderSeriesLine(uint seriesI, vec2 viewSize, float height, float width, float margin){
-    //print("bla");
     vec2 cursorPos = UI::GetCursorPos();
     cursorPos.x = 0;
     UI::SetCursorPos(cursorPos);
