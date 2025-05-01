@@ -72,7 +72,7 @@ class SeriesState{
             ids[index] = MapIndicesToId(seriesIndex, i, CheckTypes::Target);
             index++;
         }
-        //SendLocationScouts(ids, index);
+        SendLocationScouts(ids, index);
         initialized = !loadError;
         initializing = false;
         saveFile.Save(saveData);

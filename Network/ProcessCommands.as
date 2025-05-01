@@ -62,9 +62,7 @@ void ProcessConnected (Json::Value@ json){
         int total = 0;
         for (uint i = 0; i < data.world.Length; i++){
             for (uint j = 0; j < data.world[i].maps.Length; j++){
-                if (data.world[i].maps[j] !is null){
-                    total += data.world[i].maps[j].AddLocationChecks(allChecks);
-                }
+                total += data.locations.AddLocationChecks(allChecks, i, j);
             }
         }
         SendLocationChecks(allChecks, total);
@@ -153,18 +151,14 @@ void ProcessRetrieved (Json::Value@ json){
 }
 
 void ProcessRoomUpdate (Json::Value@ json){
-    // Json::Value@ locations = json["checked_locations"];
-    // if (locations !is null && locations.GetType() == Json::Type::Array){
-    //     for (int i = 0; i < locations.Length; i++){
-    //         int loc = locations[i];
-    //         vec3 indices = MapIdToIndices(loc);
-    //     }
-    // }
-    //update checked locations
-    //im not sure what expected behaviour here should be
-    //I think players will still want to be able to grind tracks and know their times even if the game ends
-    //but also not doing anything here makes co-op very confusing.
-    //idk ill get feedback first and go from there.
+    Json::Value@ locations = json["checked_locations"];
+    if (locations !is null && locations.GetType() == Json::Type::Array){
+        for (int i = 0; i < locations.Length; i++){
+            int loc = locations[i];
+            vec3 indices = MapIdToIndices(loc);
+            data.locations.FlagCheck(int(indices.x),int(indices.y), CheckTypes(int(indices.z)));
+        }
+    }
 }
 
 void ProcessReroll (Json::Value@ json){

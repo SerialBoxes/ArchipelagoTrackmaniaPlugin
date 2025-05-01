@@ -49,7 +49,7 @@ void RenderMainMenu(){
                             UI::Dummy(thumbnailSize);
                         }
                         vec2 cursorEnd = UI::GetCursorPos();
-                        if (map.personalBestTime <= map.targetTime || map.skipped){
+                        if (data.locations.GotAllChecks(map.seriesIndex, map.mapIndex) || map.skipped){
                             vec2 centerPos = cursorStart + vec2(cellSize/2,cellSize/2);
                             UI::SetCursorPos(centerPos);
                             vec4 iconColor = vec4(0.1,0.6,0.12,1.0);
@@ -174,8 +174,11 @@ void RenderTooltip(MapState@ map){
     UI::Indent();
     UI::Text("by "+map.mapInfo.Username);
     UI::Unindent();
-    int checks = map.GetChecksRemaining();
-    UI::Text(checks+" Checks Left!");
+    UI::Text("Checks Left:");
+    UI::Indent();
+    UI::NewLine();
+    DrawChecksRemaining(map.seriesIndex, map.mapIndex);
+    UI::Unindent();
 
     UI::EndTooltip();
 }

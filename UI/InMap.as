@@ -70,10 +70,19 @@ void RenderMapUI(){
             UI::Unindent();
             UI::Separator();
 
+            if (!data.settings.GotAllChecks(loadedMap.seriesIndex, loadedMap.mapIndex)){
+                UI::Text("Checks Left:");
+                UI::NewLine();
+                UI::Indent();
+                DrawChecksRemaining(loadedMap.seriesIndex, loadedMap.mapIndex);
+                UI::Unindent();
+                UI::Separator();
+            }
+
             UI::Text("Skips Available: " + (data.items.skips - data.items.skipsUsed));
             if (loadedMap.skipped){
                 UI::Text("Map Skipped!");
-            }else if (data.items.skips > data.items.skipsUsed && loadedMap.personalBestTime > loadedMap.targetTime){
+            }else if (data.items.skips > data.items.skipsUsed && !data.locations.GotAllChecks(loadedMap.seriesIndex, loadedMap.mapIndex)){
                 if(UI::ButtonColored(Icons::Repeat+" Skip Map", 0.5)){
                     loadedMap.Skip();
                 }

@@ -9,6 +9,9 @@ class SaveData{
     //items
     Items@ items;
 
+    //locations
+    LocationChecks@ locations;
+
     //world
     array<SeriesState@> world;
 
@@ -23,6 +26,7 @@ class SaveData{
         @this.settings = settings;
 
         @this.items = Items(this);
+        @this.locations = LocationChecks(this, settings.seriesCount, settings.mapsInSeries);
 
         hasGoal = false;
         tagsOverride = false;
@@ -42,6 +46,7 @@ class SaveData{
         try {
             @this.settings = YamlSettings(json["settings"]);
             @this.items = Items(this, json["items"]);
+            @this.locations = LocationChecks(this,json["locations"]);
             hasGoal = json["hasGoal"] == "true" ? true : false;
             tagsOverride = json["tagsOverride"] == "true" ? true : false;
 
@@ -105,6 +110,7 @@ class SaveData{
             json["tagsOverride"] = tagsOverride? "true" : "false";
             json["settings"] = settings.ToJson();
             json["items"] = items.ToJson();
+            json["locations"] = locations.ToJson();
             Json::Value seriesArray = Json::Array();
             for (uint i = 0; i < world.Length; i++) {
                 seriesArray.Add(world[i].ToJson());

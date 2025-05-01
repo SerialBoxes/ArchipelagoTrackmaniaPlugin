@@ -65,6 +65,39 @@ UI::Texture@ GetProgressionTex(){
     }
 }
 
+string DrawChecksRemaining(int seriesI, int mapI){
+    if (!data.locations.GotCheck(seriesI, mapI, CheckTypes::Target)){
+        UI::SameLine();
+        UI::PushStyleColor(UI::Col::Text, vec4(1,1,1,1));
+        UI::Text(Icons::Circle);
+        UI::PopStyleColor();
+    }
+    if (!data.locations.GotCheck(seriesI, mapI, CheckTypes::Author)){
+        UI::SameLine();
+        UI::PushStyleColor(UI::Col::Text, vec4(.1,1,0.2,1));
+        UI::Text(Icons::Circle);
+        UI::PopStyleColor();
+    }
+    if (!data.locations.GotCheck(seriesI, mapI, CheckTypes::Gold)){
+        UI::SameLine();
+        UI::PushStyleColor(UI::Col::Text, vec4(1,0.8,0,1));
+        UI::Text(Icons::Circle);
+        UI::PopStyleColor();
+    }
+    if (!data.locations.GotCheck(seriesI, mapI, CheckTypes::Silver)){
+        UI::SameLine();
+        UI::PushStyleColor(UI::Col::Text, vec4(0.5,0.5,0.5,1));
+        UI::Text(Icons::Circle);
+        UI::PopStyleColor();
+    }
+    if (!data.locations.GotCheck(seriesI, mapI, CheckTypes::Bronze)){
+        UI::SameLine();
+        UI::PushStyleColor(UI::Col::Text, vec4(.5,.4,0,1));
+        UI::Text(Icons::Circle);
+        UI::PopStyleColor();
+    }
+}
+
 void LoadUIAssets(){
     @fontHeader = UI::LoadFont("DroidSans-Bold.ttf", 26, -1, -1, true, true, true);
     @fontHeaderSub = UI::LoadFont("DroidSans.ttf", 22, -1, -1, true, true, true);

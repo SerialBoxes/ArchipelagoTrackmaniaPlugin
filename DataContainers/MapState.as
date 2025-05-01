@@ -88,7 +88,7 @@ class MapState{
     void UpdatePB(int raceTime){
         if (raceTime < personalBestTime && raceTime >= 0){
             personalBestTime = raceTime;
-            FireLocationChecks();
+            UpdateCheckFlags();
         }
     }
 
@@ -96,62 +96,36 @@ class MapState{
         skipped = true;
         saveData.items.skipsUsed += 1;
 
-        FireLocationChecks();
+        UpdateCheckFlags();
         saveFile.Save(saveData);
+    }
+
+    void UpdateCheckFlags(){
+        if (personalBestTime <= mapInfo.BronzeTime || skipped){
+            data.locations.FlagCheck(seriesIndex, mapIndex, CheckTypes::Bronze);
+        }
+        if ((personalBestTime <= mapInfo.SilverTime || skipped) && saveData.settings.targetTimeSetting >= 1.0){
+            data.locations.FlagCheck(seriesIndex, mapIndex, CheckTypes::Silver);
+        }
+        if ((personalBestTime <= mapInfo.GoldTime || skipped) && saveData.settings.targetTimeSetting >= 2.0){
+            data.locations.FlagCheck(seriesIndex, mapIndex, CheckTypes::Gold);
+        }
+        if ((personalBestTime <= mapInfo.AuthorTime || skipped) && saveData.settings.targetTimeSetting >= 3.0){
+            data.locations.FlagCheck(seriesIndex, mapIndex, CheckTypes::Author);
+        }
+        if ((personalBestTime <= targetTime || skipped)){
+            data.locations.FlagCheck(seriesIndex, mapIndex, CheckTypes::Target);
+        }
+
+        FireLocationChecks();
     }
 
     void FireLocationChecks(){
         //resending old checks doesn't cause any issues and makes this easier, so lets do it!
 
         array<int> checks = array<int>(5);
-        int index = AddLocationChecks(checks);
+        int index = data.locations.AddLocationChecks(checks, seriesIndex, mapIndex);
         SendLocationChecks(checks, index);
-    }
-
-    int AddLocationChecks(array<int> &checks){
-        int index = 0;
-        if (personalBestTime <= mapInfo.BronzeTime || skipped){
-            checks[index] = MapIndicesToId(seriesIndex, mapIndex, CheckTypes::Bronze);
-            index++;
-        }
-        if ((personalBestTime <= mapInfo.SilverTime || skipped) && saveData.settings.targetTimeSetting >= 1.0){
-            checks[index] = MapIndicesToId(seriesIndex, mapIndex, CheckTypes::Silver);
-            index++;
-        }
-        if ((personalBestTime <= mapInfo.GoldTime || skipped) && saveData.settings.targetTimeSetting >= 2.0){
-            checks[index] = MapIndicesToId(seriesIndex, mapIndex, CheckTypes::Gold);
-            index++;
-        }
-        if ((personalBestTime <= mapInfo.AuthorTime || skipped) && saveData.settings.targetTimeSetting >= 3.0){
-            checks[index] = MapIndicesToId(seriesIndex, mapIndex, CheckTypes::Author);
-            index++;
-        }
-        if ((personalBestTime <= targetTime || skipped)){
-            checks[index] = MapIndicesToId(seriesIndex, mapIndex, CheckTypes::Target);
-            index++;
-        }
-        return index;
-    }
-
-    int GetChecksRemaining(){
-        if (skipped) return 0;
-        int checks = 0;
-        if (personalBestTime > mapInfo.BronzeTime){
-            checks ++;
-        }
-        if (personalBestTime > mapInfo.SilverTime && saveData.settings.targetTimeSetting >= 1.0){
-            checks++;
-        }
-        if (personalBestTime > mapInfo.GoldTime && saveData.settings.targetTimeSetting >= 2.0){
-            checks++;
-        }
-        if (personalBestTime > mapInfo.AuthorTime && saveData.settings.targetTimeSetting >= 3.0){
-            checks++;
-        }
-        if (personalBestTime > targetTime){
-            checks++;
-        }
-        return checks;
     }
 
     Json::Value ToJson(){

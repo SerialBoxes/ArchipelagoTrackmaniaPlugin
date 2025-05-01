@@ -53,12 +53,21 @@ const array<string> MAP_FIELDS_ARRAY = {
 };
 const string MAP_FIELDS = string::Join(MAP_FIELDS_ARRAY, ",");
 
-enum CheckTypes{
+enum CheckTypes{ //used for building location IDs
     Bronze = 0,
     Silver = 1,
     Gold = 2,
     Author = 3,
     Target = 4
+}
+
+enum CheckFlags{ //used for tracking location checks
+    None = 0;
+    Bronze = 1,
+    Silver = 2,
+    Gold = 4,
+    Author = 8,
+    Target = 16
 }
 
 enum ItemTypes{
