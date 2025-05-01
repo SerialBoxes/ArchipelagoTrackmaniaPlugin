@@ -54,7 +54,7 @@ int GetCurrentMapTime()
 bool GetIsOnMap(){
     auto app = cast<CTrackMania>(GetApp());
     auto map = app.RootMap;
-    return map !is null;
+    return map !is null && app.Editor is null;
 }
 
 string GetLoadedMapUid(){
