@@ -153,7 +153,7 @@ void ProcessRetrieved (Json::Value@ json){
 void ProcessRoomUpdate (Json::Value@ json){
     Json::Value@ locations = json["checked_locations"];
     if (locations !is null && locations.GetType() == Json::Type::Array){
-        for (int i = 0; i < locations.Length; i++){
+        for (uint i = 0; i < locations.Length; i++){
             int loc = locations[i];
             vec3 indices = MapIdToIndices(loc);
             data.locations.FlagCheck(int(indices.x),int(indices.y), CheckTypes(int(indices.z)));

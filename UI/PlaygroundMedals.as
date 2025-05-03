@@ -1,6 +1,9 @@
 //this code is mostly yoinked from the warrior medals plugin.
 //thank you ezio!
 
+uint FrameConfirmQuit = 0;
+const float stdRatio = 16.0f / 9.0f;
+
 void DrawOverUI() {
     CTrackMania@ App = cast<CTrackMania@>(GetApp());
 
@@ -39,9 +42,10 @@ void DrawOverUI() {
         if (false
             || !UI::IsGameUIVisible()
             || loadedMap is null
-            || GetLoadedMapUid() != loadedMap.mapInfo.MapUid)
-        )
+            || GetLoadedMapUid() != loadedMap.mapInfo.MapUid
+        ){
             return;
+        }
 
         CGameManiaAppPlayground@ CMAP = Network.ClientManiaAppPlayground;
         if (false
@@ -68,7 +72,7 @@ void DrawOverUI() {
         CGameManialinkPage@ End;
 
         for (uint i = 0; i < CMAP.UILayers.Length; i++) {
-            const bool pauseDisplayed = S_UIMedalPause && Network.PlaygroundClientScriptAPI.IsInGameMenuDisplayed;
+            const bool pauseDisplayed = Network.PlaygroundClientScriptAPI.IsInGameMenuDisplayed;
 
             if (true
                 && !(Record is null && lookForBanner)
@@ -154,7 +158,7 @@ void DrawOverUI() {
     }
 }
 
-void DrawOverPlaygroundPage(CGameManialinkPage@ Page, PlaygroundPageType, CGameManialinkPage@ ScoresTable = null) {
+void DrawOverPlaygroundPage(CGameManialinkPage@ Page, PlaygroundPageType type, CGameManialinkPage@ ScoresTable = null) {
     if (Page is null)
         return;
 
@@ -234,7 +238,7 @@ void DrawOverPlaygroundPage(CGameManialinkPage@ Page, PlaygroundPageType, CGameM
         || (MenuContent !is null && MenuContent.Visible)
     ) {
         nvg::BeginPath();
-        nvg::FillPaint(nvg::TexturePattern(coords, size, 0.0f, iconUI, 1.0f));
+        nvg::FillPaint(nvg::TexturePattern(coords, size, 0.0f, authorTexNVG, 1.0f));
         nvg::Fill();
     }
 
@@ -255,6 +259,6 @@ void DrawOverPlaygroundPage(CGameManialinkPage@ Page, PlaygroundPageType, CGameM
     const vec2 quadMedalSize   = vec2(45.0f * hUnit);
 
     nvg::BeginPath();
-    nvg::FillPaint(nvg::TexturePattern(quadMedalCoords, quadMedalSize, 0.0f, iconUI, 1.0f));
+    nvg::FillPaint(nvg::TexturePattern(quadMedalCoords, quadMedalSize, 0.0f, authorTexNVG, 1.0f));
     nvg::Fill();
 }

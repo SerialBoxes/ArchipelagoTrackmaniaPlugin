@@ -9,6 +9,12 @@ UI::Texture@ goldTex;
 UI::Texture@ authorTex;
 UI::Texture@ archipelagoTex;
 
+nvg::Texture@ bronzeTexNVG;
+nvg::Texture@ silverTexNVG;
+nvg::Texture@ goldTexNVG;
+nvg::Texture@ authorTexNVG;
+nvg::Texture@ archipelagoTexNVG;
+
 void RenderInventory(){
     UI::Text("Progression Medals: " + data.items.GetProgressionMedalCount() + "/"+(data.settings.medalRequirement*data.settings.seriesCount));
     UI::Text("Inventory: ");
@@ -65,36 +71,46 @@ UI::Texture@ GetProgressionTex(){
     }
 }
 
-string DrawChecksRemaining(int seriesI, int mapI){
+void DrawChecksRemaining(int seriesI, int mapI){
     if (!data.locations.GotCheck(seriesI, mapI, CheckTypes::Target)){
         UI::SameLine();
         UI::PushStyleColor(UI::Col::Text, vec4(1,1,1,1));
+        MoveCursor(vec2(-12,0));
         UI::Text(Icons::Circle);
         UI::PopStyleColor();
     }
     if (!data.locations.GotCheck(seriesI, mapI, CheckTypes::Author)){
         UI::SameLine();
-        UI::PushStyleColor(UI::Col::Text, vec4(.1,1,0.2,1));
+        UI::PushStyleColor(UI::Col::Text, vec4(0,0.6,0.4,1));
+        MoveCursor(vec2(-12,0));
         UI::Text(Icons::Circle);
         UI::PopStyleColor();
     }
     if (!data.locations.GotCheck(seriesI, mapI, CheckTypes::Gold)){
         UI::SameLine();
-        UI::PushStyleColor(UI::Col::Text, vec4(1,0.8,0,1));
+        UI::PushStyleColor(UI::Col::Text, vec4(1,0.8,0.226,1));
+        MoveCursor(vec2(-12,0));
         UI::Text(Icons::Circle);
         UI::PopStyleColor();
     }
     if (!data.locations.GotCheck(seriesI, mapI, CheckTypes::Silver)){
         UI::SameLine();
         UI::PushStyleColor(UI::Col::Text, vec4(0.5,0.5,0.5,1));
+        MoveCursor(vec2(-12,0));
         UI::Text(Icons::Circle);
         UI::PopStyleColor();
     }
     if (!data.locations.GotCheck(seriesI, mapI, CheckTypes::Bronze)){
         UI::SameLine();
-        UI::PushStyleColor(UI::Col::Text, vec4(.5,.4,0,1));
+        UI::PushStyleColor(UI::Col::Text, vec4(.578,0.395,0.226,1));
+        MoveCursor(vec2(-12,0));
         UI::Text(Icons::Circle);
         UI::PopStyleColor();
+    }
+    if (data.locations.GotAllChecks(seriesI, mapI)){
+        UI::SameLine();
+        MoveCursor(vec2(-12,0));
+        UI::Text("None! :)");
     }
 }
 
@@ -108,4 +124,9 @@ void LoadUIAssets(){
     @silverTex = UI::LoadTexture("Images/silver.png");
     @goldTex = UI::LoadTexture("Images/gold.png");
     @authorTex = UI::LoadTexture("Images/author.png");
+
+    @bronzeTexNVG = nvg::LoadTexture("Images/bronze.png");
+    @silverTexNVG = nvg::LoadTexture("Images/silver.png");
+    @goldTexNVG = nvg::LoadTexture("Images/gold.png");
+    @authorTexNVG = nvg::LoadTexture("Images/author.png");
 }

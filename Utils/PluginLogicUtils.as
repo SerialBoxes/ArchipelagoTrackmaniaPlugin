@@ -5,9 +5,9 @@ int MapIndicesToId(int seriesI, int mapI, CheckTypes checkType){
 }
 
 vec3 MapIdToIndices(int id){
-    num = id - BASE_ID;
+    int num = id - BASE_ID;
     int series = num / (MAX_MAP_LOCATIONS * MAX_MAPS_IN_SERIES);
-    int map = (num % MAX_MAP_LOCATIONS * MAX_MAPS_IN_SERIES) / MAX_MAP_LOCATIONS; 
+    int map = (num % (MAX_MAP_LOCATIONS * MAX_MAPS_IN_SERIES)) / MAX_MAP_LOCATIONS; 
     int check = num % MAX_MAP_LOCATIONS;
     return vec3(series, map, check);
 }

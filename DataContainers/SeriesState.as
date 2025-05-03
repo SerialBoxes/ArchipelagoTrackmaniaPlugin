@@ -34,10 +34,10 @@ class SeriesState{
 
             maps = array<MapState@>(mapCount);
             const Json::Value@ mapObjects = json["maps"];
-            for (uint i = 0; i < mapObjects.Length; i++) {//check the length on this plz thx
+            for (uint i = 0; i < mapObjects.Length; i++) {
                 @maps[i] = MapState(saveData, mapObjects[i],seriesIndex,i);
             }
-            initialized = int(mapObjects.Length) == mapCount;//here too
+            initialized = int(mapObjects.Length) == mapCount;
             initializing = false;
         } catch {
             Log::Error("Error parsing SeriesState for Series "+seriesIndex+"\nReason: " + getExceptionInfo());
@@ -47,9 +47,6 @@ class SeriesState{
     void Initialize(){
         if (initialized || initializing) return;
         initializing = true;
-        int checksPerMap = int(Math::Round(saveData.settings.targetTimeSetting - Math::Floor(saveData.settings.targetTimeSetting))) + 2;
-        array<int> ids = array<int>(checksPerMap * mapCount);
-        int index = 0;
         bool loadError = false;
         for(int i = 0; i < mapCount; i++){
             if (maps[i] !is null) continue;
@@ -61,18 +58,8 @@ class SeriesState{
                 break;
             }
             @maps[i] = MapState(saveData, mapRoll, seriesIndex, i);
-
-            int bronzeId = MapIndicesToId(seriesIndex, i, CheckTypes::Bronze);
-            ids[index] = bronzeId;
-            index++;
-            for (int j = 1; j < checksPerMap-1; j++){
-                ids[index] = bronzeId + j;
-                index++;
-            }
-            ids[index] = MapIndicesToId(seriesIndex, i, CheckTypes::Target);
-            index++;
         }
-        SendLocationScouts(ids, index);
+        SendScouts();
         initialized = !loadError;
         initializing = false;
         saveFile.Save(saveData);
@@ -80,6 +67,30 @@ class SeriesState{
 
     bool IsUnlocked(){
         return medalRequirement <= data.items.GetProgressionMedalCount();
+    }
+
+    void SendScouts(){
+        array<int> ids = array<int>(MAX_MAP_LOCATIONS * mapCount);
+        int index = 0;
+        for(int i = 0; i < mapCount; i++){
+            ids[index] = MapIndicesToId(seriesIndex, i, CheckTypes::Bronze);
+            index++;
+            if (saveData.settings.targetTimeSetting >= 1){
+                ids[index] = MapIndicesToId(seriesIndex, i, CheckTypes::Silver);
+                index++;
+            }
+            if (saveData.settings.targetTimeSetting >= 2){
+                ids[index] = MapIndicesToId(seriesIndex, i, CheckTypes::Gold);
+                index++;
+            }
+            if (saveData.settings.targetTimeSetting >= 3){
+                ids[index] = MapIndicesToId(seriesIndex, i, CheckTypes::Author);
+                index++;
+            }
+            ids[index] = MapIndicesToId(seriesIndex, i, CheckTypes::Target);
+            index++;
+        }
+        SendLocationScouts(ids, index);
     }
 
     Json::Value ToJson(){

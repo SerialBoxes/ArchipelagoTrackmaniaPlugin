@@ -62,7 +62,7 @@ enum CheckTypes{ //used for building location IDs
 }
 
 enum CheckFlags{ //used for tracking location checks
-    None = 0;
+    None = 0,
     Bronze = 1,
     Silver = 2,
     Gold = 4,
@@ -95,6 +95,13 @@ class PhysicsPatch{
         this.exebuild = exebuild;
         this.tags = tags;
     }
+}
+
+enum PlaygroundPageType {
+    Record,
+    Start,
+    Pause,
+    End
 }
 
 //source : https://github.com/st-AR-gazer/tm_Patch-Warner/blob/main/src/Main.as
