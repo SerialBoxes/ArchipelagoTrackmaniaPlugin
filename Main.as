@@ -1,5 +1,5 @@
 
-bool isOpen = true;
+bool isOpen = false;
 bool shownBefore = false;
 
 SaveData@ data = null;
@@ -26,6 +26,7 @@ void Render(){
         }else{
             if (GetIsOnMap()){
                 RenderMapUI();
+                DrawPlaygroundUI();
             }else{
                 RenderMainMenu();
             }

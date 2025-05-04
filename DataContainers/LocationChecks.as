@@ -45,6 +45,17 @@ class LocationChecks{
         return masked == mask;
     }
 
+    CheckTypes GetNthCheck(int seriesI, int mapI, int n){
+        int checkCount = 0;
+        for (int i = 4; i >= 0; i--){
+            if (GotCheck(seriesI, mapI, CheckTypes(i))){
+                if (n == checkCount) return CheckTypes(i);
+                checkCount++;
+            }
+        }
+        return CheckTypes::Bronze;
+    }
+
     int ChecksRemaining(int seriesI, int mapI){
         int remaining = 0;
         int checks = checkFlags[seriesI][mapI];
@@ -64,6 +75,16 @@ class LocationChecks{
             remaining += 1;
         }
         return remaining;
+    }
+
+    int ChecksGotten(int seriesI, int mapI){
+        int checkCount = 0;
+        for (int i = 4; i >= 0; i--){
+            if (GotCheck(seriesI, mapI, CheckTypes(i))){
+                checkCount++;
+            }
+        }
+        return checkCount;
     }
 
     int AddLocationChecks(array<int> &checks, int seriesI, int mapI){

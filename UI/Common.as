@@ -2,6 +2,7 @@ UI::Font@ fontHuge;
 UI::Font@ fontHeader;
 UI::Font@ fontHeaderSub;
 UI::Font@ fontTime;
+int NvgFont;
 
 UI::Texture@ bronzeTex;
 UI::Texture@ silverTex;
@@ -9,11 +10,23 @@ UI::Texture@ goldTex;
 UI::Texture@ authorTex;
 UI::Texture@ archipelagoTex;
 
+//jeepers
 nvg::Texture@ bronzeTexNVG;
 nvg::Texture@ silverTexNVG;
 nvg::Texture@ goldTexNVG;
 nvg::Texture@ authorTexNVG;
 nvg::Texture@ archipelagoTexNVG;
+nvg::Texture@ bronzeTexNVGMed;
+nvg::Texture@ silverTexNVGMed;
+nvg::Texture@ goldTexNVGMed;
+nvg::Texture@ authorTexNVGMed;
+nvg::Texture@ archipelagoTexNVGMed;
+nvg::Texture@ bronzeTexNVGSmol;
+nvg::Texture@ silverTexNVGSmol;
+nvg::Texture@ goldTexNVGSmol;
+nvg::Texture@ authorTexNVGSmol;
+nvg::Texture@ archipelagoTexNVGSmol;
+nvg::Texture@ shadowTexNVG;
 
 void RenderInventory(){
     UI::Text("Progression Medals: " + data.items.GetProgressionMedalCount() + "/"+(data.settings.medalRequirement*data.settings.seriesCount));
@@ -71,6 +84,69 @@ UI::Texture@ GetProgressionTex(){
     }
 }
 
+nvg::Texture@ GetNthSmolTex(ItemTypes type){
+    switch (type){
+        case ItemTypes::BronzeMedal:
+            return bronzeTexNVGSmol;
+        case ItemTypes::SilverMedal:
+            return silverTexNVGSmol;
+        case ItemTypes::GoldMedal:
+            return goldTexNVGSmol;
+        case ItemTypes::AuthorMedal:
+            return authorTexNVGSmol;
+        case ItemTypes::Archipelago:
+            return archipelagoTexNVGSmol;
+        case ItemTypes::Skip:
+            return archipelagoTexNVGSmol;
+        case ItemTypes::Filler:
+            return archipelagoTexNVGSmol;
+        default:
+            return archipelagoTexNVGSmol;
+    }
+}
+
+nvg::Texture@ GetNthMedTex(ItemTypes type){
+    switch (type){
+        case ItemTypes::BronzeMedal:
+            return bronzeTexNVGMed;
+        case ItemTypes::SilverMedal:
+            return silverTexNVGMed;
+        case ItemTypes::GoldMedal:
+            return goldTexNVGMed;
+        case ItemTypes::AuthorMedal:
+            return authorTexNVGMed;
+        case ItemTypes::Archipelago:
+            return archipelagoTexNVGMed;
+        case ItemTypes::Skip:
+            return archipelagoTexNVGMed;
+        case ItemTypes::Filler:
+            return archipelagoTexNVGMed;
+        default:
+            return archipelagoTexNVGMed;
+    }
+}
+
+nvg::Texture@ GetNthTex(ItemTypes type){
+    switch (type){
+        case ItemTypes::BronzeMedal:
+            return bronzeTexNVG;
+        case ItemTypes::SilverMedal:
+            return silverTexNVG;
+        case ItemTypes::GoldMedal:
+            return goldTexNVG;
+        case ItemTypes::AuthorMedal:
+            return authorTexNVG;
+        case ItemTypes::Archipelago:
+            return archipelagoTexNVG;
+        case ItemTypes::Skip:
+            return archipelagoTexNVG;
+        case ItemTypes::Filler:
+            return archipelagoTexNVG;
+        default:
+            return archipelagoTexNVG;
+    }
+}
+
 void DrawChecksRemaining(int seriesI, int mapI){
     if (!data.locations.GotCheck(seriesI, mapI, CheckTypes::Target)){
         UI::SameLine();
@@ -119,14 +195,27 @@ void LoadUIAssets(){
     @fontHeaderSub = UI::LoadFont("DroidSans.ttf", 22, -1, -1, true, true, true);
     @fontHuge = UI::LoadFont("DroidSans.ttf", 40, -1, -1, true, true, true);
     @fontTime = UI::LoadFont("Fonts/digital-7.mono.ttf", 18, -1, -1, true, true, true);
+    NvgFont = nvg::LoadFont("DroidSans.ttf");
 
-    @bronzeTex = UI::LoadTexture("Images/bronze.png");
-    @silverTex = UI::LoadTexture("Images/silver.png");
-    @goldTex = UI::LoadTexture("Images/gold.png");
-    @authorTex = UI::LoadTexture("Images/author.png");
+    @bronzeTex = UI::LoadTexture("Images/bronzeMed.png");
+    @silverTex = UI::LoadTexture("Images/silverMed.png");
+    @goldTex = UI::LoadTexture("Images/goldMed.png");
+    @authorTex = UI::LoadTexture("Images/authorMed.png");
 
     @bronzeTexNVG = nvg::LoadTexture("Images/bronze.png");
     @silverTexNVG = nvg::LoadTexture("Images/silver.png");
     @goldTexNVG = nvg::LoadTexture("Images/gold.png");
     @authorTexNVG = nvg::LoadTexture("Images/author.png");
+    @archipelagoTexNVG = nvg::LoadTexture("Images/archipelago.png");
+    @bronzeTexNVGMed = nvg::LoadTexture("Images/bronzeMed.png");
+    @silverTexNVGMed = nvg::LoadTexture("Images/silverMed.png");
+    @goldTexNVGMed = nvg::LoadTexture("Images/goldMed.png");
+    @authorTexNVGMed = nvg::LoadTexture("Images/authorMed.png");
+    @archipelagoTexNVGMed = nvg::LoadTexture("Images/archipelagoMed.png");
+    @bronzeTexNVGSmol = nvg::LoadTexture("Images/bronzeSmall.png");
+    @silverTexNVGSmol = nvg::LoadTexture("Images/silverSmall.png");
+    @goldTexNVGSmol = nvg::LoadTexture("Images/goldSmall.png");
+    @authorTexNVGSmol = nvg::LoadTexture("Images/authorSmall.png");
+    @archipelagoTexNVGSmol = nvg::LoadTexture("Images/archipelagoSmall.png");
+    @shadowTexNVG = nvg::LoadTexture("Images/shadow.png");
 }
