@@ -73,7 +73,6 @@ void RenderMapUI(){
             if (!data.locations.GotAllChecks(loadedMap.seriesIndex, loadedMap.mapIndex)){
                 UI::Text("Checks Left:");
                 UI::Indent();
-                UI::NewLine();
                 DrawChecksRemaining(loadedMap.seriesIndex, loadedMap.mapIndex);
                 UI::Unindent();
                 UI::Separator();

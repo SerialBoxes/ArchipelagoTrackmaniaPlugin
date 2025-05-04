@@ -176,7 +176,6 @@ void RenderTooltip(MapState@ map){
     UI::Unindent();
     UI::Text("Checks Left:");
     UI::Indent();
-    UI::NewLine();
     DrawChecksRemaining(map.seriesIndex, map.mapIndex);
     UI::Unindent();
 

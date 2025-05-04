@@ -17,7 +17,7 @@ void RenderConnectUI(){
 #endif
 
         if (!socket.NotDisconnected()){
-            if (UI::ButtonColored(Icons::Circle + "Connect to Archipelago Client!", 0.33)){
+            if (UI::ButtonColored(	Icons::Kenney::SignIn + " Connect to Archipelago Client!", 0.33)){
                 StartConnection();
             }
         }else{

@@ -10,7 +10,7 @@ void LoadMapByIndex(int seriesIndex, int mapIndex){
 }
 
 void RerollMap(int seriesI, int mapI){
-    Log::Log("Rerolling Series " + seriesI + " Map " + mapI + ", one second please!", true);
+    Log::Log("Rerolling Series " + (seriesI+1) + " Map " + (mapI+1) + ", one second please!", true);
     MapState@ mapState = data.world[seriesI].maps[mapI];
     string URL = BuildRandomMapQueryURL();
     MapInfo@ mapRoll = QueryForRandomMap(URL);

@@ -148,59 +148,42 @@ nvg::Texture@ GetNthTex(ItemTypes type){
 }
 
 void DrawChecksRemaining(int seriesI, int mapI){
+    string render = "";
     if (!data.locations.GotCheck(seriesI, mapI, CheckTypes::Target)){
-        UI::SameLine();
-        UI::PushStyleColor(UI::Col::Text, vec4(1,1,1,1));
-        MoveCursor(vec2(-12,0));
-        UI::Text(Icons::Circle);
-        UI::PopStyleColor();
+        render += "\\$fff"+Icons::Circle + "\\$z ";
     }
-    if (!data.locations.GotCheck(seriesI, mapI, CheckTypes::Author)){
-        UI::SameLine();
-        UI::PushStyleColor(UI::Col::Text, vec4(0,0.6,0.4,1));
-        MoveCursor(vec2(-12,0));
-        UI::Text(Icons::Circle);
-        UI::PopStyleColor();
+    if (!data.locations.GotCheck(seriesI, mapI, CheckTypes::Author) && data.settings.targetTimeSetting >= 3){
+        render += "\\$0a6"+Icons::Circle + "\\$z ";
     }
-    if (!data.locations.GotCheck(seriesI, mapI, CheckTypes::Gold)){
-        UI::SameLine();
-        UI::PushStyleColor(UI::Col::Text, vec4(1,0.8,0.226,1));
-        MoveCursor(vec2(-12,0));
-        UI::Text(Icons::Circle);
-        UI::PopStyleColor();
+    if (!data.locations.GotCheck(seriesI, mapI, CheckTypes::Gold) && data.settings.targetTimeSetting >= 2){
+        render += "\\$fc4"+Icons::Circle + "\\$z ";
     }
-    if (!data.locations.GotCheck(seriesI, mapI, CheckTypes::Silver)){
-        UI::SameLine();
-        UI::PushStyleColor(UI::Col::Text, vec4(0.5,0.5,0.5,1));
-        MoveCursor(vec2(-12,0));
-        UI::Text(Icons::Circle);
-        UI::PopStyleColor();
+    if (!data.locations.GotCheck(seriesI, mapI, CheckTypes::Silver) && data.settings.targetTimeSetting >= 1){
+        render += "\\$888"+Icons::Circle + "\\$z ";
     }
     if (!data.locations.GotCheck(seriesI, mapI, CheckTypes::Bronze)){
-        UI::SameLine();
-        UI::PushStyleColor(UI::Col::Text, vec4(.578,0.395,0.226,1));
-        MoveCursor(vec2(-12,0));
-        UI::Text(Icons::Circle);
-        UI::PopStyleColor();
+        render += "\\$964"+Icons::Circle + "\\$z ";
     }
     if (data.locations.GotAllChecks(seriesI, mapI)){
-        UI::SameLine();
-        MoveCursor(vec2(-12,0));
-        UI::Text("None! :)");
+        render += "None! :D";
     }
+    UI::Text(render);
 }
 
 void LoadUIAssets(){
     @fontHeader = UI::LoadFont("DroidSans-Bold.ttf", 26, -1, -1, true, true, true);
     @fontHeaderSub = UI::LoadFont("DroidSans.ttf", 22, -1, -1, true, true, true);
+    yield();
     @fontHuge = UI::LoadFont("DroidSans.ttf", 40, -1, -1, true, true, true);
     @fontTime = UI::LoadFont("Fonts/digital-7.mono.ttf", 18, -1, -1, true, true, true);
     NvgFont = nvg::LoadFont("DroidSans.ttf");
+    yield();
 
     @bronzeTex = UI::LoadTexture("Images/bronzeMed.png");
     @silverTex = UI::LoadTexture("Images/silverMed.png");
     @goldTex = UI::LoadTexture("Images/goldMed.png");
     @authorTex = UI::LoadTexture("Images/authorMed.png");
+    yield();
 
     @bronzeTexNVG = nvg::LoadTexture("Images/bronze.png");
     @silverTexNVG = nvg::LoadTexture("Images/silver.png");
@@ -210,6 +193,7 @@ void LoadUIAssets(){
     @bronzeTexNVGMed = nvg::LoadTexture("Images/bronzeMed.png");
     @silverTexNVGMed = nvg::LoadTexture("Images/silverMed.png");
     @goldTexNVGMed = nvg::LoadTexture("Images/goldMed.png");
+    yield();
     @authorTexNVGMed = nvg::LoadTexture("Images/authorMed.png");
     @archipelagoTexNVGMed = nvg::LoadTexture("Images/archipelagoMed.png");
     @bronzeTexNVGSmol = nvg::LoadTexture("Images/bronzeSmall.png");
@@ -218,4 +202,5 @@ void LoadUIAssets(){
     @authorTexNVGSmol = nvg::LoadTexture("Images/authorSmall.png");
     @archipelagoTexNVGSmol = nvg::LoadTexture("Images/archipelagoSmall.png");
     @shadowTexNVG = nvg::LoadTexture("Images/shadow.png");
+    yield();
 }

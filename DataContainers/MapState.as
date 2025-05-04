@@ -70,11 +70,12 @@ class MapState{
         this.mapInfo = mapInfo;
         this.targetTime = CalculateTargetTime();
         personalBestTime = 30000000;
+        RequestThumbnail();
     }
 
     void RequestThumbnail(bool delay = false){
         API::NetworkCallback@ cb = API::NetworkCallback(ThumbnailRecieved);
-        API::NetRequest@ request = API::NetRequest("https://trackmania.exchange/mapthumb/" + mapInfo.MapId, cb);
+        API::NetRequest@ request = API::NetRequest("https://"+MX_URL+"/mapthumb/" + mapInfo.MapId, cb);
         if (delay) request.delayMS = 2000 * seriesIndex; //this is just a hacky way to not ddos tmx without adding a ton to this project i rly just wanna be doneaaaaaaaaa
         startnew(API::GetAsyncImg, request);
     }

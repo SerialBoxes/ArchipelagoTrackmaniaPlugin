@@ -10,11 +10,11 @@ SaveFile@ saveFile = null;
 void Main(){
     initTags();
 
-    LoadUIAssets();
+    startnew(LoadUIAssets);
 }
 
 void RenderMenu(){
-    if (UI::MenuItem(Icons::Cloud + " \\$z" + "Archipelago","", isOpen)) {
+    if (UI::MenuItem("\\$d5b"+Icons::Kenney::Key + "\\$z" + " Archipelago","", isOpen)) {
         isOpen = !isOpen;
     }
 }
@@ -32,7 +32,7 @@ void Render(){
             }
         }
     }else{
-        if (socket.IsConnected()){
+        if (socket.NotDisconnected()){
             socket.Close();
         }
     }
