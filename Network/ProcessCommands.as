@@ -82,13 +82,7 @@ void ProcessConnected (Json::Value@ json){
         startnew(CoroutineFunc(data.world[0].Initialize));
     }
     seedNameCache = "";
-    Json::Value@ checkedLocations = json["checked_locations"];
-    if (checkedLocations !is null && checkedLocations.GetType() == Json::Type::Array){
-        for (int i = 0; i < checkedLocations.Length; i++{
-            vec3 indices = MapIdToIndices(checkedLocations[i]);
-            data.locations.FlagCheck(int(indices.x),int(indices.y),int(indices.z));
-        }
-    }
+    CheckLocations(json);
     SendStatusUpdate(ClientStatus::CLIENT_PLAYING);
     
 }
@@ -161,14 +155,7 @@ void ProcessRetrieved (Json::Value@ json){
 }
 
 void ProcessRoomUpdate (Json::Value@ json){
-    Json::Value@ locations = json["checked_locations"];
-    if (locations !is null && locations.GetType() == Json::Type::Array){
-        for (uint i = 0; i < locations.Length; i++){
-            int loc = locations[i];
-            vec3 indices = MapIdToIndices(loc);
-            data.locations.FlagCheck(int(indices.x),int(indices.y), CheckTypes(int(indices.z)));
-        }
-    }
+    CheckLocations(json);
 }
 
 void ProcessReroll (Json::Value@ json){
@@ -184,4 +171,15 @@ array<string> FormatStringList(const string &in bla){
         arr[i] = json[i];
     }
     return arr;
+}
+
+void CheckLocations(Json::Value@ json){
+    Json::Value@ locations = json["checked_locations"];
+    if (locations !is null && locations.GetType() == Json::Type::Array){
+        for (uint i = 0; i < locations.Length; i++){
+            int loc = locations[i];
+            vec3 indices = MapIdToIndices(loc);
+            data.locations.FlagCheck(int(indices.x),int(indices.y), CheckTypes(int(indices.z)));
+        }
+    }
 }
