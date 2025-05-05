@@ -74,3 +74,12 @@ void SendStatusUpdate(ClientStatus status){
     string message  = Json::Write(parent);
     socket.SendWebsocketPacket(message);
 }
+
+void SendSync(){
+    Json::Value@ json = Json::Object();
+    json["cmd"] = "Sync";
+    Json::Value@ parent = Json::Array();
+    parent.Add(json);
+    string message  = Json::Write(parent);
+    socket.SendWebsocketPacket(message);
+}

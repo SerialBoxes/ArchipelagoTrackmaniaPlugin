@@ -82,6 +82,13 @@ void ProcessConnected (Json::Value@ json){
         startnew(CoroutineFunc(data.world[0].Initialize));
     }
     seedNameCache = "";
+    Json::Value@ checkedLocations = json["checked_locations"];
+    if (checkedLocations !is null && checkedLocations.GetType() == Json::Type::Array){
+        for (int i = 0; i < checkedLocations.Length; i++{
+            vec3 indices = MapIdToIndices(checkedLocations[i]);
+            data.locations.FlagCheck(int(indices.x),int(indices.y),int(indices.z));
+        }
+    }
     SendStatusUpdate(ClientStatus::CLIENT_PLAYING);
     
 }
@@ -110,6 +117,9 @@ void ProcessReceivedItems (Json::Value@ json){
     if (serverIndex == 0 && data.items.itemsRecieved > 0){
         //resync!!
         data.items.Reset();
+    }
+    if (serverIndex > data.itemsRecieved + items.Length){
+        SendSync();
     }
     for (uint i = 0; i < items.Length; i++){
         data.items.AddItem(items[i]["item"]);
