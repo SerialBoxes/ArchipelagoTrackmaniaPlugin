@@ -135,7 +135,7 @@ dictionary GetTags(){
 }
 #elif MP4
 dictionary GetTags(){
-    return TMX_TAGS;
+    return TM2_TAGS;
 }
 #endif
 
@@ -211,13 +211,13 @@ void initTags(){
 
     //ManiaPlanet
     TM2_TAGS["Race"]             = 1;
-    TM2_TAGS["Fullspeed"]        = 2;
+    TM2_TAGS["FullSpeed"]        = 2; //called Fullspeed in api
     TM2_TAGS["Tech"]             = 3;
     TM2_TAGS["RPG"]              = 4;
     TM2_TAGS["LOL"]              = 5;
     TM2_TAGS["Press Forward"]    = 6;
-    TM2_TAGS["Speedtech"]        = 7;
-    TM2_TAGS["Multilap"]         = 8;
+    TM2_TAGS["SpeedTech"]        = 7; //called Speedtech in api
+    TM2_TAGS["MultiLap"]         = 8; //called Multilap in api
     TM2_TAGS["Offroad"]          = 9;
     TM2_TAGS["Trial"]            = 10;
     TM2_TAGS["Mixed"]            = 11;

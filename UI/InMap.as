@@ -70,14 +70,6 @@ void RenderMapUI(){
             UI::Unindent();
             UI::Separator();
 
-            if (!data.locations.GotAllChecks(loadedMap.seriesIndex, loadedMap.mapIndex)){
-                UI::Text("Checks Left:");
-                UI::Indent();
-                DrawChecksRemaining(loadedMap.seriesIndex, loadedMap.mapIndex);
-                UI::Unindent();
-                UI::Separator();
-            }
-
             UI::Text("Skips Available: " + (data.items.skips - data.items.skipsUsed));
             if (loadedMap.skipped){
                 UI::Text("Map Skipped!");
@@ -87,6 +79,14 @@ void RenderMapUI(){
                 }
             }
             UI::Separator();
+
+            if (!data.locations.GotAllChecks(loadedMap.seriesIndex, loadedMap.mapIndex)){
+                UI::Text("Checks Left:");
+                UI::Indent();
+                DrawChecksRemaining(loadedMap.seriesIndex, loadedMap.mapIndex);
+                UI::Unindent();
+                UI::Separator();
+            }
 
 
         } else {

@@ -22,6 +22,9 @@ void RenderConnectUI(){
             }
         }else{
             UI::Text("Connecting...");
+            if (UI::ButtonColored(Icons::Times+" Cancel", 0.0)){
+                socket.Close();
+            }
         }
     }
     EndConnectUI();

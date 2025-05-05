@@ -1,6 +1,7 @@
 
 bool isOpen = false;
 bool shownBefore = false;
+bool loadingFinished = false;
 
 SaveData@ data = null;
 WebSocket socket = WebSocket("localhost",22422);
@@ -20,7 +21,7 @@ void RenderMenu(){
 }
 
 void Render(){
-    if (isOpen){
+    if (isOpen && loadingFinished){
         if (!socket.IsConnected()){
             RenderConnectUI();
         }else{

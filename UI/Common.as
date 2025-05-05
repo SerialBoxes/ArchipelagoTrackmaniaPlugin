@@ -202,5 +202,5 @@ void LoadUIAssets(){
     @authorTexNVGSmol = nvg::LoadTexture("Images/authorSmall.png");
     @archipelagoTexNVGSmol = nvg::LoadTexture("Images/archipelagoSmall.png");
     @shadowTexNVG = nvg::LoadTexture("Images/shadow.png");
-    yield();
+    loadingFinished = true;
 }
