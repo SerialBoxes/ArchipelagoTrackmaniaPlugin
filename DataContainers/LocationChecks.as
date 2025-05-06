@@ -4,15 +4,15 @@ class LocationChecks{
 
     SaveData@ saveData;
 
-    LocationChecks(SaveData@ saveData, uint seriesCount, uint mapsInSeriesCount){
+    LocationChecks(SaveData@ saveData, uint seriesCount){
         @this.saveData = saveData;
-        checkFlags = array<array<uint>>(seriesCount, array<uint>(mapsInSeriesCount));
+        checkFlags = array<array<uint>>(seriesCount, array<uint>(MAX_MAPS_IN_SERIES));
     }
 
     LocationChecks(SaveData@ saveData, const Json::Value &in json){
         @this.saveData = saveData;
         if (json !is null){
-            checkFlags = array<array<uint>>(json.Length,array<uint>(json[0].Length));
+            checkFlags = array<array<uint>>(json.Length,array<uint>(MAX_MAPS_IN_SERIES));
             for (uint i = 0; i < json.Length; i++){
                 for (uint j = 0; j < json[0].Length; j++){
                     checkFlags[i][j] = uint(json[i][j]);

@@ -1,6 +1,7 @@
 class SeriesState{
     int medalRequirement; // progression medals required to unlock
     int mapCount; // maps in the series
+    array<string> tags;
     array<MapState@> maps;
     bool initialized;
     bool initializing;
@@ -10,35 +11,15 @@ class SeriesState{
     //derived data
     int seriesIndex;
 
-    SeriesState(SaveData@ saveData, int medalRequirement, int mapCount, int seriesIndex){
-        this.medalRequirement = medalRequirement;
-        this.mapCount = mapCount;
+    SeriesState(SaveData@ saveData, const Json::Value &in json, int seriesIndex, bool isSlot = false){
         this.seriesIndex = seriesIndex;
         @this.saveData = saveData;
-        maps = array<MapState@>(mapCount);
-        initialized = false;
-        initializing = false;
-    }
-
-    SeriesState(SaveData@ saveData, const Json::Value &in json, int seriesIndex){
-
-        maps = array<MapState@>(mapCount);
-        initialized = false;
-        initializing = false;
         try {
-            this.seriesIndex = seriesIndex;
-            @this.saveData = saveData;
-
-            medalRequirement = json["medalRequirement"];
-            mapCount = json["mapCount"];
-
-            maps = array<MapState@>(mapCount);
-            const Json::Value@ mapObjects = json["maps"];
-            for (uint i = 0; i < mapObjects.Length; i++) {
-                @maps[i] = MapState(saveData, mapObjects[i],seriesIndex,i);
+            if (isSlot){
+                ReadSlotData(json);
+            } else{
+                ReadJsonV1_1(json);
             }
-            initialized = int(mapObjects.Length) == mapCount;
-            initializing = false;
         } catch {
             Log::Error("Error parsing SeriesState for Series "+seriesIndex+"\nReason: " + getExceptionInfo());
         }
@@ -50,8 +31,8 @@ class SeriesState{
         bool loadError = false;
         for(int i = 0; i < mapCount; i++){
             if (maps[i] !is null) continue;
-            string URL = BuildRandomMapQueryURL();
-            MapInfo@ mapRoll = QueryForRandomMap(URL);
+            string URL = BuildRandomMapQueryURL(seriesIndex);
+            MapInfo@ mapRoll = QueryForRandomMap(URL, seriesIndex);
             if (mapRoll is null){
                 Log::Error("Unable to roll Series "+seriesIndex+" Map "+i);
                 loadError = true;
@@ -93,6 +74,38 @@ class SeriesState{
         SendLocationScouts(ids, index);
     }
 
+    void ReadSlotData(const Json::Value@ &in json){
+        this.medalRequirement = json["MedalRequirement"];
+        this.mapCount = json["MapCount"];
+        maps = array<MapState@>(mapCount);
+        tags = FormatStringList(json["MapTags"]);
+        initialized = false;
+        initializing = false;
+    }
+
+    void ReadJsonV1_1(const Json::Value@ &in json){
+        initialized = false;
+        initializing = false;
+
+        medalRequirement = json["medalRequirement"];
+        mapCount = json["mapCount"];
+
+        maps = array<MapState@>(mapCount);
+        const Json::Value@ mapObjects = json["maps"];
+        for (uint i = 0; i < mapObjects.Length; i++) {
+            @maps[i] = MapState(saveData, mapObjects[i],seriesIndex,i);
+        }
+
+        const Json::Value@ tagObjects = json["tags"];
+        tags = array<string>(tagObjects.Length);
+        for (uint i = 0; i < tagObjects.Length; i++) {
+            tags[i] = tagObjects[i];
+        }
+
+        initialized = int(mapObjects.Length) == mapCount;
+        initializing = false;
+    }
+
     Json::Value ToJson(){
         Json::Value json = Json::Object();
         try {
@@ -105,6 +118,11 @@ class SeriesState{
                 }
             }
             json["maps"] = mapArray;
+            Json::Value tagsArray = Json::Array();
+            for (uint i = 0; i < tags.Length; i++) {
+                tagsArray.Add(tags[i]);
+            }
+            json["tags"] = tagsArray;
         } catch {
             Log::Error("Error converting SeriesState to JSON for Series "+seriesIndex);
         }

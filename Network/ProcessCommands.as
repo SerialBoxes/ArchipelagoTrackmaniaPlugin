@@ -58,7 +58,7 @@ void ProcessConnected (Json::Value@ json){
         Json::Value@ saveJson = saveFile.Load();
         @data = SaveData(seedNameCache, teamI, playerI, saveJson);
         //resend all map checks we have, just in case some got missed!
-        array<int> allChecks = array<int>(data.settings.seriesCount*data.settings.mapsInSeries*MAX_MAP_LOCATIONS);
+        array<int> allChecks = array<int>(MAX_SERIES_COUNT*MAX_MAPS_IN_SERIES*MAX_MAP_LOCATIONS);
         int total = 0;
         for (uint i = 0; i < data.world.Length; i++){
             for (uint j = 0; j < data.world[i].maps.Length; j++){
@@ -67,21 +67,13 @@ void ProcessConnected (Json::Value@ json){
         }
         SendLocationChecks(allChecks, total);
     } else{
-        YamlSettings@ settings = YamlSettings();
-        settings.targetTimeSetting = json["slot_data"]["TargetTimeSetting"];
-        settings.seriesCount = json["slot_data"]["SeriesNumber"];
-        settings.mapsInSeries = json["slot_data"]["SeriesMapNumber"];
-        settings.medalRequirement = json["slot_data"]["MedalRequirement"];
-        settings.tags = FormatStringList(json["slot_data"]["MapTags"]);
-        settings.tagsInclusive = json["slot_data"]["MapTagsInclusive"] == 0 ? false : true;
-        settings.etags = FormatStringList(json["slot_data"]["MapETags"]);;
-        settings.difficulties = FormatStringList(json["slot_data"]["Difficulties"]);;
 
-        @data = SaveData(seedNameCache, teamI, playerI, settings);
+        @data = SaveData(seedNameCache, teamI, playerI, json["slot_data"]);
 
         startnew(CoroutineFunc(data.world[0].Initialize));
     }
     seedNameCache = "";
+    if (!socket.NotDisconnected()) return;
     CheckLocations(json);
     SendStatusUpdate(ClientStatus::CLIENT_PLAYING);
     
@@ -119,7 +111,7 @@ void ProcessReceivedItems (Json::Value@ json){
         data.items.AddItem(items[i]["item"]);
     }
     //check if we won
-    if (!data.hasGoal && data.items.GetProgressionMedalCount() >= data.settings.medalRequirement * data.settings.seriesCount){
+    if (!data.hasGoal && data.items.GetProgressionMedalCount() >= data.victoryRequirement){
         SendStatusUpdate(ClientStatus::CLIENT_GOAL);
         data.hasGoal = true;
     }

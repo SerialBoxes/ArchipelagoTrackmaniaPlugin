@@ -12,8 +12,8 @@ void LoadMapByIndex(int seriesIndex, int mapIndex){
 void RerollMap(int seriesI, int mapI){
     Log::Log("Rerolling Series " + (seriesI+1) + " Map " + (mapI+1) + ", one second please!", true);
     MapState@ mapState = data.world[seriesI].maps[mapI];
-    string URL = BuildRandomMapQueryURL();
-    MapInfo@ mapRoll = QueryForRandomMap(URL);
+    string URL = BuildRandomMapQueryURL(seriesI);
+    MapInfo@ mapRoll = QueryForRandomMap(URL, seriesI);
     if (mapRoll !is null){
         mapState.ReplaceMap(mapRoll);
         if (loadedMap.seriesIndex == seriesI && loadedMap.mapIndex == mapI){
@@ -58,7 +58,7 @@ void LoadMap(ref@ mapData){
     }
 }
 
-MapInfo@ QueryForRandomMap(const string &in URL){
+MapInfo@ QueryForRandomMap(const string &in URL, int seriesI){
     if (!socket.NotDisconnected()) return null;
     isQueryingForMap = true;
     Json::Value@ res;
@@ -68,27 +68,27 @@ MapInfo@ QueryForRandomMap(const string &in URL){
     } catch {
         Log::Error("Could not reach TMX, it might be down...", true);
         //sleep(3000);
-        //return QueryForRandomMap(URL);
+        //return QueryForRandomMap(URL, seriesI);
         return null;
     }
     if (res.GetType() != Json::Type::Array || res.Length == 0){
         Log::Error("Tag Settings match no maps, disabling inclusive and using default etags", true);
         data.tagsOverride = true;
         sleep(1000);
-        return QueryForRandomMap(BuildRandomMapQueryURL());
+        return QueryForRandomMap(BuildRandomMapQueryURL(seriesI),seriesI);
     }
     @mapJson = res[0];
     Log::Trace("Next Map: "+Json::Write(mapJson));
     if (!IsMapValid(mapJson)){
         Log::Warn("Map contains pre-patch physics, retrying...");
         sleep(1000);
-        return QueryForRandomMap(URL);
+        return QueryForRandomMap(URL, seriesI);
     }
     MapInfo@ map = MapInfo(mapJson);
     if (map is null){
         Log::Warn("Map is null, retrying...");
         sleep(1000);
-        return QueryForRandomMap(URL);
+        return QueryForRandomMap(URL, seriesI);
     }
 
     isQueryingForMap = false;
@@ -120,13 +120,13 @@ bool IsMapValid(Json::Value@ mapJson){
     return true;
 }
 
-string BuildRandomMapQueryURL(){
+string BuildRandomMapQueryURL(int seriesI){
     dictionary params;
     params.Set("fields", MAP_FIELDS); //fields that the API will return in the json object
     params.Set("random", "1");
     params.Set("count", "1");
     
-    string tags = BuildTagIdString(data.settings.tags);
+    string tags = BuildTagIdString(data.world[seriesI].tags);
     if (tags.Length > 0){
         params.Set("tag", tags);
         params.Set("taginclusive", (data.settings.tagsInclusive && !data.tagsOverride)?"true":"false");

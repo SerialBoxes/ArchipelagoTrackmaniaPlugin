@@ -29,7 +29,7 @@ nvg::Texture@ archipelagoTexNVGSmol;
 nvg::Texture@ shadowTexNVG;
 
 void RenderInventory(){
-    UI::Text("Progression Medals: " + data.items.GetProgressionMedalCount() + "/"+(data.settings.medalRequirement*data.settings.seriesCount));
+    UI::Text("Progression Medals: " + data.items.GetProgressionMedalCount() + "/"+(data.victoryRequirement));
     UI::Text("Inventory: ");
     UI::BeginTable("Inventory", 5);
     UI::TableNextColumn();

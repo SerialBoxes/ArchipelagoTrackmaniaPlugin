@@ -14,46 +14,49 @@ class SaveData{
 
     //world
     array<SeriesState@> world;
+    int victoryRequirement;
 
     bool hasGoal;
     bool tagsOverride;
 
     //create new save data from scratch
-    SaveData(const string &in seedName, int teamIndex, int playerTeamIndex, YamlSettings@ settings){
+    SaveData(const string &in seedName, int teamIndex, int playerTeamIndex, const Json::Value &in json){
         this.seedName = seedName;
         this.teamIndex = teamIndex;
         this.playerTeamIndex = playerTeamIndex;
-        @this.settings = settings;
-
-        @this.items = Items(this);
-        @this.locations = LocationChecks(this, settings.seriesCount, settings.mapsInSeries);
-
-        hasGoal = false;
-        tagsOverride = false;
-
-        world = array<SeriesState@>(settings.seriesCount);
-        for (uint i = 0; i < world.Length; i++){
-            @world[i] = SeriesState(this, settings.medalRequirement * i, settings.mapsInSeries,i);
-        }
     }
 
     //load a save file from disk
-    SaveData(const string &in seedName, int teamIndex, int playerTeamIndex, const Json::Value &in json){
+    SaveData(const string &in seedName, int teamIndex, int playerTeamIndex, const Json::Value &in json, bool isSlot = false){
         this.seedName = seedName;
         this.teamIndex = teamIndex;
         this.playerTeamIndex = playerTeamIndex;
 
         try {
-            @this.settings = YamlSettings(json["settings"]);
-            @this.items = Items(this, json["items"]);
-            @this.locations = LocationChecks(this,json["locations"]);
-            hasGoal = json["hasGoal"] == "true" ? true : false;
-            tagsOverride = json["tagsOverride"] == "true" ? true : false;
+            if (isSlot){
+                @this.settings = YamlSettings(slotData, true);
+                @this.items = Items(this);
+                @this.locations = LocationChecks(this, settings.seriesCount);
 
-            const Json::Value@ worldObjects = json["world"];
-            world = array<SeriesState@>(worldObjects.Length); //check me toooooo
-            for (uint i = 0; i < worldObjects.Length; i++) {
-                @world[i] = SeriesState(this, worldObjects[i], i);
+                hasGoal = false;
+                tagsOverride = false;
+
+                Json::Value@ seriesData = slotData["SeriesData"];
+                victoryRequirement = 0;
+                world = array<SeriesState@>(seriesData.Length);
+                for (uint i = 0; i < world.Length; i++){
+                    @world[i] = SeriesState(this, seriesData[i], i, true);
+                    victoryRequirement += world[i].medalRequirement;
+                }
+            }else{
+                float version = json["version"];
+                if (version == 1.0){
+                    Log::Error("Outdated save file not supported in this plugin version");
+                    socket.Close();
+                    return;
+                }else if (version == 1.1){
+                    ReadJsonV1_1(json);
+                }
             }
         } catch {
             Log::Error("Error parsing save data" "\nReason: " + getExceptionInfo(), true);
@@ -120,6 +123,22 @@ class SaveData{
             Log::Error("Error converting Save Data to JSON", true);
         }
         return json;
+    }
+
+    void ReadJsonV1_1(const Json::Value &in json){
+        @this.settings = YamlSettings(json["settings"]);
+        @this.items = Items(this, json["items"]);
+        @this.locations = LocationChecks(this,json["locations"]);
+        hasGoal = json["hasGoal"] == "true" ? true : false;
+        tagsOverride = json["tagsOverride"] == "true" ? true : false;
+
+        const Json::Value@ worldObjects = json["world"];
+        victoryRequirement = 0;
+        world = array<SeriesState@>(worldObjects.Length);
+        for (uint i = 0; i < worldObjects.Length; i++) {
+            @world[i] = SeriesState(this, worldObjects[i], i);
+            victoryRequirement += world[i].medalRequirement
+        }
     }
 
 

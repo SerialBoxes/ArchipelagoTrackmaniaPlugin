@@ -118,7 +118,7 @@ void RenderMainMenu(){
 
                 uint nextSeries = i+1;
                 int count = data.items.GetProgressionMedalCount();
-                int total = (nextSeries < data.world.Length) ? data.world[nextSeries].medalRequirement : data.settings.medalRequirement*data.settings.seriesCount;
+                int total = (nextSeries < data.world.Length) ? data.world[nextSeries].medalRequirement : data.victoryRequirement;
                 int size = 60;
                 float medalOffset = (viewSize.x/2)-((size+Draw::MeasureString(""+count+"/"+total,fontHeaderSub).x)/2+16*UI::GetScale());
                 RenderSeriesLine(nextSeries,viewSize,40,4,8);
@@ -151,7 +151,7 @@ void RenderMainMenu(){
             UI::PopStyleVar(1);
             UI::Separator();
 
-            // int total = data.settings.seriesCount * data.settings.medalRequirement;
+            // int total = data.victoryRequirement;
             // UI::Text("Victory Progress: ");
             // UI::Indent();
             // RenderMedalProgress(GetProgressionTex(),60, data.items.GetProgressionMedalCount(),total);
@@ -193,7 +193,7 @@ void RenderSeriesLine(uint seriesI, vec2 viewSize, float height, float width, fl
     vec4 rect = vec4(starPos.x - (width/2),starPos.y,width,endPos.y - starPos.y);
     MoveCursor(vec2(0,margin));
 
-    int total = (seriesI < data.world.Length) ? data.world[seriesI].medalRequirement : data.settings.medalRequirement * data.settings.seriesCount;
+    int total = (seriesI < data.world.Length) ? data.world[seriesI].medalRequirement : data.victoryRequirement;
     int count = data.items.GetProgressionMedalCount();
     vec4 color = vec4(0.35,0.35,0.35,1.0);
     if (count >= total){

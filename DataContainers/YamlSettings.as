@@ -1,9 +1,6 @@
 class YamlSettings{
     float targetTimeSetting;
     int seriesCount;
-    int mapsInSeries;
-    int medalRequirement;
-    array<string> tags;
     bool tagsInclusive;
     array<string> etags;
     array<string> difficulties;
@@ -11,38 +8,17 @@ class YamlSettings{
     YamlSettings(){
         targetTimeSetting = 0.0;
         seriesCount = 0;
-        mapsInSeries = 0;
-        medalRequirement = 0;
-        tags = array<string>(0);
         tagsInclusive = false;
         etags = array<string>(0);
         difficulties = array<string>(0);
     }
 
-    YamlSettings(const Json::Value &in json){
+    YamlSettings(const Json::Value &in json, bool isSlot = false){
         try {
-            targetTimeSetting = json["targetTimeSetting"];
-            seriesCount = json["seriesCount"];
-            mapsInSeries = json["mapsInSeries"];
-            medalRequirement = json["medalRequirement"];
-            tagsInclusive = json["tagsInclusive"] == "true" ? true : false;
-
-            const Json::Value@ tagObjects = json["tags"];
-            tags = array<string>(tagObjects.Length); //check me toooooo
-            for (uint i = 0; i < tagObjects.Length; i++) {
-                tags[i] = tagObjects[i];
-            }
-
-            const Json::Value@ etagObjects = json["etags"];
-            etags = array<string>(etagObjects.Length); //check me toooooo
-            for (uint i = 0; i < etagObjects.Length; i++) {
-                etags[i] = etagObjects[i];
-            }
-
-            const Json::Value@ difficultyObjects = json["difficulties"];
-            difficulties = array<string>(difficultyObjects.Length); //check me toooooo
-            for (uint i = 0; i < difficultyObjects.Length; i++) {
-                difficulties[i] = difficultyObjects[i];
+            if (isSlot){
+                ReadSlotData(json);            
+            }else{
+                ReadJsonV1_1(json);
             }
         } catch {
             Log::Warn("Error parsing YamlSettings"+ "\nReason: " + getExceptionInfo());
@@ -54,14 +30,7 @@ class YamlSettings{
         try {
             json["targetTimeSetting"] = targetTimeSetting;
             json["seriesCount"] = seriesCount;
-            json["mapsInSeries"] = mapsInSeries;
-            json["medalRequirement"] = medalRequirement;
             json["tagsInclusive"] = tagsInclusive? "true" : "false";
-            Json::Value tagsArray = Json::Array();
-            for (uint i = 0; i < tags.Length; i++) {
-                tagsArray.Add(tags[i]);
-            }
-            json["tags"] = tagsArray;
             Json::Value@ etagsArray = Json::Array();
             for (uint i = 0; i < etags.Length; i++) {
                 etagsArray.Add(etags[i]);
@@ -76,5 +45,31 @@ class YamlSettings{
             Log::Error("Error converting Yaml Settings to JSON");
         }
         return json;
+    }
+
+    void ReadSlotData(const Json::Value &in json){
+        targetTimeSetting = json["TargetTimeSetting"];
+        seriesCount = json["SeriesNumber"];
+        tagsInclusive = json["MapTagsInclusive"] == 0 ? false : true;
+        etags = FormatStringList(json["MapETags"]);
+        difficulties = FormatStringList(json["Difficulties"]);
+    }
+
+    void ReadJsonV1_1(const Json::Value &in json){
+        targetTimeSetting = json["targetTimeSetting"];
+        seriesCount = json["seriesCount"];
+        tagsInclusive = json["tagsInclusive"] == "true" ? true : false;
+
+        const Json::Value@ etagObjects = json["etags"];
+        etags = array<string>(etagObjects.Length);
+        for (uint i = 0; i < etagObjects.Length; i++) {
+            etags[i] = etagObjects[i];
+        }
+
+        const Json::Value@ difficultyObjects = json["difficulties"];
+        difficulties = array<string>(difficultyObjects.Length);
+        for (uint i = 0; i < difficultyObjects.Length; i++) {
+            difficulties[i] = difficultyObjects[i];
+        }
     }
 }

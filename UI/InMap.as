@@ -64,7 +64,7 @@ void RenderMapUI(){
             MoveCursor(vec2(0.0,2.0));
             UI::Separator();
 
-            int total = data.settings.seriesCount * data.settings.medalRequirement;
+            int total = data.victoryRequirement;
             UI::Indent();
             RenderMedalProgress(GetProgressionTex(), 60,data.items.GetProgressionMedalCount(), total);
             UI::Unindent();
@@ -107,7 +107,7 @@ void RenderMapUI(){
                 }
                 UI::Text("Victory Progress:");
                 UI::Indent();
-                int total = data.settings.seriesCount * data.settings.medalRequirement;
+                int total = data.victoryRequirement;
                 RenderMedalProgress(GetProgressionTex(),50,data.items.GetProgressionMedalCount(), total);
                 UI::Unindent();
                 UI::Separator();
