@@ -142,7 +142,7 @@ string BuildRandomMapQueryURL(int seriesI){
     }
 
     string difficulties = BuildDifficultyString(data.settings.difficulties);
-    if (difficulties.Length > 0 && !data.tagsOverride){
+    if (difficulties.Length > 0 && data.settings.difficulties.Length <= 4 && !data.tagsOverride){
         params.Set("difficulty", difficulties);
     }
 
