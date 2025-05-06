@@ -14,6 +14,9 @@ class WebSocket{
         messageQueue = array<string>(10);//surely we dont need more than this
     }
 
+    void SetAddress(const string &in ip){
+        this.ip = ip;
+    }
 
     void OpenSocket(){
         if (IS_DEV_MODE)print("Opening Socket");
@@ -22,16 +25,21 @@ class WebSocket{
     }
 
     private void Connect(){
-        bool result = socket.Connect(ip,port);
-        if (result){
-            while (!socket.IsReady()){
-                yield();
+        try{
+            bool result = socket.Connect(ip,port);
+            if (result){
+                while (!socket.IsReady()){
+                    yield();
+                }
+                if (IS_DEV_MODE) print ("Sending Handshake");
+                SocketHandshake();
+                startnew(CoroutineFunc(ReadLoop));
+            }else{
+                error("Error Opening Socket, Closing");
+                Close();
             }
-            if (IS_DEV_MODE) print ("Sending Handshake");
-            SocketHandshake();
-            startnew(CoroutineFunc(ReadLoop));
-        }else{
-            error("Error Opening Socket, Closing");
+        } catch {
+            Log::Error("Error Opening Socket, IP likely invalid");
             Close();
         }
     }

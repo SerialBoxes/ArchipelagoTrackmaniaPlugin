@@ -238,7 +238,7 @@ void DrawOverPlaygroundPage(CGameManialinkPage@ Page, PlaygroundPageType type, C
         DrawHugeMedal(QuadMedalNew.AbsolutePosition_V3, QuadMedalNew.AbsoluteScale, QuadMedalNew.ImageUrl);
     }
 }
-void DrawHugeMedal(vec2 medalPos, float medalScale, string imageURL){
+void DrawHugeMedal(vec2 medalPos, float medalScale, const string &in imageURL){
     const float w      = Math::Max(1, Draw::GetWidth());
     const float h      = Math::Max(1, Draw::GetHeight());
     const vec2  center = vec2(w * 0.5f, h * 0.5f);

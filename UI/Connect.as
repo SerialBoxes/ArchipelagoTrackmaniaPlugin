@@ -1,3 +1,4 @@
+
 void RenderConnectUI(){
 
     //UI::SetNextWindowSize(600, 400, UI::Cond::Always);
@@ -14,11 +15,24 @@ void RenderConnectUI(){
             EndConnectUI();
             return;
         }
+#elif MP4
+        if (CurrentTitlePack().Length <= 0){
+            UI::Text("Please Enter a Titlepack!");
+            EndConnectUI();
+            return;
+        }
 #endif
 
         if (!socket.NotDisconnected()){
             if (UI::ButtonColored(	Icons::Kenney::SignIn + " Connect to Archipelago Client!", 0.33)){
                 StartConnection();
+            }
+            if (Setting_ConnectionOptions){
+                bool changed = false;
+                Setting_ConnectionAddress = UI::InputText("Local Address", Setting_ConnectionAddress, changed);
+                if (changed){
+                    socket.SetAddress(Setting_ConnectionAddress);
+                }
             }
         }else{
             UI::Text("Connecting...");
