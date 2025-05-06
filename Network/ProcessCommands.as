@@ -106,13 +106,14 @@ void ProcessConnectionRefused (Json::Value@ json){
 }
 
 void ProcessReceivedItems (Json::Value@ json){
+    if (data is null) return;
     int serverIndex = json["index"];
     Json::Value@ items = json["items"];
     if (serverIndex == 0 && data.items.itemsRecieved > 0){
         //resync!!
         data.items.Reset();
     }
-    if (serverIndex > data.itemsRecieved + items.Length){
+    if (serverIndex > data.items.itemsRecieved){
         SendSync();
     }
     for (uint i = 0; i < items.Length; i++){

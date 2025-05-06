@@ -9,10 +9,11 @@ void RenderMainMenu(){
     if (UI::Begin("Archipelago - Menu", isOpen, flags)){
 
         if (data is null){
-            UI::Text("Rolling Maps...");
+            UI::Text("Awaiting Server Connection...");
         }else{
             vec2 viewSize = vec2(500,700);
             float manMarn = 4;
+            bool seriesInitializing = false;
             UI::PushStyleVar(UI::StyleVar::FramePadding, vec2(4, 8));
             UI::BeginChild("Serieses", viewSize);
             if (!shownBefore){
@@ -95,7 +96,8 @@ void RenderMainMenu(){
                     UI::NewLine();
                     UI::NewLine();
                 }else{
-                    if (data.world[i].initializing){
+                    if (data.world[i].initializing || seriesInitializing){
+                        seriesInitializing = true;
                         UI::Indent();
                         UI::Text("Rolling Maps...");
                         UI::NewLine();

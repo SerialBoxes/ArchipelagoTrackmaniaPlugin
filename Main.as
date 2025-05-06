@@ -1,16 +1,21 @@
+[Setting name="Advanced Connection Options"]
+bool Setting_ConnectionOptions;
+
+[Setting hidden]
+string Setting_ConnectionAddress = "localhost";
 
 bool isOpen = false;
 bool shownBefore = false;
 bool loadingFinished = false;
 
 SaveData@ data = null;
-WebSocket socket = WebSocket("localhost",22422);
+WebSocket@ socket = null;
 MapState@ loadedMap = null;
 SaveFile@ saveFile = null;
 
 void Main(){
+    @socket = WebSocket(Setting_ConnectionAddress,22422);
     initTags();
-
     startnew(LoadUIAssets);
 }
 
