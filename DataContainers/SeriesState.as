@@ -1,5 +1,5 @@
 class SeriesState{
-    int medalRequirement; // progression medals required to unlock
+    int medalTotal; //number of medals this series contributes to the final total 
     int mapCount; // maps in the series
     array<string> tags;
     array<MapState@> maps;
@@ -10,9 +10,11 @@ class SeriesState{
 
     //derived data
     int seriesIndex;
+    int medalRequirement; // progression medals required to unlock
 
-    SeriesState(SaveData@ saveData, const Json::Value &in json, int seriesIndex, bool isSlot = false){
+    SeriesState(SaveData@ saveData, const Json::Value &in json, int seriesIndex, int requirement, bool isSlot = false){
         this.seriesIndex = seriesIndex;
+        this.medalRequirement = requirement;
         @this.saveData = saveData;
         try {
             if (isSlot){
@@ -75,10 +77,13 @@ class SeriesState{
     }
 
     void ReadSlotData(const Json::Value@ &in json){
-        this.medalRequirement = json["MedalRequirement"];
+        this.medalTotal = json["MedalTotal"];
         this.mapCount = json["MapCount"];
         maps = array<MapState@>(mapCount);
-        tags = FormatStringList(json["MapTags"]);
+        tags = array<string>(json["MapTags"].Length);
+        for (uint i = 0; i < json["MapTags"].Length; i++){
+            tags[i] = json["MapTags"][i];
+        }
         initialized = false;
         initializing = false;
     }
@@ -87,7 +92,7 @@ class SeriesState{
         initialized = false;
         initializing = false;
 
-        medalRequirement = json["medalRequirement"];
+        medalTotal = json["medalTotal"];
         mapCount = json["mapCount"];
 
         maps = array<MapState@>(mapCount);
@@ -109,7 +114,7 @@ class SeriesState{
     Json::Value ToJson(){
         Json::Value json = Json::Object();
         try {
-            json["medalRequirement"] = medalRequirement;
+            json["medalTotal"] = medalTotal;
             json["mapCount"] = mapCount;
             Json::Value@ mapArray = Json::Array();
             for (uint i = 0; i < maps.Length; i++) {

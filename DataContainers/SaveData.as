@@ -19,13 +19,6 @@ class SaveData{
     bool hasGoal;
     bool tagsOverride;
 
-    //create new save data from scratch
-    SaveData(const string &in seedName, int teamIndex, int playerTeamIndex, const Json::Value &in json){
-        this.seedName = seedName;
-        this.teamIndex = teamIndex;
-        this.playerTeamIndex = playerTeamIndex;
-    }
-
     //load a save file from disk
     SaveData(const string &in seedName, int teamIndex, int playerTeamIndex, const Json::Value &in json, bool isSlot = false){
         this.seedName = seedName;
@@ -34,32 +27,31 @@ class SaveData{
 
         try {
             if (isSlot){
-                @this.settings = YamlSettings(slotData, true);
+                @this.settings = YamlSettings(json, true);
                 @this.items = Items(this);
                 @this.locations = LocationChecks(this, settings.seriesCount);
 
                 hasGoal = false;
                 tagsOverride = false;
 
-                Json::Value@ seriesData = slotData["SeriesData"];
+                Json::Value seriesData = json["SeriesData"];
                 victoryRequirement = 0;
                 world = array<SeriesState@>(seriesData.Length);
                 for (uint i = 0; i < world.Length; i++){
-                    @world[i] = SeriesState(this, seriesData[i], i, true);
-                    victoryRequirement += world[i].medalRequirement;
+                    @world[i] = SeriesState(this, seriesData[i], i,victoryRequirement, true);
+                    victoryRequirement += world[i].medalTotal;
                 }
             }else{
-                float version = json["version"];
-                if (version == 1.0){
+                if (json["version"] is null || json["version"] == 1.0){
                     Log::Error("Outdated save file not supported in this plugin version");
                     socket.Close();
                     return;
-                }else if (version == 1.1){
+                }else if (json["version"] == 1.1){
                     ReadJsonV1_1(json);
                 }
             }
         } catch {
-            Log::Error("Error parsing save data" "\nReason: " + getExceptionInfo(), true);
+           Log::Error("Error parsing save data" "\nReason: " + getExceptionInfo(), true);
         }
     }
 
@@ -136,8 +128,8 @@ class SaveData{
         victoryRequirement = 0;
         world = array<SeriesState@>(worldObjects.Length);
         for (uint i = 0; i < worldObjects.Length; i++) {
-            @world[i] = SeriesState(this, worldObjects[i], i);
-            victoryRequirement += world[i].medalRequirement
+            @world[i] = SeriesState(this, worldObjects[i], i, victoryRequirement);
+            victoryRequirement += world[i].medalTotal;
         }
     }
 

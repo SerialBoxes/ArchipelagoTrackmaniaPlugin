@@ -68,7 +68,7 @@ void ProcessConnected (Json::Value@ json){
         SendLocationChecks(allChecks, total);
     } else{
 
-        @data = SaveData(seedNameCache, teamI, playerI, json["slot_data"]);
+        @data = SaveData(seedNameCache, teamI, playerI, json["slot_data"], true);
 
         startnew(CoroutineFunc(data.world[0].Initialize));
     }
@@ -157,14 +157,14 @@ void ProcessReroll (Json::Value@ json){
     }
 }
 
-array<string> FormatStringList(const string &in bla){
-    Json::Value@ json = Json::Parse(bla);
-    array<string> arr = array<string>(json.Length);
-    for (uint i = 0; i < json.Length; i++){
-        arr[i] = json[i];
-    }
-    return arr;
-}
+// array<string> FormatStringList(const string &in bla){
+//     Json::Value@ json = Json::Parse(bla);
+//     array<string> arr = array<string>(json.Length);
+//     for (uint i = 0; i < json.Length; i++){
+//         arr[i] = json[i];
+//     }
+//     return arr;
+// }
 
 void CheckLocations(Json::Value@ json){
     Json::Value@ locations = json["checked_locations"];

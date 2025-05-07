@@ -51,8 +51,14 @@ class YamlSettings{
         targetTimeSetting = json["TargetTimeSetting"];
         seriesCount = json["SeriesNumber"];
         tagsInclusive = json["MapTagsInclusive"] == 0 ? false : true;
-        etags = FormatStringList(json["MapETags"]);
-        difficulties = FormatStringList(json["Difficulties"]);
+        etags = array<string>(json["MapETags"].Length);
+        for (uint i = 0; i < json["MapETags"].Length; i++){
+            etags[i] = json["MapETags"][i];
+        }
+        difficulties = array<string>(json["Difficulties"].Length);
+        for (uint i = 0; i < json["Difficulties"].Length; i++){
+            difficulties[i] = json["Difficulties"][i];
+        }
     }
 
     void ReadJsonV1_1(const Json::Value &in json){
