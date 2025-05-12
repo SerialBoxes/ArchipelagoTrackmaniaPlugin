@@ -16,8 +16,11 @@ class SaveData{
     array<SeriesState@> world;
     int victoryRequirement;
 
+    // stored as a dictionary because checking if key exists should be O(1)
+    dictionary previouslySeenMaps;
+
     bool hasGoal;
-    bool tagsOverride;
+    // tagsOverride -> world[i].searchBuilder.forceSafeURL (per series, not global)
 
     //load a save file from disk
     SaveData(const string &in seedName, int teamIndex, int playerTeamIndex, const Json::Value &in json, bool isSlot = false){
@@ -30,9 +33,7 @@ class SaveData{
                 @this.settings = YamlSettings(json, true);
                 @this.items = Items(this);
                 @this.locations = LocationChecks(this, settings.seriesCount);
-
                 hasGoal = false;
-                tagsOverride = false;
 
                 Json::Value seriesData = json["SeriesData"];
                 victoryRequirement = 0;
@@ -42,12 +43,12 @@ class SaveData{
                     victoryRequirement += world[i].medalTotal;
                 }
             }else{
-                if (json["version"] is null || json["version"] == 1.0){
+                if (json["version"] is null || json["version"] != 1.2){
                     Log::Error("Outdated save file not supported in this plugin version");
                     socket.Close();
                     return;
-                }else if (json["version"] == 1.1){
-                    ReadJsonV1_1(json);
+                }else if (json["version"] == 1.2){
+                    ReadJsonV1_2(json);
                 }
             }
         } catch {
@@ -102,27 +103,33 @@ class SaveData{
         Json::Value json = Json::Object();
         try {
             json["hasGoal"] = hasGoal? "true" : "false";
-            json["tagsOverride"] = tagsOverride? "true" : "false";
             json["settings"] = settings.ToJson();
             json["items"] = items.ToJson();
             json["locations"] = locations.ToJson();
+
             Json::Value seriesArray = Json::Array();
             for (uint i = 0; i < world.Length; i++) {
                 seriesArray.Add(world[i].ToJson());
             }
             json["world"] = seriesArray;
+
+            Json::Value mapsArray = Json::Array();
+            auto mapsKeys = previouslySeenMaps.GetKeys();
+            for (uint i = 0; i < mapsKeys.Length; i++) {
+                mapsArray.Add(mapsKeys[i]);
+            }
+            json["previouslySeenMaps"] = mapsArray;
         } catch {
             Log::Error("Error converting Save Data to JSON", true);
         }
         return json;
     }
 
-    void ReadJsonV1_1(const Json::Value &in json){
+    void ReadJsonV1_2(const Json::Value &in json){
+        hasGoal = json["hasGoal"] == "true" ? true : false;
         @this.settings = YamlSettings(json["settings"]);
         @this.items = Items(this, json["items"]);
         @this.locations = LocationChecks(this,json["locations"]);
-        hasGoal = json["hasGoal"] == "true" ? true : false;
-        tagsOverride = json["tagsOverride"] == "true" ? true : false;
 
         const Json::Value@ worldObjects = json["world"];
         victoryRequirement = 0;
@@ -130,6 +137,11 @@ class SaveData{
         for (uint i = 0; i < worldObjects.Length; i++) {
             @world[i] = SeriesState(this, worldObjects[i], i, victoryRequirement);
             victoryRequirement += world[i].medalTotal;
+        }
+
+        const Json::Value@ mapsSeen = json["previouslySeenMaps"];
+        for (uint i = 0; i < mapsSeen.Length; i++) {
+            previouslySeenMaps.Set(mapsSeen[i], true);
         }
     }
 

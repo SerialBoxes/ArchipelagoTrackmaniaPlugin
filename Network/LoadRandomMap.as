@@ -12,8 +12,9 @@ void LoadMapByIndex(int seriesIndex, int mapIndex){
 void RerollMap(int seriesI, int mapI){
     Log::Log("Rerolling Series " + (seriesI+1) + " Map " + (mapI+1) + ", one second please!", true);
     MapState@ mapState = data.world[seriesI].maps[mapI];
-    string URL = BuildRandomMapQueryURL(seriesI);
-    MapInfo@ mapRoll = QueryForRandomMap(URL, seriesI);
+
+    SearchCriteria@ URLBuilder = data.world[seriesI].searchBuilder;
+    MapInfo@ mapRoll = QueryForRandomMap(URLBuilder);
     if (mapRoll !is null){
         mapState.ReplaceMap(mapRoll);
         if (loadedMap.seriesIndex == seriesI && loadedMap.mapIndex == mapI){
@@ -58,41 +59,65 @@ void LoadMap(ref@ mapData){
     }
 }
 
-MapInfo@ QueryForRandomMap(const string &in URL, int seriesI){
+MapInfo@ QueryForRandomMap(SearchCriteria@ URLBuilder){
     if (!socket.NotDisconnected()) return null;
     isQueryingForMap = true;
     Json::Value@ res;
     Json::Value@ mapJson;
-    try {
-        @res = API::GetAsync(URL)["Results"];
-    } catch {
-        Log::Error("Could not reach TMX, it might be down...", true);
-        //sleep(3000);
-        //return QueryForRandomMap(URL, seriesI);
-        return null;
-    }
-    if (res.GetType() != Json::Type::Array || res.Length == 0){
-        Log::Error("Tag Settings match no maps, disabling inclusive and using default etags", true);
-        data.tagsOverride = true;
-        sleep(1000);
-        return QueryForRandomMap(BuildRandomMapQueryURL(seriesI),seriesI);
-    }
-    @mapJson = res[0];
-    Log::Trace("Next Map: "+Json::Write(mapJson));
-    if (!IsMapValid(mapJson)){
-        Log::Warn("Map contains pre-patch physics, retrying...");
-        sleep(1000);
-        return QueryForRandomMap(URL, seriesI);
-    }
-    MapInfo@ map = MapInfo(mapJson);
-    if (map is null){
-        Log::Warn("Map is null, retrying...");
-        sleep(1000);
-        return QueryForRandomMap(URL, seriesI);
-    }
+    bool reroll = false;
 
+    while (true)
+    {
+        try {
+            string URL = URLBuilder.BuildQueryURL();
+            @res = API::GetAsync(URL)["Results"];
+        }
+        catch {
+            Log::Error("Could not reach TMX, it might be down...", true);
+            break;
+        }
+
+        if (res.GetType() != Json::Type::Array || res.Length == 0) {
+            if (URLBuilder.forceSafeURL) {
+                Log::Error("Unable to find any maps!", true);
+                break;
+            }
+
+            Log::Error("Search either returned no results or errored, entering safe mode and retrying...", true);
+            URLBuilder.forceSafeURL = true;
+            sleep(1000);
+            continue;
+        }
+
+        @mapJson = res[0];
+        Log::Trace("Next Map: " + Json::Write(mapJson));
+        if (!IsMapValid(mapJson)){
+            Log::Warn("Map contains pre-patch physics, retrying...");
+            sleep(1000);
+            continue;
+        }
+
+        string mapUid = mapJson["MapUid"];
+        if (!reroll && data.previouslySeenMaps.Exists(mapUid)) {
+            Log::Warn("Map was previously rolled, retrying once...");
+            reroll = true;
+            sleep(1000);
+            continue;
+        }
+        data.previouslySeenMaps.Set(mapUid, true);
+
+        MapInfo@ map = MapInfo(mapJson);
+        if (map is null){
+            Log::Warn("Map is null, retrying...");
+            sleep(1000);
+            continue;
+        }
+
+        isQueryingForMap = false;
+        return map;
+    }
     isQueryingForMap = false;
-    return map;
+    return null;
 }
 
 bool IsMapValid(Json::Value@ mapJson){
@@ -118,91 +143,4 @@ bool IsMapValid(Json::Value@ mapJson){
 #endif
 
     return true;
-}
-
-string BuildRandomMapQueryURL(int seriesI){
-    dictionary params;
-    params.Set("fields", MAP_FIELDS); //fields that the API will return in the json object
-    params.Set("random", "1");
-    params.Set("count", "1");
-    
-    string tags = BuildTagIdString(data.world[seriesI].tags);
-    if (tags.Length > 0){
-        params.Set("tag", tags);
-        params.Set("taginclusive", (data.settings.tagsInclusive && !data.tagsOverride)?"true":"false");
-    }
-
-    string etags = BuildTagIdString(data.settings.etags);
-    if (etags.Length > 0){
-        if (!data.tagsOverride){
-            params.Set("etag", etags);
-        }else{
-            params.Set("etag", ETAGS);
-        }
-    }
-
-    string difficulties = BuildDifficultyString(data.settings.difficulties);
-    if (difficulties.Length > 0 && data.settings.difficulties.Length <= 4 && !data.tagsOverride){
-        params.Set("difficulty", difficulties);
-    }
-
-    params.Set("authortimemax", tostring(MAX_AUTHOR_TIME)); //5 minute author time max
-    //params.Set("vehicle", "1,2,3,4");//this locks out character pilot and black market maps
-    params.Set("maptype", SUPPORTED_MAP_TYPE);
-
-#if MP4
-    params.Set("titlepack", CurrentTitlePack());
-#endif
-
-    string urlParams = DictToApiParams(params);
-    return "https://" + MX_URL + "/api/maps" + urlParams;
-}
-
-string DictToApiParams(dictionary params) {
-    string urlParams = "";
-    if (!params.IsEmpty()) {
-        auto keys = params.GetKeys();
-        for (uint i = 0; i < keys.Length; i++) {
-            string key = keys[i];
-            string value;
-            params.Get(key, value);
-
-            urlParams += (i == 0 ? "?" : "&");
-            urlParams += key + "=" + Net::UrlEncode(value.Trim());
-        }
-    }
-
-    return urlParams;
-}
-
-string BuildTagIdString(array<string> tagList){
-    string result = "";
-
-    for (uint i = 0; i < tagList.Length; i++){
-        if (GetTags().Exists(tagList[i])){
-            result += "" + int(GetTags()[tagList[i]]) + ",";
-        }
-    }
-
-    if (result.Length > 0){
-        result = result.SubStr(0, result.Length - 1);
-    }
-
-    return result;
-}
-
-string BuildDifficultyString(array<string> difficultyList){
-    string result = "";
-
-    for (uint i = 0; i < difficultyList.Length; i++){
-        if (TMX_DIFFICULTIES.Exists(difficultyList[i])){
-            result += "" + int(TMX_DIFFICULTIES[difficultyList[i]]) + ",";
-        }
-    }
-
-    if (result.Length > 0){
-        result = result.SubStr(0, result.Length - 1);
-    }
-
-    return result;
 }
