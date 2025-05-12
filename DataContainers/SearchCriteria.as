@@ -129,8 +129,9 @@ class SearchCriteria {
                 params.Set("inhasreplay", "1");
         }
         else {
-            // Only use default etags and no other custom search parameters
+            // Only use default etags and max time, and no other custom search parameters
             params.Set("etag", ETAGS);
+            params.Set("authortimemax", tostring(MAX_AUTHOR_TIME));
         }
 
         string urlParams = DictToApiParams(params);
