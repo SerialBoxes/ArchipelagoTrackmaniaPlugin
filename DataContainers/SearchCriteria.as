@@ -15,7 +15,7 @@ class SearchCriteria {
     int author;
     int map_pack;
     int min_length;
-    int max_length;
+    int max_length; // By default, always set to 5 minutes in slot_data (see also: MAX_AUTHOR_TIME)
     bool has_award;
     bool has_replay;
 
