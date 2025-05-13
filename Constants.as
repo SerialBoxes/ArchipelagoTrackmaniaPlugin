@@ -9,7 +9,7 @@ const string MX_COLOR_STR               = "\\$39f";
 const vec4   MX_COLOR_VEC               = vec4(0.2, 0.6, 1, 1);
 const string MX_URL                     = "tm.mania.exchange";
 const string SUPPORTED_MAP_TYPE         = "Race";
-const string ETAGS						= "23";//kacky
+const string ETAGS						= "20";//kacky
 
 #elif TMNEXT
 
