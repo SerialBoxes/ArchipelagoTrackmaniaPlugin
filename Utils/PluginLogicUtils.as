@@ -32,3 +32,28 @@ string StripArchipelagoColorCodes(const string &in message){
     }
     return result;
 }
+
+array<string> JsonToStringArray(const Json::Value &in json) {
+    array<string> new_array = array<string>(json.Length);
+    for (uint i = 0; i < json.Length; i++) {
+        try {
+            new_array[i] = json[i];
+        }
+        catch {
+            int temp = json[i];
+            new_array[i] = tostring(temp);
+        }
+    }
+    return new_array;
+}
+
+bool JsonGetAsBool(const Json::Value &in json, const string &in key) {
+    try {
+        bool result = json.Get(key, false);
+        return result;
+    }
+    catch {
+        int result = json.Get(key, 0);
+        return result != 0;
+    }
+}

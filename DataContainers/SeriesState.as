@@ -55,17 +55,19 @@ class SeriesState{
         array<int> ids = array<int>(MAX_MAP_LOCATIONS * mapCount);
         int index = 0;
         for(int i = 0; i < mapCount; i++){
-            ids[index] = MapIndicesToId(seriesIndex, i, CheckTypes::Bronze);
-            index++;
-            if (saveData.settings.targetTimeSetting >= 1){
+            if (saveData.settings.DoingBronze()){
+                ids[index] = MapIndicesToId(seriesIndex, i, CheckTypes::Bronze);
+                index++;
+            }
+            if (saveData.settings.DoingSilver()){
                 ids[index] = MapIndicesToId(seriesIndex, i, CheckTypes::Silver);
                 index++;
             }
-            if (saveData.settings.targetTimeSetting >= 2){
+            if (saveData.settings.DoingGold()){
                 ids[index] = MapIndicesToId(seriesIndex, i, CheckTypes::Gold);
                 index++;
             }
-            if (saveData.settings.targetTimeSetting >= 3){
+            if (saveData.settings.DoingAuthor()){
                 ids[index] = MapIndicesToId(seriesIndex, i, CheckTypes::Author);
                 index++;
             }

@@ -152,16 +152,16 @@ void DrawChecksRemaining(int seriesI, int mapI){
     if (!data.locations.GotCheck(seriesI, mapI, CheckTypes::Target)){
         render += "\\$fff"+Icons::Circle + "\\$z ";
     }
-    if (!data.locations.GotCheck(seriesI, mapI, CheckTypes::Author) && data.settings.targetTimeSetting >= 3){
+    if (!data.locations.GotCheck(seriesI, mapI, CheckTypes::Author) && data.settings.DoingAuthor()){
         render += "\\$0a6"+Icons::Circle + "\\$z ";
     }
-    if (!data.locations.GotCheck(seriesI, mapI, CheckTypes::Gold) && data.settings.targetTimeSetting >= 2){
+    if (!data.locations.GotCheck(seriesI, mapI, CheckTypes::Gold) && data.settings.DoingGold()){
         render += "\\$fc4"+Icons::Circle + "\\$z ";
     }
-    if (!data.locations.GotCheck(seriesI, mapI, CheckTypes::Silver) && data.settings.targetTimeSetting >= 1){
+    if (!data.locations.GotCheck(seriesI, mapI, CheckTypes::Silver) && data.settings.DoingSilver()){
         render += "\\$888"+Icons::Circle + "\\$z ";
     }
-    if (!data.locations.GotCheck(seriesI, mapI, CheckTypes::Bronze)){
+    if (!data.locations.GotCheck(seriesI, mapI, CheckTypes::Bronze) && data.settings.DoingBronze()){
         render += "\\$964"+Icons::Circle + "\\$z ";
     }
     if (data.locations.GotAllChecks(seriesI, mapI)){

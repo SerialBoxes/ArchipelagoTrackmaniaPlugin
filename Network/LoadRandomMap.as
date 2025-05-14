@@ -10,6 +10,8 @@ void LoadMapByIndex(int seriesIndex, int mapIndex){
 }
 
 void RerollMap(int seriesI, int mapI){
+    if (seriesI < 0 || seriesI >= data.world.Length) return;
+    if (mapI < 0 || mapI >= data.world[seriesI].maps.Length) return;
     Log::Log("Rerolling Series " + (seriesI+1) + " Map " + (mapI+1) + ", one second please!", true);
     MapState@ mapState = data.world[seriesI].maps[mapI];
 
@@ -48,7 +50,7 @@ void LoadMap(ref@ mapData){
             yield(); // Wait until the ManiaTitleControlScriptAPI is ready for loading the next map
         }
 
-        app.ManiaTitleControlScriptAPI.PlayMap("https://"+ MX_URL+"/mapgbx/"+map.MapId, "", "");
+        app.ManiaTitleControlScriptAPI.PlayMap("https://"+ MX_URL+"/mapgbx/"+map.MapId, SUPPORTED_GAME_MODE, "");
 
         isNextMapLoading = false;
     }

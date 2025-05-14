@@ -102,16 +102,16 @@ class MapState{
     }
 
     void UpdateCheckFlags(){
-        if (personalBestTime <= mapInfo.BronzeTime || skipped){
+        if ((personalBestTime <= mapInfo.BronzeTime || skipped) && saveData.settings.DoingBronze()){
             data.locations.FlagCheck(seriesIndex, mapIndex, CheckTypes::Bronze);
         }
-        if ((personalBestTime <= mapInfo.SilverTime || skipped) && saveData.settings.targetTimeSetting >= 1.0){
+        if ((personalBestTime <= mapInfo.SilverTime || skipped) && saveData.settings.DoinSilver()){
             data.locations.FlagCheck(seriesIndex, mapIndex, CheckTypes::Silver);
         }
-        if ((personalBestTime <= mapInfo.GoldTime || skipped) && saveData.settings.targetTimeSetting >= 2.0){
+        if ((personalBestTime <= mapInfo.GoldTime || skipped) && saveData.settings.DoingGold()){
             data.locations.FlagCheck(seriesIndex, mapIndex, CheckTypes::Gold);
         }
-        if ((personalBestTime <= mapInfo.AuthorTime || skipped) && saveData.settings.targetTimeSetting >= 3.0){
+        if ((personalBestTime <= mapInfo.AuthorTime || skipped) && saveData.settings.DoingAuthor()){
             data.locations.FlagCheck(seriesIndex, mapIndex, CheckTypes::Author);
         }
         if ((personalBestTime <= targetTime || skipped)){

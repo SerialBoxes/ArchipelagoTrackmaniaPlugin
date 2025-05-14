@@ -29,15 +29,26 @@ class LocationChecks{
         checkFlags[seriesI][mapI] |= uint(TypeToFlag(check));
     }
 
+    void FlagAllChecksOfType(CheckTypes check){
+        for (uint i = 0; i < checkFlags.Length; i++){
+                for (uint j = 0; j < checkFlags[i].Length; j++){
+                    checkFlags[i][j] |= uint(TypeToFlag(check));
+                }
+            }
+    }
+
     bool GotAllChecks(int seriesI, int mapI){
-        uint mask = uint(CheckFlags::Bronze);
-        if (saveData.settings.targetTimeSetting >= 1){
+        uint mask = 0;
+        if (saveData.settings.DoingBronze()){
+            mask |= uint(CheckFlags::Bronze);
+        }
+        if (saveData.settings.DoingSilver()){
             mask |= uint(CheckFlags::Silver);
         }
-        if (saveData.settings.targetTimeSetting >= 2){
+        if (saveData.settings.DoingGold()){
             mask |= uint(CheckFlags::Gold);
         }
-        if (saveData.settings.targetTimeSetting >= 3){
+        if (saveData.settings.DoingAuthor()){
             mask |= uint(CheckFlags::Author);
         }
         mask |= uint(CheckFlags::Target);
@@ -59,16 +70,16 @@ class LocationChecks{
     int ChecksRemaining(int seriesI, int mapI){
         int remaining = 0;
         int checks = checkFlags[seriesI][mapI];
-        if (checks & CheckFlags::Bronze == 0){
+        if (saveData.settings.DoingBronze() && checks & CheckFlags::Bronze == 0){
             remaining += 1;
         }
-        if (saveData.settings.targetTimeSetting >= 1 && checks & CheckFlags::Silver == 0){
+        if (saveData.settings.DoingSilver() && checks & CheckFlags::Silver == 0){
             remaining += 1;
         }
-        if (saveData.settings.targetTimeSetting >= 2 && checks & CheckFlags::Gold == 0){
+        if (saveData.settings.DoingGold() && checks & CheckFlags::Gold == 0){
             remaining += 1;
         }
-        if (saveData.settings.targetTimeSetting >= 3 && checks & CheckFlags::Author == 0){
+        if (saveData.settings.DoingAuthor() && checks & CheckFlags::Author == 0){
             remaining += 1;
         }
         if (checks & CheckFlags::Target == 0){

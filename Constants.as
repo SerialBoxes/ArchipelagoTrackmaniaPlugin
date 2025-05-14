@@ -9,6 +9,7 @@ const string MX_COLOR_STR               = "\\$39f";
 const vec4   MX_COLOR_VEC               = vec4(0.2, 0.6, 1, 1);
 const string MX_URL                     = "tm.mania.exchange";
 const string SUPPORTED_MAP_TYPE         = "Race";
+const string SUPPORTED_GAME_MODE        = "SingleRace";
 const string ETAGS						= "20";//kacky
 
 #elif TMNEXT
@@ -19,7 +20,8 @@ const string MX_COLOR_STR               = "\\$9fc";
 const vec4   MX_COLOR_VEC               = vec4(0.3, 0.7, 0.4, 1);
 const string MX_URL                     = "trackmania.exchange";
 const string SUPPORTED_MAP_TYPE         = "TM_Race";
-const string ETAGS						= "23,37,40";//Kacky, Royal, and Arena.
+const string SUPPORTED_GAME_MODE        = "";
+const string ETAGS						= "23,37,40,46,47";//Kacky, Royal, Arena, Flagrush, and Puzzle.
 #endif
 
 const int MAX_AUTHOR_TIME				        = 300000;
