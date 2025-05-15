@@ -40,8 +40,12 @@ class MapState{
             const Json::Value@ itemObjects = json["itemTypes"];
             for (uint i = 0; i < itemTypes.Length; i++) {
                 int itemId = int(itemObjects[i]);
-                if (itemId >= BASE_FILLER_ID && itemId != int(ItemTypes::Archipelago)){
-                    itemTypes[i] = ItemTypes::Filler;
+                if (itemId >= BASE_TRAP_ID && itemId != int(ItemTypes::Archipelago)){
+                    if (itemId < int(ItemTypes::Filler)){
+                        itemTypes[i] = ItemTypes::Trap;
+                    }else{
+                        itemTypes[i] = ItemTypes::Filler;
+                    }
                 }else{
                     itemTypes[i] = ItemTypes(int(itemObjects[i]));
                 }

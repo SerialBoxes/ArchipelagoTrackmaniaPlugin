@@ -4,7 +4,8 @@ class Items{
     int goldMedals;   //24002
     int authorMedals; //24003
     int skips;        //24004
-    int filler;       //24005
+    int traps;        //24050
+    int filler;       //24500
 
     int skipsUsed;
 
@@ -18,6 +19,7 @@ class Items{
         goldMedals = 0;
         authorMedals = 0;
         skips = 0;
+        traps = 0;
         filler = 0;
 
         skipsUsed = 0;
@@ -35,6 +37,7 @@ class Items{
             goldMedals = json["goldMedals"];
             authorMedals = json["authorMedals"];
             skips = json["skips"];
+            traps = json["traps"];
             filler = json["filler"];
             skipsUsed = json["skipsUsed"];
             itemsRecieved = json["itemsRecieved"];
@@ -77,7 +80,11 @@ class Items{
             //     filler += itemCount;
             //     break;
             default:
-                filler += itemCount;
+                if (itemID < int(ItemTypes::Filler)){
+                    traps += itemCount;
+                }else{
+                    filler += itemCount;
+                }
                 break;
         }
         itemsRecieved += itemCount;
@@ -89,6 +96,7 @@ class Items{
         goldMedals = 0;
         authorMedals = 0;
         skips = 0;
+        traps = 0;
         filler = 0;
         itemsRecieved = 0;
     }
@@ -101,6 +109,7 @@ class Items{
             json["goldMedals"] = goldMedals;
             json["authorMedals"] = authorMedals;
             json["skips"] = skips;
+            json["traps"] = traps;
             json["filler"] = filler;
             json["skipsUsed"] = skipsUsed;
             json["itemsRecieved"] = itemsRecieved;

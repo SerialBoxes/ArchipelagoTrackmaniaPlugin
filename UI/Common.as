@@ -98,6 +98,8 @@ nvg::Texture@ GetNthSmolTex(ItemTypes type){
             return archipelagoTexNVGSmol;
         case ItemTypes::Skip:
             return archipelagoTexNVGSmol;
+        case ItemTypes::Trap:
+            return archipelagoTexNVGSmol;
         case ItemTypes::Filler:
             return archipelagoTexNVGSmol;
         default:
@@ -119,6 +121,8 @@ nvg::Texture@ GetNthMedTex(ItemTypes type){
             return archipelagoTexNVGMed;
         case ItemTypes::Skip:
             return archipelagoTexNVGMed;
+        case ItemTypes::Trap:
+            return archipelagoTexNVGMed;
         case ItemTypes::Filler:
             return archipelagoTexNVGMed;
         default:
@@ -139,6 +143,8 @@ nvg::Texture@ GetNthTex(ItemTypes type){
         case ItemTypes::Archipelago:
             return archipelagoTexNVG;
         case ItemTypes::Skip:
+            return archipelagoTexNVG;
+        case ItemTypes::Trap:
             return archipelagoTexNVG;
         case ItemTypes::Filler:
             return archipelagoTexNVG;

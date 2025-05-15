@@ -129,8 +129,12 @@ void ProcessLocationInfo (Json::Value@ json){
         ItemTypes itemType = ItemTypes::Archipelago;
         if (netItem["player"] == data.playerTeamIndex) {//not totally sure this works
             int itemId = int(netItem["item"]);
-            if (itemId >= BASE_FILLER_ID && itemId != int(ItemTypes::Archipelago)){
-                itemType = ItemTypes::Filler;
+            if (itemId >= BASE_TRAP_ID && itemId != int(ItemTypes::Archipelago)){
+                if (itemId < int(ItemTypes::Filler)){
+                    itemType = ItemTypes::Trap;
+                }else{
+                    itemType = ItemTypes::Filler;
+                }
             }else{
                 itemType = ItemTypes(int(netItem["item"]));
             }

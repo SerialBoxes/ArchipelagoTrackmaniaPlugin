@@ -29,7 +29,7 @@ const int MAX_MAPS_IN_SERIES            = 20;
 const int MAX_SERIES_COUNT              = 20;
 const int MAX_MAP_LOCATIONS             = 5;
 const int BASE_ID                       = 24000;
-const int BASE_FILLER_ID                = 24500;
+const int BASE_TRAP_ID                = 24050;
 
 const array<string> MAP_FIELDS_ARRAY = {
     "MapId",
@@ -78,6 +78,7 @@ enum ItemTypes{
     GoldMedal = 24002,
     AuthorMedal = 24003,
     Skip = 24004,
+    Trap = 24050,
     Filler = 24500,
     Archipelago = 99999
 }
