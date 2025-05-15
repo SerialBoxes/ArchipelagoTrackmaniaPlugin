@@ -105,7 +105,7 @@ class MapState{
         if ((personalBestTime <= mapInfo.BronzeTime || skipped) && saveData.settings.DoingBronze()){
             data.locations.FlagCheck(seriesIndex, mapIndex, CheckTypes::Bronze);
         }
-        if ((personalBestTime <= mapInfo.SilverTime || skipped) && saveData.settings.DoinSilver()){
+        if ((personalBestTime <= mapInfo.SilverTime || skipped) && saveData.settings.DoingSilver()){
             data.locations.FlagCheck(seriesIndex, mapIndex, CheckTypes::Silver);
         }
         if ((personalBestTime <= mapInfo.GoldTime || skipped) && saveData.settings.DoingGold()){

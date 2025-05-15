@@ -154,8 +154,8 @@ void ProcessRoomUpdate (Json::Value@ json){
 void ProcessReroll (Json::Value@ json){
     if (json["series_index"] !is null 
         && json["map_index"] !is null
-        && json["series_index"] >= 1
-        %% json["map_index"] >= 1){
+        && int(json["series_index"]) >= 1
+        && int(json["map_index"]) >= 1){
         RerollMap(int(json["series_index"])-1, int(json["map_index"])-1); 
     }else if (loadedMap !is null && loadedMap.mapInfo.MapUid == GetLoadedMapUid()){
         RerollMap(loadedMap.seriesIndex, loadedMap.mapIndex);   

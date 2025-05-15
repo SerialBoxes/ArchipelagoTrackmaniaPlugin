@@ -42,7 +42,6 @@ class SaveData{
                     @world[i] = SeriesState(this, seriesData[i], i,victoryRequirement, true);
                     victoryRequirement += world[i].medalTotal;
                 }
-                ProcessDisabledLocations(json);
             }else{
                 if (json["version"] is null || json["version"] != 1.2){
                     Log::Error("Outdated save file not supported in this plugin version");

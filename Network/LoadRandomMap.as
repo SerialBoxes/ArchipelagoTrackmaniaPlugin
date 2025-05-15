@@ -10,8 +10,8 @@ void LoadMapByIndex(int seriesIndex, int mapIndex){
 }
 
 void RerollMap(int seriesI, int mapI){
-    if (seriesI < 0 || seriesI >= data.world.Length) return;
-    if (mapI < 0 || mapI >= data.world[seriesI].maps.Length) return;
+    if (seriesI < 0 || uint(seriesI) >= data.world.Length) return;
+    if (mapI < 0 || uint(mapI) >= data.world[seriesI].maps.Length) return;
     Log::Log("Rerolling Series " + (seriesI+1) + " Map " + (mapI+1) + ", one second please!", true);
     MapState@ mapState = data.world[seriesI].maps[mapI];
 
@@ -19,7 +19,7 @@ void RerollMap(int seriesI, int mapI){
     MapInfo@ mapRoll = QueryForRandomMap(URLBuilder);
     if (mapRoll !is null){
         mapState.ReplaceMap(mapRoll);
-        if (loadedMap.seriesIndex == seriesI && loadedMap.mapIndex == mapI){
+        if (loadedMap !is null && loadedMap.seriesIndex == seriesI && loadedMap.mapIndex == mapI){
             startnew(LoadMap,mapRoll);
         }
     }else{
