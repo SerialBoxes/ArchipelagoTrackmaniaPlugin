@@ -194,14 +194,16 @@ void LoadUIAssets(){
     @bronzeTexNVG = nvg::LoadTexture("Images/bronze.png");
     @silverTexNVG = nvg::LoadTexture("Images/silver.png");
     @goldTexNVG = nvg::LoadTexture("Images/gold.png");
+    yield();
     @authorTexNVG = nvg::LoadTexture("Images/author.png");
     @archipelagoTexNVG = nvg::LoadTexture("Images/archipelago.png");
+    yield();
     @bronzeTexNVGMed = nvg::LoadTexture("Images/bronzeMed.png");
     @silverTexNVGMed = nvg::LoadTexture("Images/silverMed.png");
     @goldTexNVGMed = nvg::LoadTexture("Images/goldMed.png");
-    yield();
     @authorTexNVGMed = nvg::LoadTexture("Images/authorMed.png");
     @archipelagoTexNVGMed = nvg::LoadTexture("Images/archipelagoMed.png");
+    yield();
     @bronzeTexNVGSmol = nvg::LoadTexture("Images/bronzeSmall.png");
     @silverTexNVGSmol = nvg::LoadTexture("Images/silverSmall.png");
     @goldTexNVGSmol = nvg::LoadTexture("Images/goldSmall.png");
