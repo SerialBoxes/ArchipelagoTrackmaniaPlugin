@@ -25,6 +25,7 @@ void RenderMapUI(){
             UI::Indent();
             MoveCursor(vec2(0.0,-6.0));
             UI::Text("by "+loadedMap.mapInfo.Username);
+            DrawTags(loadedMap);
             UI::Unindent();
             UI::Separator();
 

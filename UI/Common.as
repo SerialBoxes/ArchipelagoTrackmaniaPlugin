@@ -10,6 +10,8 @@ UI::Texture@ goldTex;
 UI::Texture@ authorTex;
 UI::Texture@ archipelagoTex;
 
+Audio::Sample@ victoryClip;
+
 //jeepers
 nvg::Texture@ bronzeTexNVG;
 nvg::Texture@ silverTexNVG;
@@ -176,19 +178,41 @@ void DrawChecksRemaining(int seriesI, int mapI){
     UI::Text(render);
 }
 
+void DrawTags(MapState@ mapState, bool wrap = true){
+    string render = "";
+    MapInfo@ map = mapState.mapInfo;
+    for(uint i = 0; i < map.Tags.Length; i++){
+        render += map.Tags[i].Name;
+        if (i < map.Tags.Length-1){
+            render += ", ";
+        }
+    }
+    if (render.Length > 0){
+        if (wrap){
+            UI::TextWrapped(render);
+        }else{
+            UI::Text(render);
+        }
+    }
+
+}
+
 void LoadUIAssets(){
     @fontHeader = UI::LoadFont("DroidSans-Bold.ttf", 26, -1, -1, true, true, true);
     @fontHeaderSub = UI::LoadFont("DroidSans.ttf", 22, -1, -1, true, true, true);
     yield();
     @fontHuge = UI::LoadFont("DroidSans.ttf", 40, -1, -1, true, true, true);
     @fontTime = UI::LoadFont("Fonts/digital-7.mono.ttf", 18, -1, -1, true, true, true);
-    NvgFont = nvg::LoadFont("DroidSans.ttf");
+    NvgFont = nvg::LoadFont("Fonts/RacingSansOne-Regular.ttf");
     yield();
 
     @bronzeTex = UI::LoadTexture("Images/bronzeMed.png");
     @silverTex = UI::LoadTexture("Images/silverMed.png");
     @goldTex = UI::LoadTexture("Images/goldMed.png");
     @authorTex = UI::LoadTexture("Images/authorMed.png");
+    yield();
+
+    @victoryClip = Audio::LoadSample("Sounds/Victory.wav");
     yield();
 
     @bronzeTexNVG = nvg::LoadTexture("Images/bronze.png");

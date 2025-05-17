@@ -1,14 +1,14 @@
 
 class MapTag
 {
-    int ID;
+    int TagId;
     string Name;
     string Color;
 
     MapTag(const Json::Value &in json)
     {
         try {
-            ID = json["ID"];
+            TagId = json["TagId"];
             Name = json["Name"];
             Color = json["Color"];
         } catch {
@@ -21,7 +21,7 @@ class MapTag
     {
         Json::Value json = Json::Object();
         try {
-            json["TagId"] = ID;
+            json["TagId"] = TagId;
             json["Name"] = Name;
             json["Color"] = Color;
         } catch {

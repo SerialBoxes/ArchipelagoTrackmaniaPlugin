@@ -86,6 +86,7 @@ void ProcessPrintJson (Json::Value@ json){
         for (uint i = 0; i < data.Length; i++){
             string rawText = json["data"][i]["text"];
             string displayText = StripArchipelagoColorCodes(rawText);
+            if (!displayText.Contains("found") || !Setting_ShowToasts) return;
             Log::ArchipelagoNotification(displayText);
         }
     }
@@ -115,6 +116,7 @@ void ProcessReceivedItems (Json::Value@ json){
     if (!data.hasGoal && data.items.GetProgressionMedalCount() >= data.victoryRequirement){
         SendStatusUpdate(ClientStatus::CLIENT_GOAL);
         data.hasGoal = true;
+        startnew(Celebrate);
     }
 
     //check if we need to preload a new series

@@ -1,3 +1,6 @@
+[Setting name="Show Archipelago Messages in Game"]
+bool Setting_ShowToasts = true;
+
 [Setting name="Advanced Connection Options"]
 bool Setting_ConnectionOptions;
 
@@ -17,7 +20,7 @@ void Main(){
     @socket = WebSocket(Setting_ConnectionAddress,22422);
     initTags();
     startnew(LoadUIAssets);
-    startnew(Celebrate);
+    //startnew(Celebrate);
 }
 
 void RenderMenu(){
@@ -38,20 +41,20 @@ void Render(){
                 RenderMainMenu();
             }
         }
-        //CelebrationRender();
+        CelebrationRender();
     }else{
         if (socket.NotDisconnected()){
             socket.Close();
         }
     }
-    CelebrationRender();
+    //CelebrationRender();
 }
 
 void Update(float dt){
     if (isOpen && loadingFinished){
-        //CelebrationUpdate(dt);
+        CelebrationUpdate(dt);
     }
-    CelebrationUpdate(dt);
+    //CelebrationUpdate(dt);
 }
 
 void StartConnection(){

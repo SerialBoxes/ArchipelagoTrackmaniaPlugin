@@ -175,6 +175,7 @@ void RenderTooltip(MapState@ map){
     UI::Text(map.mapInfo.Name);
     UI::Indent();
     UI::Text("by "+map.mapInfo.Username);
+    DrawTags(map, false);
     UI::Unindent();
     UI::Text("Checks Left:");
     UI::Indent();

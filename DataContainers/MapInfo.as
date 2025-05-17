@@ -65,19 +65,15 @@ class MapInfo
                 Length = AuthorTime;
             }
 
-            // Tags is an array of tag objects
-            // if (json["Tags"].GetType() != Json::Type::Null) {
-            //     const Json::Value@ tagObjects = json["Tags"];
+            //Tags is an array of tag objects
+            if (json["Tags"].GetType() != Json::Type::Null) {
+                const Json::Value@ tagObjects = json["Tags"];
+                Tags = array<MapTag@>(tagObjects.Length);
 
-            //     for (uint i = 0; i < tagObjects.Length; i++) {
-            //         for (uint j = 0; j < m_mapTags.Length; j++) {
-            //             if (m_mapTags[j].ID == tagObjects[i]["TagId"]) {
-            //                 Tags.InsertLast(m_mapTags[j]);
-            //                 break;
-            //             }
-            //         }
-            //     }
-            // }
+                for (uint i = 0; i < tagObjects.Length; i++) {
+                    @Tags[i] = MapTag(tagObjects[i]);
+                }
+            }
         } catch {
             Name = json["Name"];
             Log::Error("Error parsing infos for the map: "+ Name + "\nReason: " + getExceptionInfo());
@@ -117,12 +113,12 @@ class MapInfo
 
             json["Medals"] = medalsObject;
 
-            // Json::Value tagArray = Json::Array();
-            // for (uint i = 0; i < Tags.Length; i++) {
-            //     tagArray.Add(Tags[i].ToJson());
-            // }
+            Json::Value tagArray = Json::Array();
+            for (uint i = 0; i < Tags.Length; i++) {
+                tagArray.Add(Tags[i].ToJson());
+            }
 
-            // json["Tags"] = tagArray;
+            json["Tags"] = tagArray;
         } catch {
             Log::Error("Error converting map info to JSON for map "+Name);
         }
