@@ -1,14 +1,12 @@
 //this code is mostly yoinked from the warrior medals plugin.
 //thank you ezio!
 
+#if TMNEXT
+
 uint FrameConfirmQuit = 0;
 const float stdRatio = 16.0f / 9.0f;
 
 void DrawPlaygroundUI() {
-#if MP4
-    return; //haven't figured this out for mp4 yet
-#endif
-#if TMNEXT
     CTrackMania@ App = cast<CTrackMania@>(GetApp());
 
     NGameLoadProgress_SMgr@ LoadProgress = App.LoadProgress;
@@ -159,7 +157,6 @@ void DrawPlaygroundUI() {
         DrawOverPlaygroundPage(Pause, PlaygroundPageType::Pause, ScoresTable);
         DrawOverPlaygroundPage(End, PlaygroundPageType::End);
     }
-#endif
 }
 
 void DrawOverPlaygroundPage(CGameManialinkPage@ Page, PlaygroundPageType type, CGameManialinkPage@ ScoresTable = null) {
@@ -360,3 +357,5 @@ void Bla(){
     nvg::BeginPath();
     nvg::Text(vec2(400,400),"BLA");
 }
+
+#endif

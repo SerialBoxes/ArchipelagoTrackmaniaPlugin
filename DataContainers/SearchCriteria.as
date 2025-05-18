@@ -146,8 +146,8 @@ string BuildTagIdString(array<string> tagList){
     string result = "";
 
     for (uint i = 0; i < tagList.Length; i++){
-        if (GetTags().Exists(tagList[i])){
-            result += "" + int(GetTags()[tagList[i]]) + ",";
+        if (TMX_TAGS.Exists(tagList[i])){
+            result += "" + int(TMX_TAGS[tagList[i]]) + ",";
         }
     }
 

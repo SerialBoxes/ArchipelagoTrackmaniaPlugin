@@ -130,20 +130,20 @@ dictionary TMX_DIFFICULTIES = {
 //making these dictionarys hardcoded inlines crashes the openplanet extension, so we build them in a loop 
 
 dictionary TMX_TAGS = {};
-dictionary TM2_TAGS = {};
+// dictionary TM2_TAGS = {};
 
-#if TMNEXT
-dictionary GetTags(){
-    return TMX_TAGS;
-}
-#elif MP4
-dictionary GetTags(){
-    return TM2_TAGS;
-}
-#endif
+// #if TMNEXT
+// dictionary GetTags(){
+//     return TMX_TAGS;
+// }
+// #elif MP4
+// dictionary GetTags(){
+//     return TM2_TAGS;
+// }
+// #endif
 
 void initTags(){
-    //Trackmania 2020
+#if TMNEXT
     TMX_TAGS["Race"]             = 1;
     TMX_TAGS["FullSpeed"]        = 2;
     TMX_TAGS["Tech"]             = 3;
@@ -212,52 +212,53 @@ void initTags(){
     TMX_TAGS["Magnet"]           = 66;
     TMX_TAGS["NoGrip"]           = 67;
 
-    //ManiaPlanet
-    TM2_TAGS["Race"]             = 1;
-    TM2_TAGS["FullSpeed"]        = 2; //called Fullspeed in api
-    TM2_TAGS["Tech"]             = 3;
-    TM2_TAGS["RPG"]              = 4;
-    TM2_TAGS["LOL"]              = 5;
-    TM2_TAGS["Press Forward"]    = 6;
-    TM2_TAGS["SpeedTech"]        = 7; //called Speedtech in api
-    TM2_TAGS["MultiLap"]         = 8; //called Multilap in api
-    TM2_TAGS["Offroad"]          = 9;
-    TM2_TAGS["Trial"]            = 10;
-    TM2_TAGS["Mixed"]            = 11;
-    TM2_TAGS["ZrT"]              = 12;
-    TM2_TAGS["Nascar"]           = 13;
-    TM2_TAGS["SpeedFun"]         = 14;
-    TM2_TAGS["Dirt"]             = 15;
-    TM2_TAGS["Stunt"]            = 16;
-    TM2_TAGS["Platform"]         = 17;
-    TM2_TAGS["Bumper"]           = 18;
-    TM2_TAGS["Scenery"]          = 19;
-    TM2_TAGS["Kacky"]            = 20;
-    TM2_TAGS["Endurance"]        = 21;
-    TM2_TAGS["Water"]            = 22;
-    TM2_TAGS["Remake"]           = 23;
-    TM2_TAGS["Mini"]             = 24;
-    TM2_TAGS["SpeedDrift"]       = 25;
-    TM2_TAGS["Minigame"]         = 26;
-    TM2_TAGS["Obstacle"]         = 27;
-    TM2_TAGS["Transitional"]     = 28;
-    TM2_TAGS["Grass"]            = 29;
-    TM2_TAGS["Competitive"]      = 30;
-    TM2_TAGS["Ice"]              = 31;
-    TM2_TAGS["Glass"]            = 32; //tm2 exclusive
-    TM2_TAGS["Backwards"]        = 33;
-    TM2_TAGS["EngineOff"]        = 34; //called freewheel in api
-    TM2_TAGS["Signature"]        = 35;
-    TM2_TAGS["Freestyle"]        = 36;
-    TM2_TAGS["Wood"]             = 37;
-    TM2_TAGS["Pathfinding"]      = 38;
-    TM2_TAGS["Arena"]            = 39;
-    TM2_TAGS["Sand"]             = 40; //tm2 exclusive
-    TM2_TAGS["Cobblestone"]      = 41; //tm2 exclusive
-    TM2_TAGS["Bugslide"]         = 42;
-    TM2_TAGS["NoGrip"]           = 43;
-    TM2_TAGS["ForceAccel"]       = 44; //tm2 exclusive
-    TM2_TAGS["NoSteer"]          = 45;
-    TM2_TAGS["Magnet"]           = 46;
-    TM2_TAGS["SpeedMapping"]     = 47;
+#elif MP4
+    TMX_TAGS["Race"]             = 1;
+    TMX_TAGS["FullSpeed"]        = 2; //called Fullspeed in api
+    TMX_TAGS["Tech"]             = 3;
+    TMX_TAGS["RPG"]              = 4;
+    TMX_TAGS["LOL"]              = 5;
+    TMX_TAGS["Press Forward"]    = 6;
+    TMX_TAGS["SpeedTech"]        = 7; //called Speedtech in api
+    TMX_TAGS["MultiLap"]         = 8; //called Multilap in api
+    TMX_TAGS["Offroad"]          = 9;
+    TMX_TAGS["Trial"]            = 10;
+    TMX_TAGS["Mixed"]            = 11;
+    TMX_TAGS["ZrT"]              = 12;
+    TMX_TAGS["Nascar"]           = 13;
+    TMX_TAGS["SpeedFun"]         = 14;
+    TMX_TAGS["Dirt"]             = 15;
+    TMX_TAGS["Stunt"]            = 16;
+    TMX_TAGS["Platform"]         = 17;
+    TMX_TAGS["Bumper"]           = 18;
+    TMX_TAGS["Scenery"]          = 19;
+    TMX_TAGS["Kacky"]            = 20;
+    TMX_TAGS["Endurance"]        = 21;
+    TMX_TAGS["Water"]            = 22;
+    TMX_TAGS["Remake"]           = 23;
+    TMX_TAGS["Mini"]             = 24;
+    TMX_TAGS["SpeedDrift"]       = 25;
+    TMX_TAGS["Minigame"]         = 26;
+    TMX_TAGS["Obstacle"]         = 27;
+    TMX_TAGS["Transitional"]     = 28;
+    TMX_TAGS["Grass"]            = 29;
+    TMX_TAGS["Competitive"]      = 30;
+    TMX_TAGS["Ice"]              = 31;
+    TMX_TAGS["Glass"]            = 32; //tm2 exclusive
+    TMX_TAGS["Backwards"]        = 33;
+    TMX_TAGS["EngineOff"]        = 34; //called freewheel in api
+    TMX_TAGS["Signature"]        = 35;
+    TMX_TAGS["Freestyle"]        = 36;
+    TMX_TAGS["Wood"]             = 37;
+    TMX_TAGS["Pathfinding"]      = 38;
+    TMX_TAGS["Arena"]            = 39;
+    TMX_TAGS["Sand"]             = 40; //tm2 exclusive
+    TMX_TAGS["Cobblestone"]      = 41; //tm2 exclusive
+    TMX_TAGS["Bugslide"]         = 42;
+    TMX_TAGS["NoGrip"]           = 43;
+    TMX_TAGS["ForceAccel"]       = 44; //tm2 exclusive
+    TMX_TAGS["NoSteer"]          = 45;
+    TMX_TAGS["Magnet"]           = 46;
+    TMX_TAGS["SpeedMapping"]     = 47;
+#endif
 }

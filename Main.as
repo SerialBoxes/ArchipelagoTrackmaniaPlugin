@@ -21,6 +21,7 @@ void Main(){
     initTags();
     startnew(LoadUIAssets);
     //startnew(Celebrate);
+    //DrawPlaygroundUI();
 }
 
 void RenderMenu(){
@@ -36,7 +37,7 @@ void Render(){
         }else{
             if (GetIsOnMap()){
                 RenderMapUI();
-                DrawPlaygroundUI();
+                //DrawPlaygroundUI();
             }else{
                 RenderMainMenu();
             }
@@ -48,6 +49,7 @@ void Render(){
         }
     }
     //CelebrationRender();
+    DrawPlaygroundUI();
 }
 
 void Update(float dt){

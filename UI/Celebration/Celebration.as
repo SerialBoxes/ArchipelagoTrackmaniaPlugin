@@ -2,9 +2,13 @@
 array<ConfettiStrip@> confetti;
 PopupText@ popup;
 void Celebrate(){
-    //sleep(100);
+    //sleep(200);
+#if TMNEXT
     float gameVolume = (GetApp().SystemOverlay.MasterSoundVolume+100)/100.0;//remap to be from 0 -> 1
-    gameVolume *= 0.9;
+#elif MP4
+    float gameVolume = (cast<CGameManiaPlanet>(GetApp()).ManiaPlanetScriptAPI.MasterSoundVolume+100)/100.0;
+#endif
+    //gameVolume *= 0.9;
     Audio::Play(victoryClip, gameVolume*Math::Pow(10000.0,gameVolume-1));
     //Audio::Play(victoryClip,(Math::Pow(10.0, Math::Clamp(gameVolume, 0.0, 1.0)) - 1.0) / 9.0);
     sleep(1420);

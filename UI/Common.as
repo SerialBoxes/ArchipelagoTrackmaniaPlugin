@@ -23,12 +23,22 @@ nvg::Texture@ silverTexNVGMed;
 nvg::Texture@ goldTexNVGMed;
 nvg::Texture@ authorTexNVGMed;
 nvg::Texture@ archipelagoTexNVGMed;
+
+#if TMNEXT
 nvg::Texture@ bronzeTexNVGSmol;
 nvg::Texture@ silverTexNVGSmol;
 nvg::Texture@ goldTexNVGSmol;
 nvg::Texture@ authorTexNVGSmol;
 nvg::Texture@ archipelagoTexNVGSmol;
 nvg::Texture@ shadowTexNVG;
+
+#elif MP4
+nvg::Texture@ bronzeTexNVGBowTie;
+nvg::Texture@ silverTexNVGBowTie;
+nvg::Texture@ goldTexNVGBowTie;
+nvg::Texture@ authorTexNVGBowTie;
+nvg::Texture@ archipelagoTexNVGBowTie;
+#endif
 
 void RenderInventory(){
     UI::Text("Progression Medals: " + data.items.GetProgressionMedalCount() + "/"+(data.victoryRequirement));
@@ -86,6 +96,7 @@ UI::Texture@ GetProgressionTex(){
     }
 }
 
+#if TMNEXT
 nvg::Texture@ GetNthSmolTex(ItemTypes type){
     switch (type){
         case ItemTypes::BronzeMedal:
@@ -108,6 +119,7 @@ nvg::Texture@ GetNthSmolTex(ItemTypes type){
             return archipelagoTexNVGSmol;
     }
 }
+#endif
 
 nvg::Texture@ GetNthMedTex(ItemTypes type){
     switch (type){
@@ -198,6 +210,9 @@ void DrawTags(MapState@ mapState, bool wrap = true){
 }
 
 void LoadUIAssets(){
+    @victoryClip = Audio::LoadSample("Sounds/Victory.wav");
+    yield();
+
     @fontHeader = UI::LoadFont("DroidSans-Bold.ttf", 26, -1, -1, true, true, true);
     @fontHeaderSub = UI::LoadFont("DroidSans.ttf", 22, -1, -1, true, true, true);
     yield();
@@ -206,33 +221,64 @@ void LoadUIAssets(){
     NvgFont = nvg::LoadFont("Fonts/RacingSansOne-Regular.ttf");
     yield();
 
-    @bronzeTex = UI::LoadTexture("Images/bronzeMed.png");
-    @silverTex = UI::LoadTexture("Images/silverMed.png");
-    @goldTex = UI::LoadTexture("Images/goldMed.png");
-    @authorTex = UI::LoadTexture("Images/authorMed.png");
+#if TMNEXT
+    @bronzeTex = UI::LoadTexture("Images/TMNEXT/bronzeMed.png");
+    @silverTex = UI::LoadTexture("Images/TMNEXT/silverMed.png");
+    @goldTex = UI::LoadTexture("Images/TMNEXT/goldMed.png");
+    @authorTex = UI::LoadTexture("Images/TMNEXT/authorMed.png");
     yield();
+#elif MP4
+    @bronzeTex = UI::LoadTexture("Images/MP4/bronzeTopMedMP4.png");
+    @silverTex = UI::LoadTexture("Images/MP4/silverTopMedMP4.png");
+    @goldTex = UI::LoadTexture("Images/MP4/goldTopMedMP4.png");
+    @authorTex = UI::LoadTexture("Images/MP4/authorTopMedMP4.png");
+    yield();
+#endif
 
-    @victoryClip = Audio::LoadSample("Sounds/Victory.wav");
+#if TMNEXT
+    @bronzeTexNVG = nvg::LoadTexture("Images/TMNEXT/bronze.png");
+    @silverTexNVG = nvg::LoadTexture("Images/TMNEXT/silver.png");
+    @goldTexNVG = nvg::LoadTexture("Images/TMNEXT/gold.png");
     yield();
+    @authorTexNVG = nvg::LoadTexture("Images/TMNEXT/author.png");
+    @archipelagoTexNVG = nvg::LoadTexture("Images/TMNEXT/archipelago.png");
+    yield();
+    @bronzeTexNVGMed = nvg::LoadTexture("Images/TMNEXT/bronzeMed.png");
+    @silverTexNVGMed = nvg::LoadTexture("Images/TMNEXT/silverMed.png");
+    @goldTexNVGMed = nvg::LoadTexture("Images/TMNEXT/goldMed.png");
+    @authorTexNVGMed = nvg::LoadTexture("Images/TMNEXT/authorMed.png");
+    @archipelagoTexNVGMed = nvg::LoadTexture("Images/TMNEXT/archipelagoMed.png");
+    yield();
+    @bronzeTexNVGSmol = nvg::LoadTexture("Images/TMNEXT/bronzeSmall.png");
+    @silverTexNVGSmol = nvg::LoadTexture("Images/TMNEXT/silverSmall.png");
+    @goldTexNVGSmol = nvg::LoadTexture("Images/TMNEXT/goldSmall.png");
+    @authorTexNVGSmol = nvg::LoadTexture("Images/TMNEXT/authorSmall.png");
+    @archipelagoTexNVGSmol = nvg::LoadTexture("Images/TMNEXT/archipelagoSmall.png");
 
-    @bronzeTexNVG = nvg::LoadTexture("Images/bronze.png");
-    @silverTexNVG = nvg::LoadTexture("Images/silver.png");
-    @goldTexNVG = nvg::LoadTexture("Images/gold.png");
+    @shadowTexNVG = nvg::LoadTexture("Images/TMNEXT/shadow.png");
+
+#elif MP4
+    @bronzeTexNVG = nvg::LoadTexture("Images/MP4/bronzeTopMP4.png");
+    @silverTexNVG = nvg::LoadTexture("Images/MP4/silverTopMP4.png");
+    @goldTexNVG = nvg::LoadTexture("Images/MP4/goldTopMP4.png");
     yield();
-    @authorTexNVG = nvg::LoadTexture("Images/author.png");
-    @archipelagoTexNVG = nvg::LoadTexture("Images/archipelago.png");
+    @authorTexNVG = nvg::LoadTexture("Images/MP4/authorTopMP4.png");
+    @archipelagoTexNVG = nvg::LoadTexture("Images/MP4/archipelagoTopMP4.png");
     yield();
-    @bronzeTexNVGMed = nvg::LoadTexture("Images/bronzeMed.png");
-    @silverTexNVGMed = nvg::LoadTexture("Images/silverMed.png");
-    @goldTexNVGMed = nvg::LoadTexture("Images/goldMed.png");
-    @authorTexNVGMed = nvg::LoadTexture("Images/authorMed.png");
-    @archipelagoTexNVGMed = nvg::LoadTexture("Images/archipelagoMed.png");
+    @bronzeTexNVGMed = nvg::LoadTexture("Images/MP4/bronzeTopMedMP4.png");
+    @silverTexNVGMed = nvg::LoadTexture("Images/MP4/silverTopMedMP4.png");
+    @goldTexNVGMed = nvg::LoadTexture("Images/MP4/goldTopMedMP4.png");
     yield();
-    @bronzeTexNVGSmol = nvg::LoadTexture("Images/bronzeSmall.png");
-    @silverTexNVGSmol = nvg::LoadTexture("Images/silverSmall.png");
-    @goldTexNVGSmol = nvg::LoadTexture("Images/goldSmall.png");
-    @authorTexNVGSmol = nvg::LoadTexture("Images/authorSmall.png");
-    @archipelagoTexNVGSmol = nvg::LoadTexture("Images/archipelagoSmall.png");
-    @shadowTexNVG = nvg::LoadTexture("Images/shadow.png");
+    @authorTexNVGMed = nvg::LoadTexture("Images/MP4/authorTopMedMP4.png");
+    @archipelagoTexNVGMed = nvg::LoadTexture("Images/MP4/archipelagoTopMedMP4.png");
+    yield();
+    @bronzeTexNVGBowTie = nvg::LoadTexture("Images/MP4/bronzeMP4.png");
+    @silverTexNVGBowTie = nvg::LoadTexture("Images/MP4/silverMP4.png");
+    @goldTexNVGBowTie = nvg::LoadTexture("Images/MP4/goldMP4.png");
+    yield();
+    @authorTexNVGBowTie = nvg::LoadTexture("Images/MP4/authorMP4.png");
+    @archipelagoTexNVGBowTie = nvg::LoadTexture("Images/MP4/archipelagoMP4.png");
+#endif
+
     loadingFinished = true;
 }

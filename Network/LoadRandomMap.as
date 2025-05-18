@@ -132,7 +132,7 @@ bool IsMapValid(Json::Value@ mapJson){
         if (exebuild <= PHYSICS_PATCHES[i].exebuild){
             for (uint j = 0; j < PHYSICS_PATCHES[i].tags.Length; j++){
                 for (uint k = 0; k < mapJson["Tags"].Length; k++){
-                    int physicsTagId = int(GetTags()[PHYSICS_PATCHES[i].tags[j]]);
+                    int physicsTagId = int(TMX_TAGS[PHYSICS_PATCHES[i].tags[j]]);
                     int mapTagId = int(mapJson["Tags"][k]["TagId"]);
                     if (physicsTagId == mapTagId){
                         //is pre-patch!!
