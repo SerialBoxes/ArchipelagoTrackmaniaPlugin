@@ -5,22 +5,33 @@ uint FrameConfirmQuit = 0;
 const float stdRatio = 16.0f / 9.0f;
 
 void DrawPlaygroundUI() {
-    //I can't figure out how to get this working like in TMNEXT
-    //so were hardcoding baybeee!!! Dead games never gonna get an update to break this woohoo!!!!
+    //okay listen up girls and boys heres the situ
+    //I want to cry
     //CControlContainer@ root = GetApp().CurrentPlayground.Interface.InterfaceRoot;
-    CTrackMania@ App = cast<CTrackMania@>(GetApp());
-    CTrackManiaNetwork@ Network = cast<CTrackManiaNetwork@>(App.Network);
-    auto layers = Network.PlaygroundInterfaceScriptHandler.Playground.UI.UILayers;
-    for (uint i = 0; i < layers.Length; i++){
-        print(layers[i].ManialinkPageUtf8);
-    }
-    //print(Network.PlaygroundInterfaceScriptHandler.Playground.UI.UILayers.Length);
-    nvg::BeginPath();
-    nvg::Scissor(250, 200, 100, 100);
-    nvg::FillPaint(nvg::TexturePattern(vec2(200,200), vec2(150,200), 0.0f, goldTexNVGBowTie, 1.0f));
-    nvg::Fill();
-    nvg::ResetScissor();
-    nvg::ClosePath();
+
+    if (!GetIsOnMap() || !UI::IsGameUIVisible()) return;
+    //if (data is null || !socket.NotDisconnected()) return;
+    //if (loadedMap is null || GetLoadedMapUid() != loadedMap.mapInfo.MapUid) return;
+
+    // nvg::BeginPath();
+    // nvg::Scissor(250, 200, 100, 100);
+    // nvg::FillPaint(nvg::TexturePattern(vec2(200,200), vec2(150,200), 0.0f, goldTexNVGBowTie, 1.0f));
+    // nvg::Fill();
+    // nvg::ResetScissor();
+    // nvg::ClosePath();
+}
+
+void DrawMedalSelection(CGameManialinkPage@ Page){
+    if (Page is null) return;
+    auto all = cast<CGameManialinkFrame@>(Page.GetFirstChild("Frame-All"));
+    if (all is null) return;
+    auto root = all.Parent;
+    if (root is null || !root.Visible) return;
+    print("pog");
+}
+
+void DrawBigMedals(CGameManialinkPage@ Page){
+
 }
 
 void DrawOverPlaygroundPage(CGameManialinkPage@ Page, PlaygroundPageType type, CGameManialinkPage@ ScoresTable = null) {
@@ -129,10 +140,4 @@ void DrawHugeMedal(vec2 medalPos, float medalScale, const string &in imageURL){
     nvg::FillPaint(nvg::TexturePattern(quadMedalCoords, quadMedalSize, 0.0f, tex, 1.0f));
     nvg::Fill();
 }
-
-void Bla(){
-    nvg::BeginPath();
-    nvg::Text(vec2(400,400),"BLA");
-}
-
 #endif
