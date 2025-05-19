@@ -24,12 +24,13 @@ const string SUPPORTED_GAME_MODE        = "";
 const string ETAGS						= "23,37,40,46,47";//Kacky, Royal, Arena, Flagrush, and Puzzle.
 #endif
 
-const int MAX_AUTHOR_TIME				        = 300000;
+const int MAX_AUTHOR_TIME	            = 300000;
 const int MAX_MAPS_IN_SERIES            = 20;
 const int MAX_SERIES_COUNT              = 20;
 const int MAX_MAP_LOCATIONS             = 5;
 const int BASE_ID                       = 24000;
-const int BASE_TRAP_ID                = 24050;
+const int BASE_TRAP_ID                  = 24050;
+const float DISCOUNT_PERCENT            = .015;
 
 const array<string> MAP_FIELDS_ARRAY = {
     "MapId",
@@ -78,6 +79,7 @@ enum ItemTypes{
     GoldMedal = 24002,
     AuthorMedal = 24003,
     Skip = 24004,
+    Discount = 24005,
     Trap = 24050,
     Filler = 24500,
     Archipelago = 99999

@@ -105,6 +105,14 @@ class MapState{
         saveFile.Save(saveData);
     }
 
+    void Discount(){
+        targetTime += int(Math::Round(float(targetTime)*DISCOUNT_PERCENT));
+        saveData.items.discountsUsed += 1;
+
+        UpdateCheckFlags();
+        saveFile.Save(saveData);
+    }
+
     void UpdateCheckFlags(){
         if ((personalBestTime <= mapInfo.BronzeTime || skipped) && saveData.settings.DoingBronze()){
             data.locations.FlagCheck(seriesIndex, mapIndex, CheckTypes::Bronze);

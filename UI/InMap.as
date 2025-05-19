@@ -71,14 +71,24 @@ void RenderMapUI(){
             UI::Unindent();
             UI::Separator();
 
-            UI::Text("Skips Available: " + (data.items.skips - data.items.skipsUsed));
-            if (loadedMap.skipped){
-                UI::Text("Map Skipped!");
-            }else if (data.items.skips > data.items.skipsUsed && !data.locations.GotAllChecks(loadedMap.seriesIndex, loadedMap.mapIndex)){
-                if(UI::ButtonColored(Icons::Repeat+" Skip Map", 0.5)){
+            bool gotAllChecks = data.locations.GotAllChecks(loadedMap.seriesIndex, loadedMap.mapIndex);
+            bool canSkip = !loadedMap.skipped && skipsAvailable > 0 && !gotAllChecks;
+            UI::BeginDisabled(!canSkip);
+            if(UI::ButtonColored(Icons::Repeat+" Skip Map (x"+skipsAvailable+")", 0.5)){
+                if (canSkip){
                     loadedMap.Skip();
                 }
             }
+            UI::EndDisabled();
+            bool canDiscount = discountsAvailable > 0 && !gotAllChecks;
+            UI::BeginDisabled(!canDiscount);
+            UI::SameLine();
+            if(UI::ButtonColored(Icons::Tag+" Lower Target Time (x"+discountsAvailable+")", 0.33)){
+                if (canDiscount){
+                    loadedMap.Discount();
+                }
+            }
+            UI::EndDisabled();
             UI::Separator();
 
             if (!data.locations.GotAllChecks(loadedMap.seriesIndex, loadedMap.mapIndex)){

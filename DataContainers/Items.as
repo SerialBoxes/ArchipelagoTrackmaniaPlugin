@@ -4,10 +4,12 @@ class Items{
     int goldMedals;   //24002
     int authorMedals; //24003
     int skips;        //24004
+    int discounts;    //24005
     int traps;        //24050
     int filler;       //24500
 
     int skipsUsed;
+    int discountsUsed;
 
     int itemsRecieved;
 
@@ -19,10 +21,12 @@ class Items{
         goldMedals = 0;
         authorMedals = 0;
         skips = 0;
+        discounts = 0;
         traps = 0;
         filler = 0;
 
         skipsUsed = 0;
+        discountsUsed = 0;
 
         itemsRecieved = 0;
 
@@ -37,9 +41,11 @@ class Items{
             goldMedals = json["goldMedals"];
             authorMedals = json["authorMedals"];
             skips = json["skips"];
+            discounts = json["discounts"];
             traps = json["traps"];
             filler = json["filler"];
             skipsUsed = json["skipsUsed"];
+            discountsUsed = json["discountsUsed"];
             itemsRecieved = json["itemsRecieved"];
         } catch {
             Log::Error("Error parsing Items"+ "\nReason: " + getExceptionInfo());
@@ -76,6 +82,9 @@ class Items{
             case ItemTypes::Skip:
                 skips += itemCount;
                 break;
+            case ItemTypes::Discount:
+                discounts += itemCount;
+                break;
             // case ItemTypes::Filler:
             //     filler += itemCount;
             //     break;
@@ -96,6 +105,7 @@ class Items{
         goldMedals = 0;
         authorMedals = 0;
         skips = 0;
+        discounts = 0;
         traps = 0;
         filler = 0;
         itemsRecieved = 0;
@@ -109,9 +119,11 @@ class Items{
             json["goldMedals"] = goldMedals;
             json["authorMedals"] = authorMedals;
             json["skips"] = skips;
+            json["discounts"] = discounts;
             json["traps"] = traps;
             json["filler"] = filler;
             json["skipsUsed"] = skipsUsed;
+            json["discountsUsed"] = discountsUsed;
             json["itemsRecieved"] = itemsRecieved;
         } catch {
             Log::Error("Error converting Items to JSON");

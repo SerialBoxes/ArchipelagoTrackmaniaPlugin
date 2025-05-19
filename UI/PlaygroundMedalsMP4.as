@@ -22,12 +22,16 @@ void DrawPlaygroundUI() {
 
     CControlQuad@ MedalRE = cast<CControlQuad>(cast<CControlContainer>(cast<CControlContainer>(cast<CControlContainer>(cast<CControlContainer>(cast<CControlContainer>(cast<CControlContainer>(RaceEnd.Childs[0]).Childs[1]).Childs[0]).Childs[3]).Childs[0]).Childs[3]).Childs[1]);
     MedalRE.Hide();
+    if (RaceEnd.IsVisible) DrawMedalSelection(MedalRE);
 
     CControlQuad@ MedalGS = cast<CControlQuad>(cast<CControlContainer>(cast<CControlContainer>(cast<CControlContainer>(cast<CControlContainer>(cast<CControlContainer>(cast<CControlContainer>(GhostSelection.Childs[0]).Childs[0]).Childs[1]).Childs[3]).Childs[0]).Childs[3]).Childs[1]);
     MedalGS.Hide();
+    if (GhostSelection.IsVisible) DrawMedalSelection(MedalGS);
 
     CControlQuad@ MedalPS = cast<CControlQuad>(cast<CControlContainer>(cast<CControlContainer>(cast<CControlContainer>(cast<CControlContainer>(cast<CControlContainer>(cast<CControlContainer>(Pause.Childs[0]).Childs[0]).Childs[1]).Childs[3]).Childs[0]).Childs[3]).Childs[1]);
     MedalPS.Hide();
+    if (Pause.IsVisible) DrawMedalSelection(MedalPS);
+    
 
     // nvg::BeginPath();
     // nvg::Scissor(250, 200, 100, 100);
@@ -37,13 +41,26 @@ void DrawPlaygroundUI() {
     // nvg::ClosePath();
 }
 
-void DrawMedalSelection(CGameManialinkPage@ Page){
-    if (Page is null) return;
-    auto all = cast<CGameManialinkFrame@>(Page.GetFirstChild("Frame-All"));
-    if (all is null) return;
-    auto root = all.Parent;
-    if (root is null || !root.Visible) return;
-    print("pog");
+void DrawMedalSelection(CControlQuad@ Medal){
+    const float w      = Math::Max(1, Draw::GetWidth());
+    const float h      = Math::Max(1, Draw::GetHeight());
+    const vec2  center = vec2(w * 0.5f, h * 0.5f);
+    const float hUnit  = h / 180.0f;
+    const vec2  scale  = vec2((w / h > stdRatio) ? hUnit : w / 320.0f, -hUnit);
+    vec2 size, offset, coords;
+
+    // int checkCount = data.locations.ChecksGotten(loadedMap.seriesIndex,loadedMap.mapIndex);
+    // if (checkCount == 0) return;
+
+    // ItemTypes texI = loadedMap.itemTypes[data.locations.GetNthCheck(loadedMap.seriesIndex,loadedMap.mapIndex, 0)];
+    // nvg::Texture@ tex = GetNthMedTex(texI);
+    nvg::Texture@ tex = archipelagoarchipelagoTexNVGBowTie;
+    size   = vec2(16.0f) * hUnit;
+    offset = vec2(0.0f, -size.y * 0.5f);
+    coords = center + offset + scale * (medalPos + vec2(8.3f, 0.0f));
+    nvg::BeginPath();
+    nvg::FillPaint(nvg::TexturePattern(coords, size, 0.0f, tex, 1.0f));
+    nvg::Fill();
 }
 
 void DrawBigMedals(CGameManialinkPage@ Page){
