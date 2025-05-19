@@ -83,7 +83,7 @@ void RenderMapUI(){
             bool canDiscount = discountsAvailable > 0 && !gotAllChecks;
             UI::BeginDisabled(!canDiscount);
             UI::SameLine();
-            if(UI::ButtonColored(Icons::Tag+" Lower Target Time (x"+discountsAvailable+")", 0.33)){
+            if(UI::ButtonColored(Icons::Tag+" Raise Target Time (x"+discountsAvailable+")", 0.33)){
                 if (canDiscount){
                     loadedMap.Discount();
                 }
