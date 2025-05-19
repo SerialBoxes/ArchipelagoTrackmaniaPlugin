@@ -7,11 +7,27 @@ const float stdRatio = 16.0f / 9.0f;
 void DrawPlaygroundUI() {
     //okay listen up girls and boys heres the situ
     //I want to cry
-    //CControlContainer@ root = GetApp().CurrentPlayground.Interface.InterfaceRoot;
 
     if (!GetIsOnMap() || !UI::IsGameUIVisible()) return;
     //if (data is null || !socket.NotDisconnected()) return;
     //if (loadedMap is null || GetLoadedMapUid() != loadedMap.mapInfo.MapUid) return;
+
+    CControlContainer@ root = GetApp().CurrentPlayground.Interface.InterfaceRoot;
+    CControlContainer@ PageContainer = cast<CControlContainer>(cast<CControlContainer>(root.Childs[2]).Childs[8]);
+
+    CControlContainer@ BigMedals = cast<CControlContainer>(PageContainer.Childs[5]);
+    CControlContainer@ RaceEnd = cast<CControlContainer>(PageContainer.Childs[8]);
+    CControlContainer@ GhostSelection = cast<CControlContainer>(PageContainer.Childs[9]);
+    CControlContainer@ Pause = cast<CControlContainer>(PageContainer.Childs[10]);
+
+    CControlQuad@ MedalRE = cast<CControlQuad>(cast<CControlContainer>(cast<CControlContainer>(cast<CControlContainer>(cast<CControlContainer>(cast<CControlContainer>(cast<CControlContainer>(RaceEnd.Childs[0]).Childs[1]).Childs[0]).Childs[3]).Childs[0]).Childs[3]).Childs[1]);
+    MedalRE.Hide();
+
+    CControlQuad@ MedalGS = cast<CControlQuad>(cast<CControlContainer>(cast<CControlContainer>(cast<CControlContainer>(cast<CControlContainer>(cast<CControlContainer>(cast<CControlContainer>(GhostSelection.Childs[0]).Childs[0]).Childs[1]).Childs[3]).Childs[0]).Childs[3]).Childs[1]);
+    MedalGS.Hide();
+
+    CControlQuad@ MedalPS = cast<CControlQuad>(cast<CControlContainer>(cast<CControlContainer>(cast<CControlContainer>(cast<CControlContainer>(cast<CControlContainer>(cast<CControlContainer>(Pause.Childs[0]).Childs[0]).Childs[1]).Childs[3]).Childs[0]).Childs[3]).Childs[1]);
+    MedalPS.Hide();
 
     // nvg::BeginPath();
     // nvg::Scissor(250, 200, 100, 100);
