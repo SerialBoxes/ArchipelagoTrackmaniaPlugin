@@ -72,6 +72,8 @@ void RenderMapUI(){
             UI::Separator();
 
             bool gotAllChecks = data.locations.GotAllChecks(loadedMap.seriesIndex, loadedMap.mapIndex);
+            int skipsAvailable = data.items.skips - data.items.skipsUsed;
+            int discountsAvailable = data.items.discounts - data.items.discountsUsed;
             bool canSkip = !loadedMap.skipped && skipsAvailable > 0 && !gotAllChecks;
             UI::BeginDisabled(!canSkip);
             if(UI::ButtonColored(Icons::Repeat+" Skip Map (x"+skipsAvailable+")", 0.5)){
@@ -82,7 +84,6 @@ void RenderMapUI(){
             UI::EndDisabled();
             bool canDiscount = discountsAvailable > 0 && !gotAllChecks;
             UI::BeginDisabled(!canDiscount);
-            UI::SameLine();
             if(UI::ButtonColored(Icons::Tag+" Raise Target Time (x"+discountsAvailable+")", 0.33)){
                 if (canDiscount){
                     loadedMap.Discount();
@@ -91,13 +92,11 @@ void RenderMapUI(){
             UI::EndDisabled();
             UI::Separator();
 
-            if (!data.locations.GotAllChecks(loadedMap.seriesIndex, loadedMap.mapIndex)){
-                UI::Text("Checks Left:");
-                UI::Indent();
-                DrawChecksRemaining(loadedMap.seriesIndex, loadedMap.mapIndex);
-                UI::Unindent();
-                UI::Separator();
-            }
+            UI::Text("Checks Left:");
+            UI::Indent();
+            DrawChecksRemaining(loadedMap.seriesIndex, loadedMap.mapIndex);
+            UI::Unindent();
+            UI::Separator();
 
 
         } else {
