@@ -18,11 +18,6 @@ nvg::Texture@ silverTexNVG;
 nvg::Texture@ goldTexNVG;
 nvg::Texture@ authorTexNVG;
 nvg::Texture@ archipelagoTexNVG;
-nvg::Texture@ bronzeTexNVGMed;
-nvg::Texture@ silverTexNVGMed;
-nvg::Texture@ goldTexNVGMed;
-nvg::Texture@ authorTexNVGMed;
-nvg::Texture@ archipelagoTexNVGMed;
 
 #if TMNEXT
 nvg::Texture@ bronzeTexNVGSmol;
@@ -31,6 +26,11 @@ nvg::Texture@ goldTexNVGSmol;
 nvg::Texture@ authorTexNVGSmol;
 nvg::Texture@ archipelagoTexNVGSmol;
 nvg::Texture@ shadowTexNVG;
+nvg::Texture@ bronzeTexNVGMed;
+nvg::Texture@ silverTexNVGMed;
+nvg::Texture@ goldTexNVGMed;
+nvg::Texture@ authorTexNVGMed;
+nvg::Texture@ archipelagoTexNVGMed;
 
 #elif MP4
 nvg::Texture@ bronzeTexNVGBowTie;
@@ -126,7 +126,6 @@ nvg::Texture@ GetNthSmolTex(ItemTypes type){
             return archipelagoTexNVGSmol;
     }
 }
-#endif
 
 nvg::Texture@ GetNthMedTex(ItemTypes type){
     switch (type){
@@ -152,6 +151,7 @@ nvg::Texture@ GetNthMedTex(ItemTypes type){
             return archipelagoTexNVGMed;
     }
 }
+#endif
 
 nvg::Texture@ GetNthTex(ItemTypes type){
     switch (type){
@@ -177,6 +177,59 @@ nvg::Texture@ GetNthTex(ItemTypes type){
             return archipelagoTexNVG;
     }
 }
+
+#if MP4
+nvg::Texture@ GetNthBottomTex(ItemTypes type){
+    switch (type){
+        case ItemTypes::BronzeMedal:
+            return bronzeTexNVGBottom;
+        case ItemTypes::SilverMedal:
+            return silverTexNVGBottom;
+        case ItemTypes::GoldMedal:
+            return goldTexNVGBottom;
+        case ItemTypes::AuthorMedal:
+            return authorTexNVGBottom;
+        case ItemTypes::Archipelago:
+            return archipelagoTexNVGBottom;
+        case ItemTypes::Skip:
+            return archipelagoTexNVGBottom;
+        case ItemTypes::Discount:
+            return archipelagoTexNVGBottom;
+        case ItemTypes::Trap:
+            return archipelagoTexNVGBottom;
+        case ItemTypes::Filler:
+            return archipelagoTexNVGBottom;
+        default:
+            return archipelagoTexNVGBottom;
+    }
+}
+
+nvg::Texture@ GetNthBowTieTex(ItemTypes type){
+    switch (type){
+        case ItemTypes::BronzeMedal:
+            return bronzeTexNVGBowTie;
+        case ItemTypes::SilverMedal:
+            return silverTexNVGBowTie;
+        case ItemTypes::GoldMedal:
+            return goldTexNVGBowTie;
+        case ItemTypes::AuthorMedal:
+            return authorTexNVGBowTie;
+        case ItemTypes::Archipelago:
+            return archipelagoTexNVGBowTie;
+        case ItemTypes::Skip:
+            return archipelagoTexNVGBowTie;
+        case ItemTypes::Discount:
+            return archipelagoTexNVGBowTie;
+        case ItemTypes::Trap:
+            return archipelagoTexNVGBowTie;
+        case ItemTypes::Filler:
+            return archipelagoTexNVGBowTie;
+        default:
+            return archipelagoTexNVGBowTie;
+    }
+}
+
+#endif
 
 void DrawChecksRemaining(int seriesI, int mapI){
     string render = "";
@@ -275,13 +328,6 @@ void LoadUIAssets(){
     yield();
     @authorTexNVG = nvg::LoadTexture("Images/MP4/authorTopMP4.png");
     @archipelagoTexNVG = nvg::LoadTexture("Images/MP4/archipelagoTopMP4.png");
-    yield();
-    @bronzeTexNVGMed = nvg::LoadTexture("Images/MP4/bronzeTopMedMP4.png");
-    @silverTexNVGMed = nvg::LoadTexture("Images/MP4/silverTopMedMP4.png");
-    @goldTexNVGMed = nvg::LoadTexture("Images/MP4/goldTopMedMP4.png");
-    yield();
-    @authorTexNVGMed = nvg::LoadTexture("Images/MP4/authorTopMedMP4.png");
-    @archipelagoTexNVGMed = nvg::LoadTexture("Images/MP4/archipelagoTopMedMP4.png");
     yield();
     @bronzeTexNVGBowTie = nvg::LoadTexture("Images/MP4/bronzeMP4.png");
     @silverTexNVGBowTie = nvg::LoadTexture("Images/MP4/silverMP4.png");
