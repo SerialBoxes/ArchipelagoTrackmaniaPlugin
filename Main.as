@@ -21,7 +21,7 @@ void Main(){
     initTags();
     startnew(LoadUIAssets);
     //startnew(Celebrate);
-    DrawPlaygroundUI();
+    //DrawPlaygroundUI();
 }
 
 void RenderMenu(){
@@ -48,8 +48,9 @@ void Render(){
             socket.Close();
         }
     }
+    if (!loadingFinished) return;
     //CelebrationRender();
-    //DrawPlaygroundUI();
+    DrawPlaygroundUI();
 }
 
 void Update(float dt){

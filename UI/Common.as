@@ -38,6 +38,11 @@ nvg::Texture@ silverTexNVGBowTie;
 nvg::Texture@ goldTexNVGBowTie;
 nvg::Texture@ authorTexNVGBowTie;
 nvg::Texture@ archipelagoTexNVGBowTie;
+nvg::Texture@ bronzeTexNVGBottom;
+nvg::Texture@ silverTexNVGBottom;
+nvg::Texture@ goldTexNVGBottom;
+nvg::Texture@ authorTexNVGBottom;
+nvg::Texture@ archipelagoTexNVGBottom;
 #endif
 
 void RenderInventory(){
@@ -284,6 +289,13 @@ void LoadUIAssets(){
     yield();
     @authorTexNVGBowTie = nvg::LoadTexture("Images/MP4/authorMP4.png");
     @archipelagoTexNVGBowTie = nvg::LoadTexture("Images/MP4/archipelagoMP4.png");
+    yield();
+    @bronzeTexNVGBottom = nvg::LoadTexture("Images/MP4/bronzeBottomMP4.png");
+    @silverTexNVGBottom = nvg::LoadTexture("Images/MP4/silverBottomMP4.png");
+    @goldTexNVGBottom = nvg::LoadTexture("Images/MP4/goldBottomMP4.png");
+    yield();
+    @authorTexNVGBottom = nvg::LoadTexture("Images/MP4/authorBottomMP4.png");
+    @archipelagoTexNVGBottom = nvg::LoadTexture("Images/MP4/archipelagoBottomMP4.png");
 #endif
 
     loadingFinished = true;
