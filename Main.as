@@ -37,7 +37,7 @@ void Render(){
         }else{
             if (GetIsOnMap()){
                 RenderMapUI();
-                //DrawPlaygroundUI();
+                DrawPlaygroundUI();
             }else{
                 RenderMainMenu();
             }
@@ -50,7 +50,7 @@ void Render(){
     }
     if (!loadingFinished) return;
     //CelebrationRender();
-    DrawPlaygroundUI();
+    //DrawPlaygroundUI();
 }
 
 void Update(float dt){
