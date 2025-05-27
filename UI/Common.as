@@ -45,6 +45,23 @@ nvg::Texture@ authorTexNVGBottom;
 nvg::Texture@ archipelagoTexNVGBottom;
 #endif
 
+void RenderLoadingError(){
+
+    //UI::SetNextWindowSize(600, 400, UI::Cond::Always);
+    UI::PushStyleVar(UI::StyleVar::WindowTitleAlign, vec2(.5, .5));
+    UI::PushStyleVar(UI::StyleVar::WindowPadding, vec2(12, 12));
+    UI::PushStyleVar(UI::StyleVar::WindowRounding, 16.0);
+    UI::PushStyleVar(UI::StyleVar::FrameRounding, 8.0);
+    int flags = UI::WindowFlags::NoCollapse | UI::WindowFlags::NoDocking | UI::WindowFlags::AlwaysAutoResize;
+    if (UI::Begin("Archipelago - Loading", isOpen, flags)){
+        
+        UI::Text("Assets not loaded :(");
+        UI::Text("Please wait or try reloading the plugin.");
+        UI::End();
+        UI::PopStyleVar(4);
+    }
+}
+
 void RenderInventory(){
     UI::Text("Progression Medals: " + data.items.GetProgressionMedalCount() + "/"+(data.victoryRequirement));
     UI::Text("Inventory: ");
@@ -274,17 +291,23 @@ void DrawTags(MapState@ mapState, bool wrap = true){
 }
 
 void LoadUIAssets(){
+    if (IS_DEV_MODE) print("Loading Sounds...");
     @victoryClip = Audio::LoadSample("Sounds/Victory.wav");
     yield();
 
+    if (IS_DEV_MODE) print("Loading Fonts...");
     @fontHeader = UI::LoadFont("DroidSans-Bold.ttf", 26, -1, -1, true, true, true);
+    yield();
     @fontHeaderSub = UI::LoadFont("DroidSans.ttf", 22, -1, -1, true, true, true);
     yield();
     @fontHuge = UI::LoadFont("DroidSans.ttf", 40, -1, -1, true, true, true);
+    yield();
     @fontTime = UI::LoadFont("Fonts/digital-7.mono.ttf", 18, -1, -1, true, true, true);
+    yield();
     NvgFont = nvg::LoadFont("Fonts/RacingSansOne-Regular.ttf");
     yield();
 
+    if (IS_DEV_MODE) print("Loading Textures...");
 #if TMNEXT
     @bronzeTex = UI::LoadTexture("Images/TMNEXT/bronzeMed.png");
     @silverTex = UI::LoadTexture("Images/TMNEXT/silverMed.png");

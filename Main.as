@@ -20,8 +20,6 @@ void Main(){
     @socket = WebSocket(Setting_ConnectionAddress,22422);
     initTags();
     startnew(LoadUIAssets);
-    //startnew(Celebrate);
-    //DrawPlaygroundUI();
 }
 
 void RenderMenu(){
@@ -47,17 +45,16 @@ void Render(){
         if (socket.NotDisconnected()){
             socket.Close();
         }
+        if (isOpen){
+            RenderLoadingError();
+        }
     }
-    if (!loadingFinished) return;
-    //CelebrationRender();
-    //DrawPlaygroundUI();
 }
 
 void Update(float dt){
     if (isOpen && loadingFinished){
         CelebrationUpdate(dt);
     }
-    //CelebrationUpdate(dt);
 }
 
 void StartConnection(){
