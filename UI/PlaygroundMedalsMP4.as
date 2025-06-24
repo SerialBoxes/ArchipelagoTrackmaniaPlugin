@@ -113,6 +113,12 @@ void DrawBigMedals(CControlFrame@ BigMedalsParent){
     CControlQuad@ author = cast<CControlQuad>(BigMedalsParent.Childs[4]);
     CControlQuad@ bowtie = cast<CControlQuad>(BigMedalsParent.Childs[5]);
 
+    array<CControlQuad@> medalsArray = array<CControlQuad@>(4);
+    @medalsArray[0] = bronze;
+    @medalsArray[1] = silver;
+    @medalsArray[2] = gold;
+    @medalsArray[3] = author;
+
     bronze.Hide();
     silver.Hide();
     gold.Hide();
@@ -120,18 +126,24 @@ void DrawBigMedals(CControlFrame@ BigMedalsParent){
     bowtie.Hide();
 
     CheckTypes leadType = CheckTypes::Bronze;
+    int maxMedalI = -1;
     if (loadedMap.personalBestTime <= loadedMap.mapInfo.BronzeTime){
         leadType = CheckTypes::Bronze;
+        maxMedalI = 0;
     }
     if (loadedMap.personalBestTime <= loadedMap.mapInfo.SilverTime){
         leadType = CheckTypes::Silver;
+        maxMedalI = 1;
     }
     if (loadedMap.personalBestTime <= loadedMap.mapInfo.GoldTime){
         leadType = CheckTypes::Gold;
+        maxMedalI = 2;
     }
     if (loadedMap.personalBestTime <= loadedMap.mapInfo.AuthorTime){
         leadType = CheckTypes::Author;
+        maxMedalI = 3;
     }
+    if (maxMedalI < 0) return;
 
     CControlLabel@ newMedal = cast<CControlLabel>(BigMedalsParent.Parent.Childs[0]);
     bool showNM = data.locations.GotCheck(loadedMap.seriesIndex,loadedMap.mapIndex, leadType);
@@ -143,39 +155,27 @@ void DrawBigMedals(CControlFrame@ BigMedalsParent){
     bool bts = RoundTo(silver.Item.Corpus.Location.tx) == RoundTo(bowtie.Item.Corpus.Location.tx);
     bool btg = RoundTo(gold.Item.Corpus.Location.tx) == RoundTo(bowtie.Item.Corpus.Location.tx);
     bool bta = RoundTo(author.Item.Corpus.Location.tx) == RoundTo(bowtie.Item.Corpus.Location.tx);
-    bool shift = data.locations.GotCheck(loadedMap.seriesIndex,loadedMap.mapIndex, CheckTypes::Target);
-    int bowShifts = 0;
 
-    DrawBigMedal(bronze,CheckTypes::Bronze, shift);
-    DrawBigMedal(silver,CheckTypes::Silver, shift);
-    DrawBigMedal(gold,CheckTypes::Gold, shift);
-    DrawBigMedal(author,CheckTypes::Author, shift);
-    if (shift){
-        CControlQuad@ hello = bronze;
-        CheckTypes progressionType = CheckTypes::Bronze;
-        if (data.settings.targetTimeSetting >= 1){
-            @hello = silver;
-            progressionType = CheckTypes::Silver;
+    int medalI = maxMedalI;
+    for (int i = 4; i >= 0; i--){
+        CheckTypes check = CheckTypes(i);
+        if (data.locations.GotCheck(loadedMap.seriesIndex,loadedMap.mapIndex,check)){
+            if (medalI < 0){
+                DrawBigMedal(medalsArray[0],check, Math::Abs(medalI));
+            }else{
+                DrawBigMedal(medalsArray[medalI],check);
+            }
+            medalI -= 1;
         }
-        if (data.settings.targetTimeSetting >= 2){
-            @hello = gold;
-            progressionType = CheckTypes::Gold;
-        }
-        if (data.settings.targetTimeSetting >= 3){
-            @hello = author;
-            progressionType = CheckTypes::Author;
-        }
-        DrawBigMedal(hello,CheckTypes::Target);
-        bowShifts = Math::Max(int(leadType) - int(progressionType),0);
     }
     if (btb || bts || btg || bta)
-        DrawBowTie(bowtie, bowShifts);
+        DrawBowTie(bowtie, 0);
 
     nvg::ResetScissor();
 }
 
 
-bool DrawBigMedal (CControlQuad@ Medal, CheckTypes type, bool shift = false){
+bool DrawBigMedal (CControlQuad@ Medal, CheckTypes type, int shift = 0){
     const float w      = Math::Max(1, Draw::GetWidth());
     const float h      = Math::Max(1, Draw::GetHeight());
     const vec2  center = vec2(w * 0.5f, h * 0.5f);
@@ -194,7 +194,7 @@ bool DrawBigMedal (CControlQuad@ Medal, CheckTypes type, bool shift = false){
     float mscale = Math::Max(mat.yx/Math::Max(Math::Sin(theta),0.00001),mat.xx/Math::Max(Math::Cos(theta),0.00001));
 
     vec2 pos = vec2(mat.tx,mat.ty);
-    if(shift)pos.x += 0.066;
+    pos.x += 0.066 * shift;
     vec2 size = vec2((Medal.BoxMax.x-Medal.BoxMin.x)/3.2*w,(Medal.BoxMax.x-Medal.BoxMin.x)/1.8*h);
     vec2 coords = center + scale*pos  - vec2(size.x/2,size.y/2);
 

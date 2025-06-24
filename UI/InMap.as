@@ -29,7 +29,7 @@ void RenderMapUI(){
             UI::Unindent();
             UI::Separator();
 
-            int pb = loadedMap.personalBestTime;
+            int pb = loadedMap.GetPBTime();
             string pbText = Time::Format(pb);
             string pbDelta = Time::Format(pb - loadedMap.targetTime);
             if (pb == 30000000){
@@ -46,15 +46,21 @@ void RenderMapUI(){
             UI::Unindent();
             UI::PopFont();
             MoveCursor(vec2(0.0,6.0));
-            UI::Text("Personal Best: ");
+            if (loadedMap.personalBestDiscountTime <= 0){
+                UI::Text("Personal Best: ");
+            }else{
+                UI::PushStyleColor(UI::Col::Text, vec4 (0,1,0,1));
+                UI::Text("Personal Best (Discounted): ");
+            }
             UI::PushFont(fontTime);
             UI::Indent();
             MoveCursor(vec2(0.0,-4.0));
             UI::Text(pbText);
             UI::Indent();
             UI::PopFont();
+            if (loadedMap.personalBestDiscountTime > 0) UI::PopStyleColor();
             vec4 color = vec4(1.0,0.2,0.35,1.0);
-            if (loadedMap.personalBestTime <= loadedMap.targetTime)
+            if (loadedMap.GetPBTime() <= loadedMap.targetTime)
                 color = vec4(0.2,0.6,1.0,1.0);
             UI::PushStyleColor(UI::Col::Text, color);
             MoveCursor(vec2(0.0,8.0));
@@ -84,7 +90,8 @@ void RenderMapUI(){
             UI::EndDisabled();
             bool canDiscount = discountsAvailable > 0 && !gotAllChecks;
             UI::BeginDisabled(!canDiscount);
-            if(UI::ButtonColored(Icons::Tag+" Raise Target Time (x"+discountsAvailable+")", 0.33)){
+            string discount = Time::Format(loadedMap.GetDiscountAmount(), true, false, false, false);
+            if(UI::ButtonColored(Icons::Tag+" Lower PB by "+ discount +" (x"+discountsAvailable+")", 0.33)){
                 if (canDiscount){
                     loadedMap.Discount();
                 }

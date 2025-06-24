@@ -1,8 +1,10 @@
 class MapState{
     int targetTime;
     int personalBestTime;
+    int personalBestDiscountTime;
     MapInfo@ mapInfo;
     array<ItemTypes> itemTypes;//type of item in each of the 5 slots for a map. might not all be populated.
+    MemoryBuffer@ textureBuffer;
     bool skipped;//all our checks sent even if the pb isnt less than targetTime
 
     SaveData@ saveData;
@@ -17,6 +19,7 @@ class MapState{
         @this.mapInfo = mapInfo;
         this.targetTime = CalculateTargetTime();
         personalBestTime = 30000000;
+        personalBestDiscountTime = 0;
         itemTypes = array<ItemTypes>(5);
         bool skipped = false;
 
@@ -33,6 +36,7 @@ class MapState{
 
             targetTime = json["targetTime"];
             personalBestTime = json["personalBestTime"];
+            personalBestDiscountTime = json["personalBestDiscountTime"] !is null ? json["personalBestDiscountTime"] : 0;
             @mapInfo = MapInfo(json["mapInfo"]);
             skipped = json["skipped"] == "true" ? true : false;
 
@@ -50,7 +54,13 @@ class MapState{
                     itemTypes[i] = ItemTypes(int(itemObjects[i]));
                 }
             }
-            RequestThumbnail(true);
+            if (json["thumbnail"] !is null && false){
+                @textureBuffer = MemoryBuffer();
+                textureBuffer.WriteFromBase64(json["thumbnail"]);
+                @thumbnail = UI::LoadTexture(textureBuffer);
+            }else{
+                RequestThumbnail(true);
+            }
         } catch {
             Log::Error("Error parsing MapState for Series "+seriesIndex+" Map "+mapIndex+ "\nReason: " + getExceptionInfo());
         }
@@ -80,13 +90,14 @@ class MapState{
     void RequestThumbnail(bool delay = false){
         API::NetworkCallback@ cb = API::NetworkCallback(ThumbnailRecieved);
         API::NetRequest@ request = API::NetRequest("https://"+MX_URL+"/mapthumb/" + mapInfo.MapId, cb);
-        if (delay) request.delayMS = 2000 * seriesIndex; //this is just a hacky way to not ddos tmx without adding a ton to this project i rly just wanna be doneaaaaaaaaa
-        startnew(API::GetAsyncImg, request);
+        if (delay) request.delayMS = 4000 * seriesIndex; //this is just a hacky way to not ddos tmx without adding a ton to this project i rly just wanna be doneaaaaaaaaa
+        if (socket.NotDisconnected())startnew(API::GetAsyncImg, request);
     }
 
     void ThumbnailRecieved(Net::HttpRequest@ request){
         if (request.ResponseCode() == 200){
-            @thumbnail = UI::LoadTexture(request.Buffer());
+            @textureBuffer = request.Buffer();
+            @thumbnail = UI::LoadTexture(textureBuffer);
         }
     }
 
@@ -106,27 +117,35 @@ class MapState{
     }
 
     void Discount(){
-        targetTime += int(Math::Round(float(targetTime)*DISCOUNT_PERCENT));
+        personalBestDiscountTime += GetDiscountAmount();
         saveData.items.discountsUsed += 1;
 
         UpdateCheckFlags();
         saveFile.Save(saveData);
     }
 
+    int GetPBTime(){
+        return personalBestTime - personalBestDiscountTime;
+    }
+
+    int GetDiscountAmount(){
+        return int(Math::Round(float(targetTime)*DISCOUNT_PERCENT));
+    }
+
     void UpdateCheckFlags(){
-        if ((personalBestTime <= mapInfo.BronzeTime || skipped) && saveData.settings.DoingBronze()){
+        if ((GetPBTime() <= mapInfo.BronzeTime || skipped) && saveData.settings.DoingBronze()){
             data.locations.FlagCheck(seriesIndex, mapIndex, CheckTypes::Bronze);
         }
-        if ((personalBestTime <= mapInfo.SilverTime || skipped) && saveData.settings.DoingSilver()){
+        if ((GetPBTime() <= mapInfo.SilverTime || skipped) && saveData.settings.DoingSilver()){
             data.locations.FlagCheck(seriesIndex, mapIndex, CheckTypes::Silver);
         }
-        if ((personalBestTime <= mapInfo.GoldTime || skipped) && saveData.settings.DoingGold()){
+        if ((GetPBTime() <= mapInfo.GoldTime || skipped) && saveData.settings.DoingGold()){
             data.locations.FlagCheck(seriesIndex, mapIndex, CheckTypes::Gold);
         }
-        if ((personalBestTime <= mapInfo.AuthorTime || skipped) && saveData.settings.DoingAuthor()){
+        if ((GetPBTime() <= mapInfo.AuthorTime || skipped) && saveData.settings.DoingAuthor()){
             data.locations.FlagCheck(seriesIndex, mapIndex, CheckTypes::Author);
         }
-        if ((personalBestTime <= targetTime || skipped)){
+        if ((GetPBTime() <= targetTime || skipped)){
             data.locations.FlagCheck(seriesIndex, mapIndex, CheckTypes::Target);
         }
 
@@ -146,6 +165,7 @@ class MapState{
         try {
             json["targetTime"] = targetTime;
             json["personalBestTime"] = personalBestTime;
+            json["personalBestDiscountTime"] = personalBestDiscountTime;
             json["mapInfo"] = mapInfo.ToJson();
             json["skipped"] = skipped? "true" : "false";
             Json::Value@ itemArray = Json::Array();
@@ -153,8 +173,12 @@ class MapState{
                 itemArray.Add(int(itemTypes[i]));
             }
             json["itemTypes"] = itemArray;
+            if (false && textureBuffer !is null && textureBuffer.GetSize() > 0 && !saveData.hasGoal){
+                textureBuffer.Seek(0);
+                json["thumbnail"] = textureBuffer.ReadToBase64(textureBuffer.GetSize());
+            }
         } catch {
-            Log::Error("Error converting MapState to JSON for Series "+seriesIndex+" Map "+mapIndex);
+            Log::Error("Error converting MapState to JSON for Series "+seriesIndex+" Map "+mapIndex  + "\n" +getExceptionInfo());
         }
         return json;
     }

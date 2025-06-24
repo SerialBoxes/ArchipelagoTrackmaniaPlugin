@@ -13,8 +13,13 @@ void ProcessMessage(const string &in message){
         cmd = cmdJson["cmd"];
     }catch{
         //if we get a mesage with invalid json, its probably a disconnect request from the server
-        print("Message not valid JSON. Disconnecting...");
-        socket.Close();
+        if (message.Length == 2){
+            print("Message not valid JSON. Disconnecting...");
+            socket.Close();
+        }else{
+            print("Message not valid JSON. Dropping...");
+        }
+        print (""+message.Length);
         return;
     }
 
@@ -116,6 +121,7 @@ void ProcessReceivedItems (Json::Value@ json){
     if (!data.hasGoal && data.items.GetProgressionMedalCount() >= data.victoryRequirement){
         SendStatusUpdate(ClientStatus::CLIENT_GOAL);
         data.hasGoal = true;
+        saveFile.Save(data);//removes thumbnails from save file
         startnew(Celebrate);
     }
 

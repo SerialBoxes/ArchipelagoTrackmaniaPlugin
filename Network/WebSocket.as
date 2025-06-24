@@ -83,6 +83,7 @@ class WebSocket{
             //lets just panic and disconnect regardless
             //ok everyone ready? 3, 2, 1....
             //AAAAAAAAALKSJDFKL:EJS:IF
+            print("Invalid Opcode, Disconnecting. Opcode: " + opcode);
             Close();
             return;
         }
@@ -104,11 +105,19 @@ class WebSocket{
             int right = socket.ReadUint8();
             length = left << 8 | right;
         }else if (length == 127){
-            // while (socket.Available() < 8 && NotDisconnected()){
-            //     yield();
-            // }
-            // if (!NotDisconnected()) return;
-            // length = socket.ReadUint64();
+            while (socket.Available() < 8 && NotDisconnected()){
+                yield();
+            }
+            if (!NotDisconnected()) return;
+            uint64 part1 = socket.ReadUint8();
+            uint64 part2 = socket.ReadUint8();
+            uint64 part3 = socket.ReadUint8();
+            uint64 part4 = socket.ReadUint8();
+            uint64 part5 = socket.ReadUint8();
+            uint64 part6 = socket.ReadUint8();
+            uint64 part7 = socket.ReadUint8();
+            uint64 part8 = socket.ReadUint8();
+            length = part1 << 56 | part2 << 48 | part3 << 40 | part4 << 32 | part5 << 24 | part6 << 16 | part7 << 8 | part8;
 
             //more crying
         }
