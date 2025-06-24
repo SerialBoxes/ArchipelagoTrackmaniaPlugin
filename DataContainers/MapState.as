@@ -125,7 +125,11 @@ class MapState{
     }
 
     int GetPBTime(){
-        return personalBestTime - personalBestDiscountTime;
+        if (personalBestTime < 30000000){
+            return personalBestTime - personalBestDiscountTime;
+        }else{
+            return 30000000;
+        }
     }
 
     int GetDiscountAmount(){
