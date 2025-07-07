@@ -140,3 +140,12 @@ class SeriesState{
     }
 
 }
+
+class SeriesStateThumbnailPacket{
+    SeriesState@ seriesState;
+    const Json::Value@ seriesJson;
+    SeriesStateThumbnailPacket(SeriesState@ seriesState, const Json::Value@ seriesJson){
+        @this.seriesState = seriesState;
+        @this.seriesJson = seriesJson;
+    }        
+}
