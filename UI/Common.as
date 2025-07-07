@@ -296,13 +296,13 @@ void LoadUIAssets(){
     yield();
 
     if (IS_DEV_MODE) print("Loading Fonts...");
-    @fontHeader = UI::LoadFont("DroidSans-Bold.ttf", 26, -1, -1, true, true, true);
+    @fontHeader = UI::LoadFont("DroidSans-Bold.ttf", 26, null, true, false, false);
     yield();
-    @fontHeaderSub = UI::LoadFont("DroidSans.ttf", 22, -1, -1, true, true, true);
+    @fontHeaderSub = UI::LoadFont("DroidSans.ttf", 22, null, false, false, false);
     yield();
-    @fontHuge = UI::LoadFont("DroidSans.ttf", 40, -1, -1, true, true, true);
+    @fontHuge = UI::LoadFont("DroidSans.ttf", 40, {0x20,0x21}, true, false, false);
     yield();
-    @fontTime = UI::LoadFont("Fonts/digital-7.mono.ttf", 18, -1, -1, true, true, true);
+    @fontTime = UI::LoadFont("Fonts/digital-7.mono.ttf", 18, {0x20,0x40}, false, false, false);
     yield();
     NvgFont = nvg::LoadFont("Fonts/RacingSansOne-Regular.ttf");
     yield();

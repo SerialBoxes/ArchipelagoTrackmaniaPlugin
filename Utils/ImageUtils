@@ -1,0 +1,118 @@
+void sprshrink(int dwidth, int dheight, MemoryBuffer@ src, int swidth, int sheight){
+    int x, y;
+    int i, ii;
+    float red, green, blue, alpha;
+    float xfrag, yfrag, xfrag2, yfrag2;
+    float xt, yt, dx, dy;
+    int xi, yi;
+    MemoryBuffer@ dst = MemoryBuffer(dwidth*dheight*4);
+
+
+    dx = (float(swidth))/dwidth;
+    dy = (float(sheight))/dheight;
+
+    for(yt= 0, y=0;y<dheight;y++, yt += dy){
+        yfrag = ceil(yt) - yt;
+        if(yfrag == 0)
+            yfrag = 1;
+        yfrag2 = yt+dy - float(floor(yt + dy));
+        if(yfrag2 == 0 && dy != 1.0f)
+            yfrag2 = 1;
+
+        for(xt = 0, x=0;x<dwidth;x++, xt+= dx){
+            xi = (int) xt;
+            yi = (int) yt;
+            xfrag = float(ceil(xt)) - xt;
+            if(xfrag == 0)
+                xfrag = 1;
+            xfrag2 = xt+dx - float(floor(xt+dx));
+            if(xfrag2 == 0 && dx != 1.0f)
+                xfrag2 = 1;
+            src.Seek((yi*swidth+xi)*4);
+            red =    xfrag * yfrag * src.ReadUInt8();
+            green =  xfrag * yfrag * src.ReadUInt8();
+            blue =   xfrag * yfrag * src.ReadUInt8();
+            alpha =  xfrag * yfrag * src.ReadUInt8();
+
+            for(i=0; xi + i + 1 < xt+dx-1; i++){
+                src.Seek((yi*swidth+xi+i+1)*4);
+                red   += yfrag * src.ReadUInt8();
+                green += yfrag * src.ReadUInt8();
+                blue  += yfrag * src.ReadUInt8();
+                alpha += yfrag * src.ReadUInt8();
+            } 
+
+            src.Seek((yi*swidth+xi+i+1)*4);
+            red   += xfrag2 * yfrag * src.ReadUInt8();
+            green += xfrag2 * yfrag * src.ReadUInt8();
+            blue  += xfrag2 * yfrag * src.ReadUInt8();
+            alpha += xfrag2 * yfrag * src.ReadUInt8();
+
+
+            for(i=0; yi+i+1 < yt +dy-1 && yi + i+1 < sheight;i++){
+                src.Seek(((yi+i+1)*swidth+xi)*4);
+                red   += xfrag * src.ReadUInt8();
+                green += xfrag * src.ReadUInt8();
+                blue  += xfrag * src.ReadUInt8();
+                alpha += xfrag * src.ReadUInt8();
+
+                for (ii = 0; xi + ii + 1 < xt + dx - 1 && xi + ii + 1 < swidth; ii++){
+                    src.Seek(((yi+i+1)*swidth+xi+ii+1)*4);
+                    red   += src.ReadUInt8();
+                    green += src.ReadUInt8();
+                    blue  += src.ReadUInt8();
+                    alpha += src.ReadUInt8();
+                }
+
+                if (yi + i + 1 < sheight && xi + ii + 1 < swidth){
+                    src.Seek(((yi+i+1)*swidth+xi+ii+1)*4);
+                    red   += xfrag2 * src.ReadUInt8();
+                    green += xfrag2 * src.ReadUInt8();
+                    blue  += xfrag2 * src.ReadUInt8();
+                    alpha += xfrag2 * src.ReadUInt8();
+                }
+            }
+
+            if (yi + i + 1 < sheight){
+                src.Seek(((yi + i + 1)*swidth + xi) * 4);
+                red   += xfrag * yfrag2 * src.ReadUInt8();
+                green += xfrag * yfrag2 * src.ReadUInt8();
+                blue  += xfrag * yfrag2 * src.ReadUInt8();
+                alpha += xfrag * yfrag2 * src.ReadUInt8();
+
+                for (ii = 0; xi + ii + 1 < xt + dx - 1 && xi + ii + 1 < swidth; ii++){
+                    src.Seek(((yi + i + 1)*swidth + xi + ii + 1) * 4);
+                    red   += yfrag2 * src.ReadUInt8();
+                    green += yfrag2 * src.ReadUInt8();
+                    blue  += yfrag2 * src.ReadUInt8();
+                    alpha += yfrag2 * src.ReadUInt8();
+                }
+            }
+
+            if (yi + i + 1 < sheight && xi + ii + 1 < swidth){
+                src.Seek(((yi + i + 1)*swidth + xi + ii + 1) * 4);
+                red   += xfrag2 * yfrag2 * src.ReadUInt8();
+                green += xfrag2 * yfrag2 * src.ReadUInt8();
+                blue  += xfrag2 * yfrag2 * src.ReadUInt8();
+                alpha += xfrag2 * yfrag2 * src.ReadUInt8();
+            }
+
+
+            red   /= dx * dy;
+            green /= dx * dy;
+            blue  /= dx * dy;
+            alpha /= dx * dy;
+
+            red   = clamp(red, 0, 255);
+            green = clamp(green, 0, 255);
+            blue  = clamp(blue, 0, 255);
+            alpha = clamp(alpha, 0, 255);
+
+            dst.seek((y*dwidth+x)*4);
+            dst.WriteUInt8(red);
+            dst.WriteUInt8(green);
+            dst.WriteUInt8(blue);
+            dst.WriteUInt8(alpha);
+        }
+    }
+}

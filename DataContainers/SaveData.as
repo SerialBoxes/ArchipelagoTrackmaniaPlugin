@@ -144,6 +144,4 @@ class SaveData{
             previouslySeenMaps.Set(mapsSeen[i], true);
         }
     }
-
-
 }

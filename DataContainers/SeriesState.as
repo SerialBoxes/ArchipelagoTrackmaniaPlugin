@@ -80,6 +80,7 @@ class SeriesState{
     void ReadSlotData(const Json::Value@ &in json){
         this.medalTotal = json["MedalTotal"];
         this.mapCount = json["MapCount"];
+        //print(json.HasKey("SearchCriteria"));
         @this.searchBuilder = SearchCriteria(seriesIndex, json["SearchCriteria"], true);
         maps = array<MapState@>(mapCount);
 
@@ -98,8 +99,24 @@ class SeriesState{
             @maps[i] = MapState(saveData, mapObjects[i],seriesIndex,i);
         }
 
+        SeriesStateThumbnailPacket@ packed = SeriesStateThumbnailPacket(this,json);
+        startnew(function(ref@ packed) {
+            SeriesStateThumbnailPacket@ packet =  cast<SeriesStateThumbnailPacket@>(packed);
+            packet.seriesState.ReadThumbnails(packet.seriesJson);
+        }, packed);
+
         initialized = int(mapObjects.Length) == mapCount;
         initializing = false;
+    }
+
+    void ReadThumbnails(const Json::Value@ &in json){
+        for(int i = 0; i < seriesIndex+1; i++){
+            yield();//cant load all thumbnails on the same frame or we die
+        }
+        const Json::Value@ mapObjects = json["maps"];
+        for (uint i = 0; i < mapObjects.Length; i++) {
+            maps[i].LoadThumbnail(mapObjects[i]);
+        }
     }
 
     Json::Value ToJson(){

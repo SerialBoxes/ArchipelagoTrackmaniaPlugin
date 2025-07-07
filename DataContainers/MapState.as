@@ -54,15 +54,18 @@ class MapState{
                     itemTypes[i] = ItemTypes(int(itemObjects[i]));
                 }
             }
-            if (json["thumbnail"] !is null && false){
-                @textureBuffer = MemoryBuffer();
-                textureBuffer.WriteFromBase64(json["thumbnail"]);
-                @thumbnail = UI::LoadTexture(textureBuffer);
-            }else{
-                RequestThumbnail(true);
-            }
         } catch {
             Log::Error("Error parsing MapState for Series "+seriesIndex+" Map "+mapIndex+ "\nReason: " + getExceptionInfo());
+        }
+    }
+
+    void LoadThumbnail(const Json::Value &in json){
+        if (json["thumbnail"] !is null){
+            @textureBuffer = MemoryBuffer();
+            textureBuffer.WriteFromBase64(json["thumbnail"]);
+            @thumbnail = UI::LoadTexture(textureBuffer);
+        }else{
+            RequestThumbnail(true);
         }
     }
 
@@ -96,8 +99,11 @@ class MapState{
 
     void ThumbnailRecieved(Net::HttpRequest@ request){
         if (request.ResponseCode() == 200){
-            @textureBuffer = request.Buffer();
+            MemoryBuffer@ ogBuffer = request.Buffer();
+            print(ogBuffer.GetSize());
+            @textureBuffer = ogBuffer;
             @thumbnail = UI::LoadTexture(textureBuffer);
+            print(thumbnail.GetSize());
         }
     }
 
