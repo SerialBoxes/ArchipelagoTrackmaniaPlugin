@@ -139,7 +139,7 @@ class MapState{
     }
 
     int GetDiscountAmount(){
-        return int(Math::Round(float(targetTime)*DISCOUNT_PERCENT));
+        return int(Math::Round(float(targetTime)*saveData.settings.discountAmount));
     }
 
     void UpdateCheckFlags(){

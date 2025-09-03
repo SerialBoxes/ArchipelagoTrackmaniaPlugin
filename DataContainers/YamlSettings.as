@@ -1,5 +1,6 @@
 class YamlSettings{
     float targetTimeSetting;
+    float discountAmount;
     int seriesCount;
     bool bronzeDisabled;
     bool silverDisabled;
@@ -43,6 +44,7 @@ class YamlSettings{
         Json::Value json = Json::Object();
         try {
             json["targetTimeSetting"] = targetTimeSetting;
+            json["discountAmount"] = discountAmount;
             json["seriesCount"] = seriesCount;
             json["bronzeDisabled"] = bronzeDisabled;
             json["silverDisabled"] = silverDisabled;
@@ -56,6 +58,7 @@ class YamlSettings{
 
     void ReadSlotData(const Json::Value &in json){
         targetTimeSetting = json["TargetTimeSetting"];
+        discountAmount = json["DiscountAmount"];
         seriesCount = json["SeriesNumber"];
         bronzeDisabled = JsonGetAsBool(json, "DisableBronze");
         silverDisabled = JsonGetAsBool(json, "DisableSilver");
@@ -65,6 +68,7 @@ class YamlSettings{
 
     void ReadJsonV1_2(const Json::Value &in json){
         targetTimeSetting = json["targetTimeSetting"];
+        discountAmount = json["discountAmount"];
         seriesCount = json["seriesCount"];
         bronzeDisabled = JsonGetAsBool(json, "bronzeDisabled");
         silverDisabled = JsonGetAsBool(json, "silverDisabled");
