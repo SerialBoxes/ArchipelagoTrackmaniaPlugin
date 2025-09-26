@@ -98,7 +98,11 @@ class SearchCriteria {
         params.Set("count", "1");
         params.Set("maptype", SUPPORTED_MAP_TYPE);
 #if MP4
-        params.Set("titlepack", CurrentTitlePack());
+        string titlepack = CurrentTitlePack();
+        if (titlepack == "TMAll"){
+            titlepack = TITLEPACKS[Math::Rand(0,TITLEPACKS.Length)];
+        }
+        params.Set("titlepack", titlepack);
 #endif
 
         // Base tag search -- always present, even in safe mode

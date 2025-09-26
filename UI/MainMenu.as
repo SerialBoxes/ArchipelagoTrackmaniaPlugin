@@ -11,8 +11,9 @@ void RenderMainMenu(){
         if (data is null){
             UI::Text("Awaiting Server Connection...");
         }else{
-            vec2 viewSize = vec2(500,700);
+            vec2 viewSize = vec2(600,700);
             float manMarn = 4;
+            float indent = 20;
             bool seriesInitializing = false;
             UI::PushStyleVar(UI::StyleVar::FramePadding, vec2(4, 8));
             UI::BeginChild("Serieses", viewSize);
@@ -20,14 +21,14 @@ void RenderMainMenu(){
                 shownBefore = true;
                 UI::SetScrollHereY();
             }
-            UI::NewLine();
             for (uint i = 0; i < data.world.Length; i++){
-                UI::Separator();
-                MoveCursor(vec2(0,manMarn));
                 UI::PushFont(fontHeader);
                 UI::Text ("Series " + (i+1));
                 UI::PopFont();
                 MoveCursor(vec2(0,manMarn));
+                UI::Separator();
+                MoveCursor(vec2(0,manMarn));
+                UI::Indent(indent);
                 if (data.world[i].IsUnlocked() && data.world[i].initialized){
                     for (int j = 0; j < data.world[i].mapCount; j++){
 
@@ -39,25 +40,57 @@ void RenderMainMenu(){
                         MapState@ map = data.world[i].maps[j];
 
                         vec2 cursorStart = UI::GetCursorPos();
-                        UI::Text("Map "+(j+1)+" Hello!!! :)");
-                        vec2 cursorEnd = UI::GetCursorPos();
-                        if (data.locations.GotAllChecks(map.seriesIndex, map.mapIndex) || map.skipped){
-                            vec2 centerPos = cursorStart + vec2(lineHeight/2,viewSize.x/2);
-                            UI::SetCursorPos(centerPos);
-                            vec4 iconColor = vec4(0.1,0.6,0.12,1.0);
-                            if (map.skipped) iconColor = vec4(0.1,0.12,0.6,1.0);
-                            UI::PushStyleColor(UI::Col::Text,iconColor);
-                            RenderTextCentered(Icons::Circle,fontHuge);
-                            UI::PopStyleColor();
-                            UI::SetCursorPos(centerPos);
-                            MoveCursor(vec2(4,8));
-                            if (map.skipped){
-                                RenderTextCentered(Icons::Refresh,fontHeader);
-                            }else{
-                                RenderTextCentered(Icons::Check,fontHeader);
-                            }
+                        float width  = viewSize.x-30;
+                        float height = 36;
+                        vec2 starPos = UI::GetCursorPos() + vec2(-22,0)  +UI::GetWindowPos() - vec2(0, UI::GetScrollY())+ vec2(viewSize.x/2,0.0);
+                        vec2 endPos = UI::GetCursorPos() + vec2(-22,height) +UI::GetWindowPos() - vec2(0, UI::GetScrollY())+ vec2(viewSize.x/2,0.0);
+                        vec4 bgRect = vec4(starPos.x - (width/2),starPos.y,width,endPos.y - starPos.y);
 
-                            UI::SetCursorPos(cursorEnd);
+                        if (map.mapIndex % 2 == 1){
+                            UI::GetWindowDrawList().AddRectFilled(bgRect, vec4(1,1,1,0.04), 5);
+                        }
+                        //number
+                        string number = "";
+                        if (j < 9) number = "0";
+                        number += (""+(j+1));
+                        UI::PushFont(fontTime);
+                        UI::Text(number);
+                        UI::PopFont();
+                        //title
+                        UI::PushFont(fontHeaderSub);
+                        UI::PushFontSize(16);
+                        UI::SameLine();
+                        MoveCursor(vec2(0,6));
+                        string mapName = map.mapInfo.Name;
+                        if (mapName.Length > 23){
+                            mapName = mapName.SubStr(0,20)+"...";
+                        }
+                        UI::Text(mapName);
+                        UI::PopFontSize();
+                        UI::PopFont();
+                        //author
+                        UI::SameLine();
+                        MoveCursor(vec2(-4,10));
+                        UI::PushStyleColor(UI::Col::Text, vec4(0.7,0.7,0.7,1.0));
+                        UI::PushFontSize(12);
+                        UI::Text("by " + map.mapInfo.Username);
+                        UI::PopFontSize();
+                        UI::PopStyleColor();
+
+                        //UI::SameLine();
+                        MoveCursor(vec2(viewSize.x - 170, -24));
+                        DrawChecksRemaining(map.seriesIndex, map.mapIndex, false);
+
+                        UI::Dummy(vec2(0,0));
+
+                        vec2 cursorEnd = UI::GetCursorPos();
+
+                        if (data.locations.GotAllChecks(map.seriesIndex, map.mapIndex) || map.skipped){
+                            if (map.skipped){
+                                UI::GetWindowDrawList().AddRectFilled(bgRect, vec4(0,0.12,0.96,0.15), 5);
+                            }else{
+                                UI::GetWindowDrawList().AddRectFilled(bgRect, vec4(0,0.96,0.12,0.15), 5);
+                            }
                         }
 
                         // UI::BeginChild("##Map Name" + j, vec2(cellSize, UI::GetTextLineHeight()));
@@ -65,13 +98,15 @@ void RenderMainMenu(){
                         // UI::EndChild();
 
                         UI::EndGroup();
+                        //print(siiize);
+                        // UI::GetWindowDrawList().AddRectFilled(siiize, vec4(1,1,1,0.5),5);
 
                         auto size = UI::GetCursorPos() + UI::GetWindowPos() + vec2(0, 8) - startPos -vec2(0, UI::GetScrollY());
                         vec4 rect = vec4(startPos.x, startPos.y, 50, size.y);
                         //UI::GetWindowDrawList().AddRectFilled(rect, vec4(.0, .6, .6, 0.1));
 
                         if (UI::IsItemHovered()){
-                            RenderTooltip(data.world[i].maps[j]);
+                            RenderTooltip2(data.world[i].maps[j]);
                         }
                         if(UI::IsItemClicked()){
                             LoadMapByIndex(i,j);
@@ -79,22 +114,21 @@ void RenderMainMenu(){
                     }
                 }else if (!data.world[i].IsUnlocked()){
                     UI::NewLine();
-                    MoveCursor(vec2(viewSize.x/2,0));
-                    RenderTextCentered(Icons::Lock, fontHeader);
-                    MoveCursor(vec2(-viewSize.x/2,0));
                     UI::NewLine();
+                    float center = viewSize.x/2-indent;
+                    MoveCursor(vec2(center,0));
+                    UI::PushStyleColor(UI::Col::Text, vec4(0.52,0.5,0.5,1.0));
+                    RenderTextCentered(Icons::Lock, fontHeader, 0);
+                    UI::PopStyleColor();
+                    MoveCursor(vec2(-center,0));
                     UI::NewLine();
                 }else{
                     if (data.world[i].initializing || seriesInitializing){
                         seriesInitializing = true;
-                        UI::Indent();
                         UI::Text("Rolling Maps...");
                         UI::NewLine();
-                        UI::Unindent();
                     }else{
-                        UI::Indent();
                         UI::Text("Maps could not been rolled.");
-                        UI::Unindent();
                         if (UI::ButtonColored("Force Load Maps", 0)){
                             startnew(CoroutineFunc(data.world[i].Initialize));
                         }
@@ -103,6 +137,7 @@ void RenderMainMenu(){
                     UI::NewLine();
                     UI::NewLine();
                 }
+                UI::Unindent(indent);
                 MoveCursor(vec2(0,manMarn));
                 UI::Separator();
                 MoveCursor(vec2(0,manMarn));
@@ -118,6 +153,7 @@ void RenderMainMenu(){
                 MoveCursor(vec2(-medalOffset,-15.0));
                 RenderSeriesLine(nextSeries,viewSize,40,4,8);
                 MoveCursor(vec2(0,manMarn));
+                MoveCursor(vec2(0,-32));
                 if (nextSeries >= data.world.Length){
                     MoveCursor(vec2(0,10));
                     string text = "Victory";
@@ -141,13 +177,6 @@ void RenderMainMenu(){
             UI::EndChild();
             UI::PopStyleVar(1);
             UI::Separator();
-
-            // int total = data.victoryRequirement;
-            // UI::Text("Victory Progress: ");
-            // UI::Indent();
-            // RenderMedalProgress(GetProgressionTex(),60, data.items.GetProgressionMedalCount(),total);
-            // UI::Unindent();
-            // UI::Separator();
 
             if (UI::ButtonColored(Icons::Times+" Disconnect", 0.0)){
                 socket.Close();
@@ -218,14 +247,14 @@ void RenderMainMenuThumbnail(){
                             vec4 iconColor = vec4(0.1,0.6,0.12,1.0);
                             if (map.skipped) iconColor = vec4(0.1,0.12,0.6,1.0);
                             UI::PushStyleColor(UI::Col::Text,iconColor);
-                            RenderTextCentered(Icons::Circle,fontHuge);
+                            RenderTextCentered(Icons::Circle,fontHeader,40);
                             UI::PopStyleColor();
                             UI::SetCursorPos(centerPos);
                             MoveCursor(vec2(4,8));
                             if (map.skipped){
-                                RenderTextCentered(Icons::Refresh,fontHeader);
+                                RenderTextCentered(Icons::Refresh,fontHeader, 0);
                             }else{
-                                RenderTextCentered(Icons::Check,fontHeader);
+                                RenderTextCentered(Icons::Check,fontHeader, 0);
                             }
 
                             UI::SetCursorPos(cursorEnd);
@@ -253,7 +282,7 @@ void RenderMainMenuThumbnail(){
                 }else if (!data.world[i].IsUnlocked()){
                     UI::NewLine();
                     MoveCursor(vec2(viewSize.x/2,0));
-                    RenderTextCentered(Icons::Lock, fontHeader);
+                    RenderTextCentered(Icons::Lock, fontHeader, 0);
                     MoveCursor(vec2(-viewSize.x/2,0));
                     UI::NewLine();
                     UI::NewLine();
@@ -347,6 +376,17 @@ void RenderTooltip(MapState@ map){
     UI::EndTooltip();
 }
 
+void RenderTooltip2(MapState@ map){
+    UI::BeginTooltip();
+    UI::Text("Tags:");
+    UI:: SameLine();
+    DrawTags(map, false);
+    UI::Text("Target Time:");
+    UI::SameLine();
+    UI::Text(Time::Format(map.targetTime));
+    UI::EndTooltip();
+}
+
 void RenderSeriesLine(uint seriesI, vec2 viewSize, float height, float width, float margin){
     vec2 cursorPos = UI::GetCursorPos();
     cursorPos.x = 0;
@@ -362,7 +402,7 @@ void RenderSeriesLine(uint seriesI, vec2 viewSize, float height, float width, fl
     int count = data.items.GetProgressionMedalCount();
     vec4 color = vec4(0.35,0.35,0.35,1.0);
     if (count >= total){
-        color = vec4(0.0,1.0,0.1,1.0);
+        color = vec4(0,0.96,0.12,0.7);
     }
     UI::GetWindowDrawList().AddRectFilled(rect, color,width/2);
 }

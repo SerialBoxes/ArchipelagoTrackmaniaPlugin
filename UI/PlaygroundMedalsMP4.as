@@ -157,17 +157,34 @@ void DrawBigMedals(CControlFrame@ BigMedalsParent){
     bool bta = RoundTo(author.Item.Corpus.Location.tx) == RoundTo(bowtie.Item.Corpus.Location.tx);
 
     int medalI = maxMedalI;
+    array<int>indexes = array<int>(5);
+    array<CheckTypes> checks = array<CheckTypes>(5);
+    array<int>shifts = array<int>(5);
+    int arrayIndex = 0;
     for (int i = 4; i >= 0; i--){
         CheckTypes check = CheckTypes(i);
         if (data.locations.GotCheck(loadedMap.seriesIndex,loadedMap.mapIndex,check)){
             if (medalI < 0){
-                DrawBigMedal(medalsArray[0],check, Math::Abs(medalI));
+                indexes[arrayIndex] = 0;
+                checks[arrayIndex] = check;
+                shifts[arrayIndex] = Math::Abs(medalI);
+                //DrawBigMedal(medalsArray[0],check, Math::Abs(medalI));
             }else{
-                DrawBigMedal(medalsArray[medalI],check);
+                indexes[arrayIndex] = medalI;
+                checks[arrayIndex] = check;
+                shifts[arrayIndex] = 0;
+                //DrawBigMedal(medalsArray[medalI],check);
             }
             medalI -= 1;
+            arrayIndex += 1;
         }
     }
+
+    //look I needed to reverse the order the medals are drawn and I'm tired and don't want to make a struct I'm sorry
+    for (int i = arrayIndex-1; i >= 0; i--){
+        DrawBigMedal(medalsArray[indexes[i]],checks[i],shifts[i]);
+    }
+
     if (btb || bts || btg || bta)
         DrawBowTie(bowtie, 0);
 

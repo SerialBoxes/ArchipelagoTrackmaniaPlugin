@@ -29,6 +29,8 @@ void ProcessMessage(const string &in message){
         SendConnectionPacket();
     }else if (cmd == "Connected"){
         ProcessConnected(cmdJson);
+    }else if (cmd == "Resync"){
+        ProcessResync();
     }else if (cmd == "PrintJSON"){
         ProcessPrintJson(cmdJson);
     }else if (cmd == "ConnectionRefused"){
@@ -63,14 +65,7 @@ void ProcessConnected (Json::Value@ json){
         Json::Value@ saveJson = saveFile.Load();
         @data = SaveData(seedNameCache, teamI, playerI, saveJson);
         //resend all map checks we have, just in case some got missed!
-        array<int> allChecks = array<int>(MAX_SERIES_COUNT*MAX_MAPS_IN_SERIES*MAX_MAP_LOCATIONS);
-        int total = 0;
-        for (uint i = 0; i < data.world.Length; i++){
-            for (uint j = 0; j < data.world[i].maps.Length; j++){
-                total += data.locations.AddLocationChecks(allChecks, i, j);
-            }
-        }
-        SendLocationChecks(allChecks, total);
+        ProcessResync();
     } else{
 
         @data = SaveData(seedNameCache, teamI, playerI, json["slot_data"], true);
@@ -82,6 +77,19 @@ void ProcessConnected (Json::Value@ json){
     CheckLocations(json);
     SendStatusUpdate(ClientStatus::CLIENT_PLAYING);
     
+}
+
+void ProcessResync (){
+    if (data is null) return;
+    Log::Log("Resyncing all Checks", false);
+    array<int> allChecks = array<int>(MAX_SERIES_COUNT*MAX_MAPS_IN_SERIES*MAX_MAP_LOCATIONS);
+    int total = 0;
+    for (uint i = 0; i < data.world.Length; i++){
+        for (uint j = 0; j < data.world[i].maps.Length; j++){
+            total += data.locations.AddLocationChecks(allChecks, total, i, j);
+        }
+    }
+    SendLocationChecks(allChecks, total);
 }
 
 void ProcessPrintJson (Json::Value@ json){

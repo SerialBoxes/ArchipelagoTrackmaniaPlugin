@@ -99,11 +99,11 @@ class SeriesState{
             @maps[i] = MapState(saveData, mapObjects[i],seriesIndex,i);
         }
 
-        SeriesStateThumbnailPacket@ packed = SeriesStateThumbnailPacket(this,json);
-        startnew(function(ref@ packed) {
-            SeriesStateThumbnailPacket@ packet =  cast<SeriesStateThumbnailPacket@>(packed);
-            packet.seriesState.ReadThumbnails(packet.seriesJson);
-        }, packed);
+        // SeriesStateThumbnailPacket@ packed = SeriesStateThumbnailPacket(this,json);
+        // startnew(function(ref@ packed) {
+        //     SeriesStateThumbnailPacket@ packet =  cast<SeriesStateThumbnailPacket@>(packed);
+        //     packet.seriesState.ReadThumbnails(packet.seriesJson);
+        // }, packed);
 
         initialized = int(mapObjects.Length) == mapCount;
         initializing = false;

@@ -98,11 +98,11 @@ class LocationChecks{
         return checkCount;
     }
 
-    int AddLocationChecks(array<int> &checks, int seriesI, int mapI){
+    int AddLocationChecks(array<int> &checks,int currentTotal, int seriesI, int mapI){
         int index = 0;
         for(int i = 0; i < 5; i++){
             if (GotCheck(seriesI, mapI, CheckTypes(i))){
-                checks[index] = MapIndicesToId(seriesI, mapI, CheckTypes(i));
+                checks[currentTotal+index] = MapIndicesToId(seriesI, mapI, CheckTypes(i));
                 index++;
             }
         }

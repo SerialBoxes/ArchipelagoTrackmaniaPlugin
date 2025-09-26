@@ -32,6 +32,15 @@ const int BASE_ID                       = 24000;
 const int BASE_TRAP_ID                  = 24050;
 const float DISCOUNT_PERCENT            = .015;
 
+const array<string> TITLEPACKS = {
+    "TMAll",//envimix stuff it seems?
+    "TMCanyon",
+    "TMStadium",
+    "TMValley",
+    "TMLagoon",
+    "Unassigned"//MP3 canyon and stadium maps?
+};
+
 const array<string> MAP_FIELDS_ARRAY = {
     "MapId",
     "MapUid",

@@ -1,4 +1,3 @@
-UI::Font@ fontHuge;
 UI::Font@ fontHeader;
 UI::Font@ fontHeaderSub;
 UI::Font@ fontTime;
@@ -89,13 +88,14 @@ void RenderMedalProgress(UI::Texture@ tex, float size, int count, int total){
     UI::PopFont();
 }
 
-void RenderTextCentered(const string &in text, UI::Font@ font){
-    vec2 size = Draw::MeasureString(text, font);
-    if (font !is null) size = Draw::MeasureString(text, font,30);
+void RenderTextCentered(const string &in text, UI::Font@ font, int fontSize){
+    vec2 size = Draw::MeasureString(text, font, fontSize);
     MoveCursor(size/-2);
-    if (font !is null) UI::PushFont(font);
+    UI::PushFont(font);
+    UI::PushFontSize(fontSize);
     UI::Text(text);
-    if (font !is null) UI::PopFont();
+    UI::PopFontSize();
+    UI::PopFont();
     MoveCursor(size/2);
 }
 
@@ -248,7 +248,7 @@ nvg::Texture@ GetNthBowTieTex(ItemTypes type){
 
 #endif
 
-void DrawChecksRemaining(int seriesI, int mapI){
+void DrawChecksRemaining(int seriesI, int mapI, bool showNone = true){
     string render = "";
     if (!data.locations.GotCheck(seriesI, mapI, CheckTypes::Target)){
         render += "\\$fff"+Icons::Circle + "\\$z ";
@@ -265,7 +265,7 @@ void DrawChecksRemaining(int seriesI, int mapI){
     if (!data.locations.GotCheck(seriesI, mapI, CheckTypes::Bronze) && data.settings.DoingBronze()){
         render += "\\$964"+Icons::Circle + "\\$z ";
     }
-    if (data.locations.GotAllChecks(seriesI, mapI)){
+    if (data.locations.GotAllChecks(seriesI, mapI) && showNone){
         render += "None! :D";
     }
     UI::Text(render);
@@ -296,14 +296,12 @@ void LoadUIAssets(){
     yield();
 
     if (IS_DEV_MODE) print("Loading Fonts...");
-    @fontHeader = UI::LoadFont("DroidSans-Bold.ttf", 26, null, true, false, false);
-    yield();
-    @fontHeaderSub = UI::LoadFont("DroidSans.ttf", 22, null, false, false, false);
-    yield();
-    @fontHuge = UI::LoadFont("DroidSans.ttf", 40, {0x20,0x21}, true, false, false);
-    yield();
-    @fontTime = UI::LoadFont("Fonts/digital-7.mono.ttf", 18, {0x20,0x40}, false, false, false);
-    yield();
+    @fontHeader = UI::LoadFont("DroidSans-Bold.ttf", 26);
+    //yield();
+    @fontHeaderSub = UI::LoadFont("DroidSans.ttf", 22);
+    //yield();
+    @fontTime = UI::LoadFont("Fonts/digital-7.mono.ttf", 18);
+    //yield();
     NvgFont = nvg::LoadFont("Fonts/RacingSansOne-Regular.ttf");
     yield();
 

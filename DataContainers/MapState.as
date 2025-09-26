@@ -25,7 +25,7 @@ class MapState{
 
         this.seriesIndex = seriesIndex;
         this.mapIndex = mapIndex;
-        RequestThumbnail();
+        //RequestThumbnail();
     }
 
     MapState(SaveData@ saveData, const Json::Value &in json, int seriesIndex, int mapIndex){
@@ -87,7 +87,7 @@ class MapState{
         this.mapInfo = mapInfo;
         this.targetTime = CalculateTargetTime();
         personalBestTime = 30000000;
-        RequestThumbnail();
+        //RequestThumbnail();
     }
 
     void RequestThumbnail(bool delay = false){
@@ -108,6 +108,11 @@ class MapState{
     }
 
     void UpdatePB(int raceTime){
+        if (itemTypes[int(CheckTypes::Target)] == 0 && raceTime >= 0){
+            //location scout command didn't work, retry
+            //this can happen if the client loses connection with the server
+            saveData.world[seriesIndex].SendScouts();
+        }
         if (raceTime < personalBestTime && raceTime >= 0){
             personalBestTime = raceTime;
             UpdateCheckFlags();
@@ -166,7 +171,7 @@ class MapState{
         //resending old checks doesn't cause any issues and makes this easier, so lets do it!
 
         array<int> checks = array<int>(5);
-        int index = data.locations.AddLocationChecks(checks, seriesIndex, mapIndex);
+        int index = data.locations.AddLocationChecks(checks, 0, seriesIndex, mapIndex);
         SendLocationChecks(checks, index);
     }
 
