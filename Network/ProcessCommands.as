@@ -99,7 +99,7 @@ void ProcessPrintJson (Json::Value@ json){
         for (uint i = 0; i < data.Length; i++){
             string rawText = json["data"][i]["text"];
             string displayText = StripArchipelagoColorCodes(rawText);
-            if (!displayText.Contains("found") || !Setting_ShowToasts) return;
+            if (!Setting_ShowToasts) return;
             Log::ArchipelagoNotification(displayText);
         }
     }
