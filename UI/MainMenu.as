@@ -62,8 +62,8 @@ void RenderMainMenu(){
                         UI::SameLine();
                         MoveCursor(vec2(0,6));
                         string mapName = map.mapInfo.Name;
-                        if (mapName.Length > 23){
-                            mapName = mapName.SubStr(0,20)+"...";
+                        if (mapName.Length > 35){
+                            mapName = mapName.SubStr(0,32)+"...";
                         }
                         UI::Text(mapName);
                         UI::PopFontSize();
