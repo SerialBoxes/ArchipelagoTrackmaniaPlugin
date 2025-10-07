@@ -13,7 +13,7 @@ vec3 MapIdToIndices(int id){
 }
 
 string StripArchipelagoColorCodes(const string &in message){
-    bool inCode;
+    bool inCode = false;
     string result = "";
     for (int i = 0; i < message.Length; i++){
         string char = message.SubStr(i,1);

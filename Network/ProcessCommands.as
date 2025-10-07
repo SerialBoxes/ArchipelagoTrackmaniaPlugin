@@ -58,17 +58,24 @@ void ProcessRoomInfo (Json::Value@ json){
 void ProcessConnected (Json::Value@ json){
     int teamI = json["team"];
     int playerI = json["slot"];
+    string playerName = "";
+    for(uint i = 0; i < json["players"].Length; i++){
+        if (json["players"][i]["team"] == teamI && json["players"][i]["slot"] == playerI){
+            playerName = json["players"][i]["alias"];
+            break;
+        }
+    }
 
     @saveFile = SaveFile(seedNameCache, teamI, playerI);
 
     if (saveFile.Exists()){
         Json::Value@ saveJson = saveFile.Load();
-        @data = SaveData(seedNameCache, teamI, playerI, saveJson);
+        @data = SaveData(seedNameCache, teamI, playerI, playerName, saveJson);
         //resend all map checks we have, just in case some got missed!
         ProcessResync();
     } else{
 
-        @data = SaveData(seedNameCache, teamI, playerI, json["slot_data"], true);
+        @data = SaveData(seedNameCache, teamI, playerI, playerName, json["slot_data"], true);
 
         startnew(CoroutineFunc(data.world[0].Initialize));
     }
@@ -94,12 +101,15 @@ void ProcessResync (){
 
 void ProcessPrintJson (Json::Value@ json){
     //¯\_(ツ)_/¯
-    Json::Value@ data = json["data"];
-    if (data !is null && data.GetType() == Json::Type::Array){
-        for (uint i = 0; i < data.Length; i++){
+    Json::Value@ jsonData = json["data"];
+    if (jsonData !is null && jsonData.GetType() == Json::Type::Array){
+        for (uint i = 0; i < jsonData.Length; i++){
             string rawText = json["data"][i]["text"];
             string displayText = StripArchipelagoColorCodes(rawText);
             if (!Setting_ShowToasts) return;
+            if (Setting_ShowOnlyRelevantToasts){
+                if (!displayText.Contains(data.playerName) || displayText.Contains(data.playerName+":")) return;
+            }
             Log::ArchipelagoNotification(displayText);
         }
     }

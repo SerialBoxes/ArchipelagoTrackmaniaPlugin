@@ -1,5 +1,6 @@
 class SaveData{
     string seedName;//unique id for the generation
+    string playerName;
     int teamIndex;
     int playerTeamIndex;
 
@@ -23,10 +24,11 @@ class SaveData{
     // tagsOverride -> world[i].searchBuilder.forceSafeURL (per series, not global)
 
     //load a save file from disk
-    SaveData(const string &in seedName, int teamIndex, int playerTeamIndex, const Json::Value &in json, bool isSlot = false){
+    SaveData(const string &in seedName, int teamIndex, int playerTeamIndex, const string &in playerName, const Json::Value &in json, bool isSlot = false){
         this.seedName = seedName;
         this.teamIndex = teamIndex;
         this.playerTeamIndex = playerTeamIndex;
+        this.playerName = playerName;
 
         try {
             if (isSlot){

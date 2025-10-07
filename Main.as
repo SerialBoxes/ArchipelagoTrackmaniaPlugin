@@ -1,6 +1,9 @@
 [Setting name="Show Archipelago Messages in Game"]
 bool Setting_ShowToasts = true;
 
+[Setting name="Show Archipelago Messages only Relevant to You"]
+bool Setting_ShowOnlyRelevantToasts = false;
+
 [Setting name="Advanced Connection Options"]
 bool Setting_ConnectionOptions;
 
