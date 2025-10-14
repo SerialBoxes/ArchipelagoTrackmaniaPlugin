@@ -71,6 +71,11 @@ void ProcessConnected (Json::Value@ json){
     if (saveFile.Exists()){
         Json::Value@ saveJson = saveFile.Load();
         @data = SaveData(seedNameCache, teamI, playerI, playerName, saveJson);
+
+        if (data.settings.seriesCount == 0){//I accidently ruined some save files in 1.3, this recovers them
+            data.Recover1_3Error(json["slot_data"]);
+        }
+
         //resend all map checks we have, just in case some got missed!
         ProcessResync();
     } else{

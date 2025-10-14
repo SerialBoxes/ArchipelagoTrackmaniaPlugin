@@ -41,10 +41,12 @@ class SeriesState{
             }
             @maps[i] = MapState(saveData, mapRoll, seriesIndex, i);
         }
-        SendScouts();
         initialized = !loadError;
         initializing = false;
-        saveFile.Save(saveData);
+        if (!loadError){
+            SendScouts();
+            saveFile.Save(saveData);
+        }
     }
 
     bool IsUnlocked(){

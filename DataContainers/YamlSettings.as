@@ -57,9 +57,9 @@ class YamlSettings{
     }
 
     void ReadSlotData(const Json::Value &in json){
-        targetTimeSetting = json["TargetTimeSetting"];
-        discountAmount = json["DiscountAmount"];
         seriesCount = json["SeriesNumber"];
+        targetTimeSetting = json["TargetTimeSetting"];
+        discountAmount = json.Get("DiscountAmount",0.015);
         bronzeDisabled = JsonGetAsBool(json, "DisableBronze");
         silverDisabled = JsonGetAsBool(json, "DisableSilver");
         goldDisabled = JsonGetAsBool(json, "DisableGold");

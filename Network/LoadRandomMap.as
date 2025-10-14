@@ -79,6 +79,8 @@ MapInfo@ QueryForRandomMap(SearchCriteria@ URLBuilder){
             break;
         }
 
+        if (data is null) break;
+
         if (res.GetType() != Json::Type::Array || res.Length == 0) {
             if (URLBuilder.forceSafeURL) {
                 Log::Error("Unable to find any maps!", true);

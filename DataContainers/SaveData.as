@@ -98,7 +98,7 @@ class SaveData{
         //this feels so wrong to put here
         //i dont want to put it here
         //but i cant figure out the syntax to make a callback in angelscript to save me bones so ;-;
-        saveFile.Save(this);
+        if (saveFile !is null) saveFile.Save(this);
     }
 
     Json::Value ToJson(){
@@ -145,5 +145,10 @@ class SaveData{
         for (uint i = 0; i < mapsSeen.Length; i++) {
             previouslySeenMaps.Set(mapsSeen[i], true);
         }
+    }
+
+    void Recover1_3Error(const Json::Value &in json){
+        this.settings.ReadSlotData(json);
+        this.locations.checkFlags = array<array<uint>>(settings.seriesCount,array<uint>(MAX_MAPS_IN_SERIES));
     }
 }
