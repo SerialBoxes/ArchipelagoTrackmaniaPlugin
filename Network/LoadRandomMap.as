@@ -28,6 +28,12 @@ void RerollMap(int seriesI, int mapI){
 }
 
 void LoadMap(ref@ mapData){
+#if TMNEXT
+    if (!Permissions::PlayLocalMap()){
+        Log::Log("Club Access is required to use this plugin, sorry!", true);
+        return;
+    }
+#endif
     try {
         isNextMapLoading = true;
 
