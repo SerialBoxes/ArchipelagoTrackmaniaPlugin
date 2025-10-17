@@ -31,7 +31,7 @@ Some of the maps on Trackmania Exchange are incredibly difficult. If another pla
 Archipelago requires all worlds to generate the same number of items and locations. To satisfy this without giving way too many Map Skips to the players, this randomizer generates some filler items. These have been given fun names that reference the Trackmania community. If you get an item with a crazy name, that is what is happening! Medals below your progression medal currently have no real value in the randomizer. You can disable them in the options if you prefer.
 
 ## Help, I got a broken map!
-You can use the /reroll command in the Trackmania Client to reroll the currently loaded map, or /reroll <series number> <map number> to reroll any map from the main menu.
+You can use the `/reroll` command in the Trackmania Client to reroll the currently loaded map, or `/reroll <series number> <map number>` to reroll any map from the main menu.
 
 ## Do I need Club Access?
 Yes.
