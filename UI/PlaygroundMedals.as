@@ -290,6 +290,8 @@ void ReplaceMedalText(CGameManialinkLabel@ QuadLabel, const string &in imageURL)
             QuadLabel.Value = GetNthName(loadedMap.itemTypes[0]);
         }else if (data.settings.DoingAuthor() && data.locations.GotCheck(loadedMap.seriesIndex,loadedMap.mapIndex,CheckTypes::Author)){
             QuadLabel.Value = GetNthName(loadedMap.itemTypes[1]);
+        }else{
+            QuadLabel.Value = "...";
         }
     }
 }
