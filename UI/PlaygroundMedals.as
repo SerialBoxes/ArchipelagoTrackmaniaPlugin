@@ -279,21 +279,28 @@ void DrawOverPlaygroundPage(CGameManialinkPage@ Page, PlaygroundPageType type, C
 
 void ReplaceMedalText(CGameManialinkLabel@ QuadLabel, const string &in imageURL){
     if (imageURL.Length == 0) return;
-    if (imageURL.Contains("Bronze") && data.locations.GotCheck(loadedMap.seriesIndex,loadedMap.mapIndex,CheckTypes::Bronze)){
-        QuadLabel.Value = GetNthName(loadedMap.itemTypes[4]);
-    }else if (imageURL.Contains("Silver") && data.locations.GotCheck(loadedMap.seriesIndex,loadedMap.mapIndex,CheckTypes::Silver)){
-        QuadLabel.Value = GetNthName(loadedMap.itemTypes[3]);
-    }else if (imageURL.Contains("Gold") && data.locations.GotCheck(loadedMap.seriesIndex,loadedMap.mapIndex,CheckTypes::Gold)){
-        QuadLabel.Value = GetNthName(loadedMap.itemTypes[2]);
+    int checkCount = data.locations.ChecksGotten(loadedMap.seriesIndex,loadedMap.mapIndex);
+    if (checkCount >= 1){
+        ItemTypes texI = loadedMap.itemTypes[data.locations.GetNthCheck(loadedMap.seriesIndex,loadedMap.mapIndex, 0)];
+        QuadLabel.Value = GetNthName(texI);
     }else{
-        if (!data.settings.DoingAuthor() && data.locations.GotCheck(loadedMap.seriesIndex,loadedMap.mapIndex,CheckTypes::Target)){
-            QuadLabel.Value = GetNthName(loadedMap.itemTypes[0]);
-        }else if (data.settings.DoingAuthor() && data.locations.GotCheck(loadedMap.seriesIndex,loadedMap.mapIndex,CheckTypes::Author)){
-            QuadLabel.Value = GetNthName(loadedMap.itemTypes[1]);
-        }else{
-            QuadLabel.Value = "...";
-        }
+        QuadLabel.Value = "...";
     }
+    // if (imageURL.Contains("Bronze") && data.locations.GotCheck(loadedMap.seriesIndex,loadedMap.mapIndex,CheckTypes::Bronze)){
+    //     QuadLabel.Value = GetNthName(loadedMap.itemTypes[4]);
+    // }else if (imageURL.Contains("Silver") && data.locations.GotCheck(loadedMap.seriesIndex,loadedMap.mapIndex,CheckTypes::Silver)){
+    //     QuadLabel.Value = GetNthName(loadedMap.itemTypes[3]);
+    // }else if (imageURL.Contains("Gold") && data.locations.GotCheck(loadedMap.seriesIndex,loadedMap.mapIndex,CheckTypes::Gold)){
+    //     QuadLabel.Value = GetNthName(loadedMap.itemTypes[2]);
+    // }else{
+    //     if (!data.settings.DoingAuthor() && data.locations.GotCheck(loadedMap.seriesIndex,loadedMap.mapIndex,CheckTypes::Target)){
+    //         QuadLabel.Value = GetNthName(loadedMap.itemTypes[0]);
+    //     }else if (data.settings.DoingAuthor() && data.locations.GotCheck(loadedMap.seriesIndex,loadedMap.mapIndex,CheckTypes::Author)){
+    //         QuadLabel.Value = GetNthName(loadedMap.itemTypes[1]);
+    //     }else{
+    //         QuadLabel.Value = "...";
+    //     }
+    // }
 }
 
 void DrawBigMedal(vec2 medalPos, float medalScale, const string &in imageURL){
@@ -309,19 +316,24 @@ void DrawBigMedal(vec2 medalPos, float medalScale, const string &in imageURL){
 
     nvg::Texture@ tex = null;
     if (imageURL.Length == 0) return;
-    if (imageURL.Contains("Bronze") && data.locations.GotCheck(loadedMap.seriesIndex,loadedMap.mapIndex,CheckTypes::Bronze)){
-        @tex = GetNthTex(loadedMap.itemTypes[4]);
-    }else if (imageURL.Contains("Silver") && data.locations.GotCheck(loadedMap.seriesIndex,loadedMap.mapIndex,CheckTypes::Silver)){
-        @tex = GetNthTex(loadedMap.itemTypes[3]);
-    }else if (imageURL.Contains("Gold") && data.locations.GotCheck(loadedMap.seriesIndex,loadedMap.mapIndex,CheckTypes::Gold)){
-        @tex = GetNthTex(loadedMap.itemTypes[2]);
-    }else{
-        if (!data.settings.DoingAuthor() && data.locations.GotCheck(loadedMap.seriesIndex,loadedMap.mapIndex,CheckTypes::Target)){
-            @tex = GetNthTex(loadedMap.itemTypes[0]);
-        }else if (data.settings.DoingAuthor() && data.locations.GotCheck(loadedMap.seriesIndex,loadedMap.mapIndex,CheckTypes::Author)){
-            @tex = GetNthTex(loadedMap.itemTypes[1]);
-        }
-    }
+
+    int checkCount = data.locations.ChecksGotten(loadedMap.seriesIndex,loadedMap.mapIndex);
+    if (checkCount < 1) return;
+    ItemTypes texI = loadedMap.itemTypes[data.locations.GetNthCheck(loadedMap.seriesIndex,loadedMap.mapIndex, 0)];
+    @tex = GetNthMedTex(texI);
+    // if (imageURL.Contains("Bronze") && data.locations.GotCheck(loadedMap.seriesIndex,loadedMap.mapIndex,CheckTypes::Bronze)){
+    //     @tex = GetNthTex(loadedMap.itemTypes[4]);
+    // }else if (imageURL.Contains("Silver") && data.locations.GotCheck(loadedMap.seriesIndex,loadedMap.mapIndex,CheckTypes::Silver)){
+    //     @tex = GetNthTex(loadedMap.itemTypes[3]);
+    // }else if (imageURL.Contains("Gold") && data.locations.GotCheck(loadedMap.seriesIndex,loadedMap.mapIndex,CheckTypes::Gold)){
+    //     @tex = GetNthTex(loadedMap.itemTypes[2]);
+    // }else{
+    //     if (!data.settings.DoingAuthor() && data.locations.GotCheck(loadedMap.seriesIndex,loadedMap.mapIndex,CheckTypes::Target)){
+    //         @tex = GetNthTex(loadedMap.itemTypes[0]);
+    //     }else if (data.settings.DoingAuthor() && data.locations.GotCheck(loadedMap.seriesIndex,loadedMap.mapIndex,CheckTypes::Author)){
+    //         @tex = GetNthTex(loadedMap.itemTypes[1]);
+    //     }
+    // }
 
     if (tex !is null){
         nvg::BeginPath();
