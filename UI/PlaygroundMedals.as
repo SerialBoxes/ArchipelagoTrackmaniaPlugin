@@ -234,7 +234,8 @@ void DrawOverPlaygroundPage(CGameManialinkPage@ Page, PlaygroundPageType type, C
 
             CGameManialinkQuad@ QuadMedal = cast<CGameManialinkQuad@>(MedalBanner.GetFirstChild("quad-medal"));
             if (QuadMedal !is null){
-                DrawBigMedal(QuadMedal, QuadMedal.AbsolutePosition_V3, QuadMedal.AbsoluteScale, QuadMedal.ImageUrl);
+                QuadMedal.Opacity = 0.001;
+                DrawBigMedal(QuadMedal.AbsolutePosition_V3, QuadMedal.AbsoluteScale, QuadMedal.ImageUrl);
             }
         }
     }
@@ -248,7 +249,8 @@ void DrawOverPlaygroundPage(CGameManialinkPage@ Page, PlaygroundPageType type, C
 
             CGameManialinkQuad@ QuadMedal = cast<CGameManialinkQuad@>(MedalCelebration.GetFirstChild("quad-medal"));
             if (QuadMedal !is null){
-                DrawBigMedal(QuadMedal, QuadMedal.AbsolutePosition_V3, QuadMedal.AbsoluteScale, QuadMedal.ImageUrl);
+                QuadMedal.Opacity = 0.001;
+                DrawBigMedal(QuadMedal.AbsolutePosition_V3, QuadMedal.AbsoluteScale, QuadMedal.ImageUrl);
             }
 
             CGameManialinkLabel@ QuadLabel = cast<CGameManialinkLabel@>(MedalCelebration.GetFirstChild("label-new-medal"));
@@ -294,7 +296,7 @@ void ReplaceMedalText(CGameManialinkLabel@ QuadLabel, const string &in imageURL)
     }
 }
 
-void DrawBigMedal(CGameManialinkQuad@ QuadMedal, vec2 medalPos, float medalScale, const string &in imageURL){
+void DrawBigMedal(vec2 medalPos, float medalScale, const string &in imageURL){
     const float w      = Math::Max(1, Draw::GetWidth());
     const float h      = Math::Max(1, Draw::GetHeight());
     const vec2  center = vec2(w * 0.5f, h * 0.5f);
@@ -322,12 +324,9 @@ void DrawBigMedal(CGameManialinkQuad@ QuadMedal, vec2 medalPos, float medalScale
     }
 
     if (tex !is null){
-        QuadMedal.Show();
         nvg::BeginPath();
         nvg::FillPaint(nvg::TexturePattern(quadMedalCoords, quadMedalSize, 0.0f, tex, 1.0f));
         nvg::Fill();
-    }else{
-        QuadMedal.Hide();
     }
 }
 
