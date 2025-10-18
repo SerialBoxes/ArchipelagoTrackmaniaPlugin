@@ -168,6 +168,31 @@ nvg::Texture@ GetNthMedTex(ItemTypes type){
             return archipelagoTexNVGMed;
     }
 }
+
+string GetNthName(ItemTypes type){
+    switch (type){
+        case ItemTypes::BronzeMedal:
+            return "Bronze";
+        case ItemTypes::SilverMedal:
+            return "Silver";
+        case ItemTypes::GoldMedal:
+            return "Gold";
+        case ItemTypes::AuthorMedal:
+            return "Author";
+        case ItemTypes::Archipelago:
+            return "Archipelago Item";
+        case ItemTypes::Skip:
+            return "Map Skip";
+        case ItemTypes::Discount:
+            return "PB Discount";
+        case ItemTypes::Trap:
+            return "Trap Item";
+        case ItemTypes::Filler:
+            return "Filler Item";
+        default:
+            return "Archipelago Item";
+    }
+}
 #endif
 
 nvg::Texture@ GetNthTex(ItemTypes type){

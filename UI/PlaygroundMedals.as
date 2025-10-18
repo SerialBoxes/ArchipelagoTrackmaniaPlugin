@@ -252,6 +252,11 @@ void DrawOverPlaygroundPage(CGameManialinkPage@ Page, PlaygroundPageType type, C
                 QuadMedal.Hide();
                 DrawBigMedal(QuadMedal.AbsolutePosition_V3, QuadMedal.AbsoluteScale, QuadMedal.ImageUrl);
             }
+
+            CGameManialinkLabel@ QuadLabel = cast<CGameManialinkLabel@>(MedalCelebration.GetFirstChild("label-new-medal"));
+            if (QuadLabel !is null && QuadLabel !is null){
+                ReplaceMedalText(QuadLabel, QuadMedal.ImageUrl);
+            }
         }
     }
 
@@ -271,6 +276,24 @@ void DrawOverPlaygroundPage(CGameManialinkPage@ Page, PlaygroundPageType type, C
         }
     }
 }
+
+void ReplaceMedalText(CGameManialinkLabel@ QuadLabel, const string &in imageURL){
+    if (imageURL.Length == 0) return;
+    if (imageURL.Contains("Bronze") && data.locations.GotCheck(loadedMap.seriesIndex,loadedMap.mapIndex,CheckTypes::Bronze)){
+        QuadLabel.Value = GetNthName(loadedMap.itemTypes[4]);
+    }else if (imageURL.Contains("Silver") && data.locations.GotCheck(loadedMap.seriesIndex,loadedMap.mapIndex,CheckTypes::Silver)){
+        QuadLabel.Value = GetNthName(loadedMap.itemTypes[3]);
+    }else if (imageURL.Contains("Gold") && data.locations.GotCheck(loadedMap.seriesIndex,loadedMap.mapIndex,CheckTypes::Gold)){
+        QuadLabel.Value = GetNthName(loadedMap.itemTypes[2]);
+    }else{
+        if (!data.settings.DoingAuthor() && data.locations.GotCheck(loadedMap.seriesIndex,loadedMap.mapIndex,CheckTypes::Target)){
+            QuadLabel.Value = GetNthName(loadedMap.itemTypes[0]);
+        }else if (data.settings.DoingAuthor() && data.locations.GotCheck(loadedMap.seriesIndex,loadedMap.mapIndex,CheckTypes::Author)){
+            QuadLabel.Value = GetNthName(loadedMap.itemTypes[1]);
+        }
+    }
+}
+
 void DrawBigMedal(vec2 medalPos, float medalScale, const string &in imageURL){
     const float w      = Math::Max(1, Draw::GetWidth());
     const float h      = Math::Max(1, Draw::GetHeight());
