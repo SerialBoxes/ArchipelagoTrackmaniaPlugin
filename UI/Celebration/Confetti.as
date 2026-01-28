@@ -54,11 +54,11 @@ class ConfettiStrip{
 
     float RefToScreen(float x){
         //scale by screen height
-        return x * float(Draw::GetHeight())/1080.0;
+        return x * float(Display::GetHeight())/1080.0;
     }
 
     vec2 RefToScreen(vec2 x){
         //scale by screen height
-        return x * float(Draw::GetHeight())/1080.0;
+        return x * float(Display::GetHeight())/1080.0;
     }
 }
