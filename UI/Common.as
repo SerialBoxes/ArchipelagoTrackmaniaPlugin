@@ -89,7 +89,7 @@ void RenderMedalProgress(UI::Texture@ tex, float size, int count, int total){
 }
 
 void RenderTextCentered(const string &in text, UI::Font@ font, int fontSize){
-    vec2 size = Draw::MeasureString(text, font, fontSize);
+    vec2 size = UI::MeasureString(text, font, fontSize);
     MoveCursor(size/-2);
     UI::PushFont(font);
     UI::PushFontSize(fontSize);

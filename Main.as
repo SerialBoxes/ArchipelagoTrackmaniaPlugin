@@ -62,7 +62,8 @@ void Update(float dt){
 
 void StartConnection(){
     socket.OpenSocket();
-    startnew(CoroutineFunc(ConnectedLoop));
+    // startnew(CoroutineFunc(ConnectedLoop));
+    startnew(ConnectedLoop);
 }
 
 int lastRaceTime = -1;

@@ -304,8 +304,8 @@ void ReplaceMedalText(CGameManialinkLabel@ QuadLabel, const string &in imageURL)
 }
 
 void DrawBigMedal(vec2 medalPos, float medalScale, const string &in imageURL){
-    const float w      = Math::Max(1, Draw::GetWidth());
-    const float h      = Math::Max(1, Draw::GetHeight());
+    const float w      = Math::Max(1, Display::GetWidth());
+    const float h      = Math::Max(1, Display::GetHeight());
     const vec2  center = vec2(w * 0.5f, h * 0.5f);
     const float hUnit  = h / 180.0f;
     const vec2  scale  = vec2((w / h > stdRatio) ? hUnit : w / 320.0f, -hUnit);
@@ -343,8 +343,8 @@ void DrawBigMedal(vec2 medalPos, float medalScale, const string &in imageURL){
 }
 
 void DrawHugeMedal(vec2 medalPos, float medalScale, const string &in imageURL){
-    const float w      = Math::Max(1, Draw::GetWidth());
-    const float h      = Math::Max(1, Draw::GetHeight());
+    const float w      = Math::Max(1, Display::GetWidth());
+    const float h      = Math::Max(1, Display::GetHeight());
     const vec2  center = vec2(w * 0.5f, h * 0.5f);
     const float hUnit  = h / 180.0f;
     const vec2  scale  = vec2((w / h > stdRatio) ? hUnit : w / 320.0f, -hUnit);
@@ -377,8 +377,8 @@ void DrawHugeMedal(vec2 medalPos, float medalScale, const string &in imageURL){
 }
 
 void DrawMedals(vec2 medalPos, PlaygroundPageType type){
-    const float w      = Math::Max(1, Draw::GetWidth());
-    const float h      = Math::Max(1, Draw::GetHeight());
+    const float w      = Math::Max(1, Display::GetWidth());
+    const float h      = Math::Max(1, Display::GetHeight());
     const vec2  center = vec2(w * 0.5f, h * 0.5f);
     const float hUnit  = h / 180.0f;
     const vec2  scale  = vec2((w / h > stdRatio) ? hUnit : w / 320.0f, -hUnit);

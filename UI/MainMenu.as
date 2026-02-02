@@ -146,7 +146,7 @@ void RenderMainMenu(){
                 int count = data.items.GetProgressionMedalCount();
                 int total = (nextSeries < data.world.Length) ? data.world[nextSeries].medalRequirement : data.victoryRequirement;
                 int size = 60;
-                float medalOffset = (viewSize.x/2)-((size+Draw::MeasureString(""+count+"/"+total,fontHeaderSub).x)/2+16*UI::GetScale());
+                float medalOffset = (viewSize.x/2)-((size+UI::MeasureString(""+count+"/"+total,fontHeaderSub).x)/2+16*UI::GetScale());
                 RenderSeriesLine(nextSeries,viewSize,40,4,8);
                 MoveCursor(vec2(medalOffset,-15.0));
                 RenderMedalProgress(GetProgressionTex(),size,count,total);
@@ -164,7 +164,7 @@ void RenderMainMenu(){
                         color = (vec4(0.0,1.0,0.1,1.0));
                     }
                     UI::PushStyleColor(UI::Col::Text,color);
-                    vec2 stringSize = Draw::MeasureString(text,fontHeader);
+                    vec2 stringSize = UI::MeasureString(text,fontHeader);
                     float textOffset = (viewSize.x/2)-(stringSize.x/2);
                     MoveCursor(vec2(textOffset,0.0));
                     UI::Text(text);
@@ -313,7 +313,7 @@ void RenderMainMenuThumbnail(){
                 int count = data.items.GetProgressionMedalCount();
                 int total = (nextSeries < data.world.Length) ? data.world[nextSeries].medalRequirement : data.victoryRequirement;
                 int size = 60;
-                float medalOffset = (viewSize.x/2)-((size+Draw::MeasureString(""+count+"/"+total,fontHeaderSub).x)/2+16*UI::GetScale());
+                float medalOffset = (viewSize.x/2)-((size+UI::MeasureString(""+count+"/"+total,fontHeaderSub).x)/2+16*UI::GetScale());
                 RenderSeriesLine(nextSeries,viewSize,40,4,8);
                 MoveCursor(vec2(medalOffset,-15.0));
                 RenderMedalProgress(GetProgressionTex(),size,count,total);
@@ -330,7 +330,7 @@ void RenderMainMenuThumbnail(){
                         color = (vec4(0.0,1.0,0.1,1.0));
                     }
                     UI::PushStyleColor(UI::Col::Text,color);
-                    vec2 stringSize = Draw::MeasureString(text,fontHeader);
+                    vec2 stringSize = UI::MeasureString(text,fontHeader);
                     float textOffset = (viewSize.x/2)-(stringSize.x/2);
                     MoveCursor(vec2(textOffset,0.0));
                     UI::Text(text);

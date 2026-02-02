@@ -36,7 +36,7 @@ class PopupText{
         float size = 0;
         float opacity = 0;
         vec2 gradientPos = vec2(0.0,0.0);
-        //float shineWidthAdj = shineWidth * Draw::GetHeight()/1080.0;
+        //float shineWidthAdj = shineWidth * Display::GetHeight()/1080.0;
         if (timer < inDuration){
             float t = timer/inDuration;
             size = Math::Lerp(startSize,displaySize,t);
@@ -46,8 +46,8 @@ class PopupText{
             size = displaySize;
             nvg::FontSize(size);
             // vec2 b = nvg::TextBounds(text);
-            // float start = -b.x/2-shineWidthAdj+Draw::GetWidth()*pos.x;
-            // float end = b.x/2+shineWidthAdj+Draw::GetWidth()*pos.x;
+            // float start = -b.x/2-shineWidthAdj+Display::GetWidth()*pos.x;
+            // float end = b.x/2+shineWidthAdj+Display::GetWidth()*pos.x;
             // gradientPos.x = Math::Lerp(start,end,t);
             // gradientPos.y = 500;
             opacity = 1;
@@ -59,18 +59,18 @@ class PopupText{
         }else{
             return;
         }
-        size = size*Draw::GetHeight()/1080.0;
+        size = size*Display::GetHeight()/1080.0;
         nvg::FontSize(size);
         vec2 bounds = nvg::TextBounds(text);
-        vec2 textPos = vec2(Draw::GetWidth()*pos.x,Draw::GetHeight()*pos.y)+vec2(-bounds.x/2,bounds.y/4);
-        vec2 shadowPos = textPos + vec2(shadowOffset.x*Draw::GetHeight()/1080,shadowOffset.y*Draw::GetHeight()/1080);
+        vec2 textPos = vec2(Display::GetWidth()*pos.x,Display::GetHeight()*pos.y)+vec2(-bounds.x/2,bounds.y/4);
+        vec2 shadowPos = textPos + vec2(shadowOffset.x*Display::GetHeight()/1080,shadowOffset.y*Display::GetHeight()/1080);
         
         nvg::BeginPath();
         nvg::SkewX(-10*Math::PI/180);
         nvg::FillColor(vec4(shadowColor.x,shadowColor.y,shadowColor.z,shadowColor.w*opacity*0.75));
-        vec2 boxBounds = bounds + vec2(120,10)*Draw::GetHeight()/1080.0;
-        vec2 boxPos = vec2(Draw::GetWidth()*pos.x,Draw::GetHeight()*pos.y)+vec2(-boxBounds.x/2,-boxBounds.y/2);
-        boxPos.x += 130*Draw::GetHeight()/1080.0;
+        vec2 boxBounds = bounds + vec2(120,10)*Display::GetHeight()/1080.0;
+        vec2 boxPos = vec2(Display::GetWidth()*pos.x,Display::GetHeight()*pos.y)+vec2(-boxBounds.x/2,-boxBounds.y/2);
+        boxPos.x += 130*Display::GetHeight()/1080.0;
         nvg::RoundedRectVarying(boxPos,boxBounds,20,0,20,0);
         nvg::Fill();
         nvg::ClosePath();

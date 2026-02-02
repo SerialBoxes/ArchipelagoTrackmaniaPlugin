@@ -67,8 +67,8 @@ void DrawPlaygroundUI() {
 }
 
 void DrawMedalSelection(CControlQuad@ Medal){
-    const float w      = Math::Max(1, Draw::GetWidth());
-    const float h      = Math::Max(1, Draw::GetHeight());
+    const float w      = Math::Max(1, Display::GetWidth());
+    const float h      = Math::Max(1, Display::GetHeight());
     const vec2  center = vec2(w * 0.5f, h * 0.5f);
     const vec2  scale  = vec2(w*-0.3125,h*-0.55555556);
 
@@ -94,8 +94,8 @@ void DrawMedalSelection(CControlQuad@ Medal){
 }
 
 void DrawBigMedals(CControlFrame@ BigMedalsParent){
-    const float w      = Math::Max(1, Draw::GetWidth());
-    const float h      = Math::Max(1, Draw::GetHeight());
+    const float w      = Math::Max(1, Display::GetWidth());
+    const float h      = Math::Max(1, Display::GetHeight());
     const vec2  center = vec2(w * 0.5f, h * 0.5f);
     const vec2  scale  = vec2(w*-0.3125,h*-0.55555556);
 
@@ -193,8 +193,8 @@ void DrawBigMedals(CControlFrame@ BigMedalsParent){
 
 
 bool DrawBigMedal (CControlQuad@ Medal, CheckTypes type, int shift = 0){
-    const float w      = Math::Max(1, Draw::GetWidth());
-    const float h      = Math::Max(1, Draw::GetHeight());
+    const float w      = Math::Max(1, Display::GetWidth());
+    const float h      = Math::Max(1, Display::GetHeight());
     const vec2  center = vec2(w * 0.5f, h * 0.5f);
     const vec2  scale  = vec2(w*-0.3125,h*-0.55555556);
     mat4 mat = Medal.Item.Corpus.Location;
@@ -227,8 +227,8 @@ bool DrawBigMedal (CControlQuad@ Medal, CheckTypes type, int shift = 0){
 }
 
 void DrawBowTie (CControlQuad@ BowTie, int shifts){
-    const float w      = Math::Max(1, Draw::GetWidth());
-    const float h      = Math::Max(1, Draw::GetHeight());
+    const float w      = Math::Max(1, Display::GetWidth());
+    const float h      = Math::Max(1, Display::GetHeight());
     const vec2  center = vec2(w * 0.5f, h * 0.5f);
     const vec2  scale  = vec2(w*-0.3125,h*-0.55555556);
     mat4 mat = BowTie.Item.Corpus.Location;
