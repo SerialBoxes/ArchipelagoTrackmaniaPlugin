@@ -41,9 +41,10 @@ void RenderMainMenu(){
 
                         vec2 cursorStart = UI::GetCursorPos();
                         float width  = viewSize.x-30;
-                        float height = 36;
-                        vec2 starPos = UI::GetCursorPos() + vec2(-22,0)  +UI::GetWindowPos() - vec2(0, UI::GetScrollY())+ vec2(viewSize.x/2,0.0);
-                        vec2 endPos = UI::GetCursorPos() + vec2(-22,height) +UI::GetWindowPos() - vec2(0, UI::GetScrollY())+ vec2(viewSize.x/2,0.0);
+                        float height = 30;
+                        float verticalOffset = -2;
+                        vec2 starPos = UI::GetCursorPos() + vec2(-22,verticalOffset)  +UI::GetWindowPos() - vec2(0, UI::GetScrollY())+ vec2(viewSize.x/2,0.0);
+                        vec2 endPos = UI::GetCursorPos() + vec2(-22,height+verticalOffset) +UI::GetWindowPos() - vec2(0, UI::GetScrollY())+ vec2(viewSize.x/2,0.0);
                         vec4 bgRect = vec4(starPos.x - (width/2),starPos.y,width,endPos.y - starPos.y);
 
                         if (map.mapIndex % 2 == 1){
